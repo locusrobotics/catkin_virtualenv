@@ -1,0 +1,14 @@
+#!/usr/bin/env python
+import os
+
+from catkin.find_in_workspaces import find_in_workspaces
+
+activate_venv = find_in_workspaces(
+            project='@PROJECT_NAME@',
+            path='venv/bin/activate_this.py',
+            first_match_only=True,
+        )[0]
+execfile(activate_venv, dict(__file__=activate_venv))
+
+program_file = "@program_file@"
+execfile(program_file)

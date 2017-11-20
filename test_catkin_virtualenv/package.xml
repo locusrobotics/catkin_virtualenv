@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>test_catkin_virtualenv</name>
+  <version>0.0.0</version>
+  <description>Package to test catkin_virtualenv</description>
+  <license>BSD</license>
+
+  <author email="pbovbel@locusrobotics.com">Paul Bovbel</author>
+  <maintainer email="pbovbel@locusrobotics.com">Paul Bovbel</maintainer>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <test_depend>catkin_virtualenv</test_depend>
+
+  <export>
+    <pip_requirements>requirements.txt</pip_requirements>
+  </export>
+
+s</package>

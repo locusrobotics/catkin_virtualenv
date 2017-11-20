@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<launch>
+  <test test-name="test_virtualenv_script" pkg="test_catkin_virtualenv" type="test_virtualenv_script" />
+</launch>

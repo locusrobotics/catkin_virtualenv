@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+set -e
+
+generated_requirements=$1
+venv_directory=$2
+project_name=$3
+
+# Build the virtualenv. The way we inject virtualenv activation means we always get system-site-packages, so may
+# as well explicitly set <https://virtualenv.pypa.io/en/stable/userguide/#using-virtualenv-without-bin-python>
+virtualenv $venv_directory --system-site-packages
+
+# Make virtualenv contents (i.e. pip) relocatable immediately, to avoid a character limit in the shebang line. Seen in the wild:
+# `#!/tmp/binarydeb/ros-kinetic-locus-behavior-engine-0.0.30/obj-x86_64-linux-gnu/devel/share/locus_behavior_engine/venv/bin/python2`
+# Causing: `/opt/ros/kinetic/lib/locus_py/build_venv: /tmp/binarydeb/ros-kinetic-locus-behavior-engine-0.0.30/obj-x86_64-linux-gnu/devel/share/locus_behavior_engine/venv/bin/pip: /tmp/binarydeb/ros-kinetic-locus-behavior-engine-0.0.30/obj-x86_64-linux-gnu/: bad interpreter: No such file or directory`
+virtualenv $venv_directory --relocatable
+
+source $venv_directory/bin/activate
+
+pip install -r $generated_requirements
+deactivate
+
+# Make the virtualenv relocatable _again_ to hit any binaries installed via pip.
+virtualenv $venv_directory --relocatable
+
+# Some hacks to make a virtualenv truly 'relocatable', adapted from
+# https://www.alexhudson.com/2013/05/24/packaging-a-virtualenv-really-not-relocatable/
+
+# Remove all .py[co] files since they embed absolute paths
+find $venv_directory/ -name \*py[co] -exec rm {} \;
+
+# Update the 'activate' wrapper to use catkin_find to locate the relocated virtualenv directory, rather than a hardcoded absolute path.
+# Could probably use something like https://stackoverflow.com/a/246128 instead, to avoid `catkin_find`.
+find $venv_directory/ -type f -exec sed -i -e 's#^VIRTUAL_ENV=.*#VIRTUAL_ENV=\"$(catkin_find '"$project_name"' venv --first-only)\"#g' {} \;
+
+exit 0

@@ -1,0 +1,28 @@
+cmake_minimum_required(VERSION 2.8.3)
+project(test_catkin_virtualenv)
+
+find_package(catkin REQUIRED catkin_virtualenv)
+
+catkin_package()
+
+install(FILES requirements.txt
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+
+if(CATKIN_ENABLE_TESTING)
+  catkin_generate_virtualenv()
+
+  catkin_add_nosetests(test
+    DEPENDENCIES ${PROJECT_NAME}_generate_virtualenv
+  )
+
+
+  find_package(rostest)
+
+  catkin_install_python(
+    PROGRAMS
+      test/test_virtualenv_script
+    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+
+  add_rostest(test/test_virtualenv_script.test)
+
+endif()
