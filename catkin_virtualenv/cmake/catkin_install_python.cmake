@@ -34,7 +34,7 @@ function(catkin_generate_virtualenv)
       )
 
       add_custom_command(OUTPUT ${${PROJECT_NAME}_VENV_DIRECTORY}
-        COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv build_venv ${generated_requirements} ${${PROJECT_NAME}_VENV_DIRECTORY} ${PROJECT_NAME}
+        COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv build_venv --requirements ${generated_requirements} --venv-directory ${${PROJECT_NAME}_VENV_DIRECTORY} --project-name ${PROJECT_NAME}
         DEPENDS ${generated_requirements}
       )
 

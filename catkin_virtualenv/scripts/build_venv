@@ -1,35 +1,59 @@
-#!/usr/bin/env bash
-set -e
+#!/usr/bin/env python
+from __future__ import print_function
 
-generated_requirements=$1
-venv_directory=$2
-project_name=$3
+import argparse
+import subprocess
+import os
+import re
 
-# Build the virtualenv. The way we inject virtualenv activation means we always get system-site-packages, so may
-# as well explicitly set <https://virtualenv.pypa.io/en/stable/userguide/#using-virtualenv-without-bin-python>
-virtualenv $venv_directory --system-site-packages
 
-# Make virtualenv contents (i.e. pip) relocatable immediately, to avoid a character limit in the shebang line. Seen in the wild:
-# `#!/tmp/binarydeb/ros-kinetic-locus-behavior-engine-0.0.30/obj-x86_64-linux-gnu/devel/share/locus_behavior_engine/venv/bin/python2`
-# Causing: `/opt/ros/kinetic/lib/locus_py/build_venv: /tmp/binarydeb/ros-kinetic-locus-behavior-engine-0.0.30/obj-x86_64-linux-gnu/devel/share/locus_behavior_engine/venv/bin/pip: /tmp/binarydeb/ros-kinetic-locus-behavior-engine-0.0.30/obj-x86_64-linux-gnu/: bad interpreter: No such file or directory`
-virtualenv $venv_directory --relocatable
+_BYTECODE_REGEX = re.compile('.*.py[co]')
+_ACTIVATE_REGEX = re.compile('VIRTUAL_ENV=.*')
 
-source $venv_directory/bin/activate
 
-pip install -r $generated_requirements
-deactivate
+def delete_bytecode(directory):
+    for root, dirs, files in os.walk(directory):
+        for f in files:
+            if _BYTECODE_REGEX.match(f):
+                os.remove(os.path.join(root, f))
 
-# Make the virtualenv relocatable _again_ to hit any binaries installed via pip.
-virtualenv $venv_directory --relocatable
 
-# Some hacks to make a virtualenv truly 'relocatable', adapted from
-# https://www.alexhudson.com/2013/05/24/packaging-a-virtualenv-really-not-relocatable/
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description="Build a relocatable virtualenv.")
+    parser.add_argument('--requirements', required=True, help="Packages to install into the virtual environment.")
+    parser.add_argument('--venv-directory', required=True, help="Directory where to generate the virtual environment.")
+    parser.add_argument('--project-name', required=True, help="Catkin project name")
 
-# Remove all .py[co] files since they embed absolute paths
-find $venv_directory/ -name \*py[co] -exec rm {} \;
+    args, unknown = parser.parse_known_args()
 
-# Update the 'activate' wrapper to use catkin_find to locate the relocated virtualenv directory, rather than a hardcoded absolute path.
-# Could probably use something like https://stackoverflow.com/a/246128 instead, to avoid `catkin_find`.
-find $venv_directory/ -type f -exec sed -i -e 's#^VIRTUAL_ENV=.*#VIRTUAL_ENV=\"$(catkin_find '"$project_name"' venv --first-only)\"#g' {} \;
+    # Build the virtualenv. The way we inject virtualenv activation means we always get system-site-packages, so may
+    # as well explicitly set <https://virtualenv.pypa.io/en/stable/userguide/#using-virtualenv-without-bin-python>
+    subprocess.check_call(['virtualenv', args.venv_directory, '--system-site-packages'])
 
-exit 0
+    # Make virtualenv contents (i.e. pip) relocatable immediately, to avoid a character limit in the shebang line.
+    subprocess.check_call(['virtualenv', args.venv_directory, '--relocatable'])
+
+    python = os.path.join(args.venv_directory, 'bin', 'python')
+
+    subprocess.check_call([python, '-m', 'pip', 'install', '-r', args.requirements])
+
+    # Make the virtualenv relocatable _again_ to hit any binaries installed via pip.
+    subprocess.check_call(['virtualenv', args.venv_directory, '--relocatable'])
+
+    # Some hacks to make a virtualenv truly 'relocatable', adapted from
+    # https://www.alexhudson.com/2013/05/24/packaging-a-virtualenv-really-not-relocatable/
+
+    # Remove all .py[co] files since they embed absolute paths
+    delete_bytecode(args.venv_directory)
+
+    # Update the 'activate' wrapper to use catkin_find to locate the relocated virtualenv directory, rather than a
+    # hardcoded absolute path.
+    catkin_find_path = 'VIRTUAL_ENV="$(catkin_find {} venv --first-only)"'.format(args.project_name)
+
+    with open(os.path.join(args.venv_directory, 'bin', 'activate'), 'r') as f:
+        content = f.read()
+        # print(_ACTIVATE_REGEX.findall(content))
+        content = _ACTIVATE_REGEX.sub(catkin_find_path, content)
+
+    with open(os.path.join(args.venv_directory, 'bin', 'activate'), 'w') as f:
+        f.write(content)
