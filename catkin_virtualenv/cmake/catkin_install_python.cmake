@@ -8,13 +8,12 @@ function(catkin_install_python)
     message(FATAL_ERROR "catkin_install_python() called without required DESTINATION argument.")
   endif()
 
-  # If this package doesn't need a virtualenv, bypass processing python scripts
   if(NOT TARGET ${PROJECT_NAME}_generate_virtualenv)
     message(FATAL_ERROR "${PROJECT_NAME} loaded catkin_virtualenv, but never invoked 'catkin_generate_virtualenv'")
     return()
   endif()
 
-  # # Use CMake templating to load virtualenv into all specified python scripts
+  # Use CMake templating to create virtualenv loaders for all specified python scripts
   set(install_programs "")
 
   foreach(program_path ${ARG_PROGRAMS})

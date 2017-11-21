@@ -1,9 +1,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(catkin_virtualenv)
 
-find_package(catkin REQUIRED COMPONENTS
-  rospy
-)
+find_package(catkin)
 
 catkin_package(CFG_EXTRAS ${PROJECT_NAME}-extras.cmake)
 
