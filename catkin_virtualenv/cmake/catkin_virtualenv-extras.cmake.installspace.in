@@ -1,2 +1,6 @@
 set(@PROJECT_NAME@_CMAKE_DIR ${@PROJECT_NAME@_DIR})
+
+set(${PROJECT_NAME}_VENV_DIRECTORY ${CMAKE_INSTALL_PREFIX}/${CATKIN_GLOBAL_SHARE_DESTINATION}/share/${PROJECT_NAME}/venv)
+
+include(${@PROJECT_NAME@_CMAKE_DIR}/catkin_generate_virtualenv.cmake)
 include(${@PROJECT_NAME@_CMAKE_DIR}/catkin_install_python.cmake)

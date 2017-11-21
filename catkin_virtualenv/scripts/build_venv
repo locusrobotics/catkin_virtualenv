@@ -4,6 +4,7 @@ from __future__ import print_function
 import argparse
 import os
 import re
+import shutil
 import sys
 
 from dh_virtualenv import Deployment
@@ -25,15 +26,14 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Build a relocatable virtualenv.")
     parser.add_argument('--requirements', required=True, help="Packages to install into the virtual environment.")
     parser.add_argument('--venv-dir', required=True, help="Directory where to generate the virtual environment.")
-    parser.add_argument('--install-dir', required=True,
-                        help="Directory where the virtual environment will be installed on the target machine.")
+    parser.add_argument('--install-dir', help="Directory where the virtual environment will be installed on the target machine.")
     parser.add_argument('--python3', action='store_true', help="Python interpreter")
 
     args, unknown = parser.parse_known_args()
 
     deploy = Deployment(
         package_dir=args.venv_dir,
-        install_dir=os.path.abspath(args.install_dir),
+        install_dir=os.path.abspath(args.install_dir) if args.install_dir else os.path.abspath(args.venv_dir),
         requirements_filename=args.requirements,
         upgrade_pip=True,
         verbose=False,
@@ -55,5 +55,8 @@ if __name__ == '__main__':
 
     # Remove all .py[co] files since they embed absolute paths
     delete_bytecode(args.venv_dir)
+
+    # Remove local folder
+    shutil.rmtree(os.path.join(args.venv_dir, 'local'))
 
     sys.exit(0)
