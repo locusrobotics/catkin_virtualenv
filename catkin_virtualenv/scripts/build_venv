@@ -26,8 +26,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Build a relocatable virtualenv.")
     parser.add_argument('--requirements', required=True, help="Packages to install into the virtual environment.")
     parser.add_argument('--venv-dir', required=True, help="Directory where to generate the virtual environment.")
-    parser.add_argument(
-        '--install-dir', help="Directory where the virtual environment will be installed on the target machine.")
+    parser.add_argument('--install-dir', help="Directory where the virtual environment will be installed.")
     parser.add_argument('--python3', action='store_true', help="Python interpreter")
 
     args, unknown = parser.parse_known_args()

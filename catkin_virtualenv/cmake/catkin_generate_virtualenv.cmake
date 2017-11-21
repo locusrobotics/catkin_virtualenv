@@ -28,22 +28,26 @@ function(catkin_generate_virtualenv)
   set(generated_requirements ${CMAKE_BINARY_DIR}/generated_requirements.txt)
 
   foreach(requirements_txt ${requirements_list})
+     # Trigger a re-configure if any requirements file changes
+    stamp(${requirements_txt})
     message(STATUS "Including ${requirements_txt} in bundled virtualenv")
-    stamp(${requirements_txt})  # trigger a re-configure if any requirements file changes
   endforeach()
 
+  # Combine requirements into one list
   add_custom_command(OUTPUT ${generated_requirements}
     COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv combine_requirements --requirements-list ${requirements_list} --output-file ${generated_requirements}
     DEPENDS ${requirements_list}
   )
 
+  # Build a virtualenv in CMAKE_BINARY_DIR, with internal file structure set up for in devel or installspace.
   add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/venv
     COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv build_venv --requirements ${generated_requirements} --venv-dir ${CMAKE_BINARY_DIR}/venv --install-dir ${${PROJECT_NAME}_VENV_DIRECTORY} ${build_venv_extra}
     DEPENDS ${generated_requirements}
   )
 
+  # Symlink virtualenv to the destination - this really only has an effect in develspace.
   add_custom_command(OUTPUT ${${PROJECT_NAME}_VENV_DIRECTORY}
-    COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_BINARY_DIR}/venv ${${PROJECT_NAME}_VENV_DIRECTORY}
+    COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_BINARY_DIR}/venv ${${PROJECT_NAME}_VENV_DIRECTORY} || true
     DEPENDS ${CMAKE_BINARY_DIR}/venv
   )
 

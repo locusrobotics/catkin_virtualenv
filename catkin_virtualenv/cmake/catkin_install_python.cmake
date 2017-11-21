@@ -38,16 +38,16 @@ function(catkin_install_python)
         )
       endif()
 
-      # We generate two new python scripts using CMake templating:
-      #  - devel_program is placed in the develspace, and uses execfile to run the original source file. This means
-      #    the workspace does not need to be recompiled for python changes during development
-      #  - install_program contains a copy of the original script, and is installed to the installspace/debian.
+      # For develspace support, we generate a bash script that invokes the source script via the virtualenv's
+      # python interpreter.
       set(devel_program ${CATKIN_DEVEL_PREFIX}/${ARG_DESTINATION}/${program_basename})
       configure_file(${catkin_virtualenv_CMAKE_DIR}/templates/program.devel.in ${devel_program})
       execute_process(
         COMMAND ${CATKIN_ENV} chmod +x ${devel_program}
       )
 
+      # For installspace support, we install the source script, and then generate a bash script to invoke it using
+      # the virtualenv's python interpreter.
       set(install_program ${CMAKE_BINARY_DIR}/${program_basename})
       configure_file(${catkin_virtualenv_CMAKE_DIR}/templates/program.install.in ${install_program})
       execute_process(
