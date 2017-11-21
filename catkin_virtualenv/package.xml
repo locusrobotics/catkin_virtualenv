@@ -3,7 +3,7 @@
   <name>catkin_virtualenv</name>
   <version>0.0.0</version>
   <description>Bundle a virtualenv with a catkin package.</description>
-  <license>BSD</license>
+  <license>GPL</license>
 
   <author email="pbovbel@locusrobotics.com">Paul Bovbel</author>
   <maintainer email="pbovbel@locusrobotics.com">Paul Bovbel</maintainer>

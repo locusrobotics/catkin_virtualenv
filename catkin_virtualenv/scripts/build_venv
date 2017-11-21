@@ -2,9 +2,12 @@
 from __future__ import print_function
 
 import argparse
-import subprocess
 import os
 import re
+import sys
+
+from dh_virtualenv import Deployment
+from distutils.spawn import find_executable
 
 
 _BYTECODE_REGEX = re.compile('.*.py[co]')
@@ -21,39 +24,36 @@ def delete_bytecode(directory):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Build a relocatable virtualenv.")
     parser.add_argument('--requirements', required=True, help="Packages to install into the virtual environment.")
-    parser.add_argument('--venv-directory', required=True, help="Directory where to generate the virtual environment.")
-    parser.add_argument('--project-name', required=True, help="Catkin project name")
+    parser.add_argument('--venv-dir', required=True, help="Directory where to generate the virtual environment.")
+    parser.add_argument('--install-dir', required=True,
+                        help="Directory where the virtual environment will be installed on the target machine.")
+    parser.add_argument('--python3', action='store_true', help="Python interpreter")
 
     args, unknown = parser.parse_known_args()
 
-    # Build the virtualenv. The way we inject virtualenv activation means we always get system-site-packages, so may
-    # as well explicitly set <https://virtualenv.pypa.io/en/stable/userguide/#using-virtualenv-without-bin-python>
-    subprocess.check_call(['virtualenv', args.venv_directory, '--system-site-packages'])
+    deploy = Deployment(
+        package_dir=args.venv_dir,
+        install_dir=os.path.abspath(args.install_dir),
+        requirements_filename=args.requirements,
+        upgrade_pip=True,
+        verbose=False,
+        use_system_packages=True,
+        python=find_executable('python3') if args.python3 else find_executable('python2'),
+        builtin_venv=args.python3,
+    )
 
-    # Make virtualenv contents (i.e. pip) relocatable immediately, to avoid a character limit in the shebang line.
-    subprocess.check_call(['virtualenv', args.venv_directory, '--relocatable'])
+    print('Creating virtualenv')
+    deploy.create_virtualenv()
 
-    python = os.path.join(args.venv_directory, 'bin', 'python')
+    print('Installing dependencies')
+    deploy.install_dependencies()
 
-    subprocess.check_call([python, '-m', 'pip', 'install', '-r', args.requirements])
-
-    # Make the virtualenv relocatable _again_ to hit any binaries installed via pip.
-    subprocess.check_call(['virtualenv', args.venv_directory, '--relocatable'])
-
-    # Some hacks to make a virtualenv truly 'relocatable', adapted from
-    # https://www.alexhudson.com/2013/05/24/packaging-a-virtualenv-really-not-relocatable/
+    print('Fixing paths')
+    deploy.fix_activate_path()
+    deploy.fix_shebangs()
+    deploy.fix_local_symlinks()
 
     # Remove all .py[co] files since they embed absolute paths
-    delete_bytecode(args.venv_directory)
+    delete_bytecode(args.venv_dir)
 
-    # Update the 'activate' wrapper to use catkin_find to locate the relocated virtualenv directory, rather than a
-    # hardcoded absolute path.
-    catkin_find_path = 'VIRTUAL_ENV="$(catkin_find {} venv --first-only)"'.format(args.project_name)
-
-    with open(os.path.join(args.venv_directory, 'bin', 'activate'), 'r') as f:
-        content = f.read()
-        # print(_ACTIVATE_REGEX.findall(content))
-        content = _ACTIVATE_REGEX.sub(catkin_find_path, content)
-
-    with open(os.path.join(args.venv_directory, 'bin', 'activate'), 'w') as f:
-        f.write(content)
+    sys.exit(0)
