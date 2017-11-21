@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>test_catkin_virtualenv</name>
+  <name>test_catkin_virtualenv_py3</name>
   <version>0.0.0</version>
-  <description>Package to test catkin_virtualenv.</description>
+  <description>Package to test catkin_virtualenv in Python 3.</description>
   <license>GPL</license>
 
   <author email="pbovbel@locusrobotics.com">Paul Bovbel</author>
@@ -11,6 +11,7 @@
   <buildtool_depend>catkin</buildtool_depend>
 
   <test_depend>catkin_virtualenv</test_depend>
+  <test_depend>python3-nose</test_depend>
 
   <export>
     <pip_requirements>requirements.txt</pip_requirements>

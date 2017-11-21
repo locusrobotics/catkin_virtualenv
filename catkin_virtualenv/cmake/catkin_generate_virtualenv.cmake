@@ -1,10 +1,7 @@
-if(NOSETESTS)
-  # TODO(pbovbel): NOSETESTS originally set by catkin here:
-  # <https://github.com/ros/catkin/blob/kinetic-devel/cmake/test/nosetests.cmake#L86>
-  # Should we load nose from the virtualenv instead?
-  set(NOSETESTS "${${PROJECT_NAME}_VENV_DIRECTORY}/bin/python ${NOSETESTS}")
-  message(STATUS "Using virtualenv to run Python nosetests: ${NOSETESTS}")
-endif()
+# (pbovbel): NOSETESTS originally set by catkin here:
+# <https://github.com/ros/catkin/blob/kinetic-devel/cmake/test/nosetests.cmake#L86>
+set(NOSETESTS "${${PROJECT_NAME}_VENV_DIRECTORY}/bin/python ${${PROJECT_NAME}_VENV_DIRECTORY}/bin/nosetests")
+message(STATUS "Using virtualenv to run Python nosetests: ${NOSETESTS}")
 
 function(catkin_generate_virtualenv)
   cmake_parse_arguments(ARG "PYTHON3" "" "" ${ARGN})
@@ -22,6 +19,12 @@ function(catkin_generate_virtualenv)
     OUTPUT_STRIP_TRAILING_WHITESPACE
   )
 
+  list(APPEND requirements_list "${catkin_virtualenv_CMAKE_DIR}/requirements.txt")
+
+  if(${ARG_PYTHON3})
+    set(build_venv_extra "--python3")
+  endif()
+
   set(generated_requirements ${CMAKE_BINARY_DIR}/generated_requirements.txt)
 
   foreach(requirements_txt ${requirements_list})
@@ -33,10 +36,6 @@ function(catkin_generate_virtualenv)
     COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv combine_requirements --requirements-list ${requirements_list} --output-file ${generated_requirements}
     DEPENDS ${requirements_list}
   )
-
-  if(ARG_PYTHON3)
-    set(build_venv_extra " --python3")
-  endif()
 
   add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/venv
     COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv build_venv --requirements ${generated_requirements} --venv-dir ${CMAKE_BINARY_DIR}/venv --install-dir ${${PROJECT_NAME}_VENV_DIRECTORY} ${build_venv_extra}
