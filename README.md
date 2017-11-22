@@ -2,9 +2,9 @@
 
 This package provides a mechanism to:
 
-    * export python library requirements in `requirements.txt` format via `package.xml`.
-    * bundle a virtualenv within a catkin package, inheriting requirements from any dependencies.
-    * wrap python scripts and tests in a catkin package with a virtualenv loader.
+  - export python library requirements in `requirements.txt` format via `package.xml`.
+  - bundle a virtualenv within a catkin package, inheriting requirements from any dependencies.
+  - wrap python scripts and tests in a catkin package with a virtualenv loader.
 
 At CMake configure time, catkin will create a virtualenv inside the devel space, and create wrapper scripts for any
 Python nodes in the package. These will also be installed into any bloomed debian package.
