@@ -12,9 +12,9 @@
 
   <build_export_depend>python-enum34</build_export_depend>
   <build_export_depend>python-pip</build_export_depend>
-  <!-- <build_export_depend>python-semver</build_export_depend> -->
+  <build_export_depend>python-semver</build_export_depend>
   <build_export_depend>python-virtualenv</build_export_depend>
-  <!-- <build_export_depend>python3-virtualenv</build_export_depend> -->
+  <build_export_depend>python3-dev</build_export_depend>
 
   <test_depend>roslint</test_depend>
 
