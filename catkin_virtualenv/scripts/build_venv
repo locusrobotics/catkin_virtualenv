@@ -1,35 +1,68 @@
-#!/usr/bin/env bash
-set -e
+#!/usr/bin/env python
+from __future__ import print_function
 
-generated_requirements=$1
-venv_directory=$2
-project_name=$3
+import argparse
+import os
+import re
+import shutil
+import sys
 
-# Build the virtualenv. The way we inject virtualenv activation means we always get system-site-packages, so may
-# as well explicitly set <https://virtualenv.pypa.io/en/stable/userguide/#using-virtualenv-without-bin-python>
-virtualenv $venv_directory --system-site-packages
+from dh_virtualenv import Deployment
+from distutils.spawn import find_executable
 
-# Make virtualenv contents (i.e. pip) relocatable immediately, to avoid a character limit in the shebang line. Seen in the wild:
-# `#!/tmp/binarydeb/ros-kinetic-locus-behavior-engine-0.0.30/obj-x86_64-linux-gnu/devel/share/locus_behavior_engine/venv/bin/python2`
-# Causing: `/opt/ros/kinetic/lib/locus_py/build_venv: /tmp/binarydeb/ros-kinetic-locus-behavior-engine-0.0.30/obj-x86_64-linux-gnu/devel/share/locus_behavior_engine/venv/bin/pip: /tmp/binarydeb/ros-kinetic-locus-behavior-engine-0.0.30/obj-x86_64-linux-gnu/: bad interpreter: No such file or directory`
-virtualenv $venv_directory --relocatable
 
-source $venv_directory/bin/activate
+_BYTECODE_REGEX = re.compile('.*.py[co]')
 
-pip install -r $generated_requirements
-deactivate
 
-# Make the virtualenv relocatable _again_ to hit any binaries installed via pip.
-virtualenv $venv_directory --relocatable
+def delete_bytecode(directory):
+    for root, dirs, files in os.walk(directory):
+        for f in files:
+            if _BYTECODE_REGEX.match(f):
+                os.remove(os.path.join(root, f))
 
-# Some hacks to make a virtualenv truly 'relocatable', adapted from
-# https://www.alexhudson.com/2013/05/24/packaging-a-virtualenv-really-not-relocatable/
 
-# Remove all .py[co] files since they embed absolute paths
-find $venv_directory/ -name \*py[co] -exec rm {} \;
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(
+        description="Build a virtualenv, and rewrite the internal paths with an arbitrary root directory.")
+    parser.add_argument(
+        '--requirements', required=True, help="A requirements.txt file specifying dependencies.")
+    parser.add_argument(
+        '--root-dir', required=True, help="Directory to which the virtualenv's hardcoded paths should be rewritten.")
+    parser.add_argument(
+        '--python3', action='store_true', help="Build the virtualenv with Python3 as the default interpreter.")
 
-# Update the 'activate' wrapper to use catkin_find to locate the relocated virtualenv directory, rather than a hardcoded absolute path.
-# Could probably use something like https://stackoverflow.com/a/246128 instead, to avoid `catkin_find`.
-find $venv_directory/ -type f -exec sed -i -e 's#^VIRTUAL_ENV=.*#VIRTUAL_ENV=\"$(catkin_find '"$project_name"' venv --first-only)\"#g' {} \;
+    args, unknown = parser.parse_known_args()
 
-exit 0
+    root_dir = os.path.realpath(args.root_dir)
+
+    os.environ['DH_VIRTUALENV_INSTALL_ROOT'] = os.path.dirname(root_dir)
+
+    deploy = Deployment(
+        package=os.path.basename(root_dir),
+        requirements_filename=args.requirements,
+        upgrade_pip=True,
+        verbose=False,
+        use_system_packages=True,
+        python=find_executable('python3') if args.python3 else find_executable('python2'),
+        builtin_venv=args.python3,
+    )
+
+    print('Generating virtualenv in {}'.format(deploy.package_dir))
+    deploy.create_virtualenv()
+
+    print('Installing requirements')
+    deploy.install_dependencies()
+
+    print('Fixing virtualenv root to {}'.format(deploy.virtualenv_install_dir))
+    deploy.fix_activate_path()
+    deploy.fix_shebangs()
+    deploy.fix_local_symlinks()
+
+    # Remove all .py[co] files since they embed absolute paths
+    delete_bytecode(deploy.package_dir)
+
+    if not args.python3:
+        # Remove local folder
+        shutil.rmtree(os.path.join(deploy.package_dir, 'local'))
+
+    sys.exit(0)

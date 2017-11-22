@@ -3,7 +3,7 @@
   <name>catkin_virtualenv</name>
   <version>0.0.0</version>
   <description>Bundle a virtualenv with a catkin package.</description>
-  <license>BSD</license>
+  <license>GPL</license>
 
   <author email="pbovbel@locusrobotics.com">Paul Bovbel</author>
   <maintainer email="pbovbel@locusrobotics.com">Paul Bovbel</maintainer>
@@ -14,8 +14,7 @@
   <build_export_depend>python-pip</build_export_depend>
   <build_export_depend>python-semver</build_export_depend>
   <build_export_depend>python-virtualenv</build_export_depend>
-
-  <depend>rospy</depend>
+  <build_export_depend>python3-dev</build_export_depend>
 
   <test_depend>roslint</test_depend>
 
