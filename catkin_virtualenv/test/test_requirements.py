@@ -18,7 +18,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 import unittest
 
-from locus_py.requirements import Requirement, SemVer
+from catkin_virtualenv.requirements import Requirement, SemVer
 
 
 class TestRequirements(unittest.TestCase):
