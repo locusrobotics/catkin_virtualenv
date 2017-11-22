@@ -22,20 +22,23 @@ def delete_bytecode(directory):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description="Build a relocatable virtualenv.")
-    parser.add_argument('--requirements', required=True, help="Packages to install into the virtual environment.")
-    parser.add_argument('--install-dir', help="Directory in which the virtual environment will be installed.")
-    parser.add_argument('--python3', action='store_true',
-                        help="Build the virtualenv with Python3 as the default interpreter.")
+    parser = argparse.ArgumentParser(
+        description="Build a virtualenv, and rewrite the internal paths with an arbitrary root directory.")
+    parser.add_argument(
+        '--requirements', required=True, help="A requirements.txt file specifying dependencies.")
+    parser.add_argument(
+        '--root-dir', required=True, help="Directory to which the virtualenv's hardcoded paths should be rewritten.")
+    parser.add_argument(
+        '--python3', action='store_true', help="Build the virtualenv with Python3 as the default interpreter.")
 
     args, unknown = parser.parse_known_args()
 
-    install_dir = os.path.realpath(args.install_dir)
+    root_dir = os.path.realpath(args.root_dir)
 
-    os.environ['DH_VIRTUALENV_INSTALL_ROOT'] = os.path.dirname(install_dir)
+    os.environ['DH_VIRTUALENV_INSTALL_ROOT'] = os.path.dirname(root_dir)
 
     deploy = Deployment(
-        package=os.path.basename(install_dir),
+        package=os.path.basename(root_dir),
         requirements_filename=args.requirements,
         upgrade_pip=True,
         verbose=False,
