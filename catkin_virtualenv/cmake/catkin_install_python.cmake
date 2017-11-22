@@ -1,3 +1,21 @@
+# Software License Agreement (GPL)
+#
+# \file      catkin_install_python.cmake
+# \authors   Paul Bovbel <pbovbel@locusrobotics.com>
+# \copyright Copyright (c) (2017,), Locus Robotics, All rights reserved.
+#
+# This program is free software: you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation, either version 2 of the
+# License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
 function(catkin_install_python)
   # See https://github.com/ros/catkin/blob/kinetic-devel/cmake/catkin_install_python.cmake for overriden function
   cmake_parse_arguments(ARG "OPTIONAL" "DESTINATION" "PROGRAMS" ${ARGN})
@@ -37,6 +55,8 @@ function(catkin_install_python)
         )
       endif()
 
+      set(${install_location} catkin_virtualenv_scripts)
+
       # For devel-space support, we generate a bash script that invokes the source script via the virtualenv's
       # python interpreter.
       set(devel_program ${CATKIN_DEVEL_PREFIX}/${ARG_DESTINATION}/${program_basename})
@@ -55,7 +75,7 @@ function(catkin_install_python)
 
       install(
         FILES ${program_path}
-        DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/catkin_virtualenv_scripts
+        DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/${install_location}
       )
 
       install(
