@@ -62,7 +62,9 @@ if __name__ == '__main__':
         verbose=False,
         use_system_packages=True,
         python=find_executable('python3') if args.python3 else find_executable('python2'),
-        builtin_venv=args.python3,
+        # TODO(pbovbel) Builtin venv (python3-venv) is not available on trusty. This flag can be re-enabled when
+        # trusty support is dropped.
+        # builtin_venv=args.python3,
     )
 
     print('Generating virtualenv in {}'.format(deploy.package_dir))

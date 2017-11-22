@@ -17,7 +17,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 import re
-import semver
 
 from copy import copy
 from enum import Enum
@@ -26,21 +25,27 @@ from functools import total_ordering
 
 @total_ordering
 class SemVer(object):
-    def __init__(self, version):
+    version_regex = re.compile("^[0-9\.]+$")
+
+    def __init__(self, string):
         # type: (str) -> None
-        self._version = version
+        if not self.version_regex.match(string):
+            raise RuntimeError("Invalid requirement version {}, must match {}".format(
+                string, self.version_regex.pattern))
+
+        self._version = [int(v) for v in string.split('.')]
 
     def __eq__(self, other):
         # type: (SemVer, SemVer) -> bool
-        return semver.compare(self._version, other._version) == 0
+        return self._version == other._version
 
     def __lt__(self, other):
         # type: (SemVer, SemVer) -> bool
-        return semver.compare(self._version, other._version) < 0
+        return self._version < other._version
 
     def __str__(self):
         # type: (SemVer) -> str
-        return self._version
+        return '.'.join([str(v) for v in self._version])
 
 
 class ReqType(Enum):

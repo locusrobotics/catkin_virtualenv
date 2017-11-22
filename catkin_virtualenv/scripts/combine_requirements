@@ -23,7 +23,7 @@ import argparse
 import re
 import sys
 
-from locus_py import requirements
+from catkin_virtualenv import requirements
 
 comment_regex = re.compile('\s*#.*')
 

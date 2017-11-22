@@ -32,6 +32,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
   <test_depend>catkin_virtualenv</test_depend>
   <test_depend>python3-nose</test_depend>
+  <test_depend>rostest</test_depend>
 
   <export>
     <pip_requirements>requirements.txt</pip_requirements>
