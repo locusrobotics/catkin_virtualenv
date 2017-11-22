@@ -24,9 +24,10 @@ def delete_bytecode(directory):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Build a relocatable virtualenv.")
     parser.add_argument('--requirements', required=True, help="Packages to install into the virtual environment.")
-    parser.add_argument('--venv-dir', required=True, help="Directory where to generate the virtual environment.")
-    parser.add_argument('--install-dir', help="Directory where the virtual environment will be installed.")
-    parser.add_argument('--python3', action='store_true', help="Python interpreter")
+    parser.add_argument('--venv-dir', required=True, help="Directory in which to generate the virtual environment.")
+    parser.add_argument('--install-dir', help="Directory in which the virtual environment will be installed.")
+    parser.add_argument('--python3', action='store_true',
+                        help="Build the virtualenv with Python3 as the default interpreter.")
 
     args, unknown = parser.parse_known_args()
 
