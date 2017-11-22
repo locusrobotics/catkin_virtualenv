@@ -24,16 +24,18 @@ def delete_bytecode(directory):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Build a relocatable virtualenv.")
     parser.add_argument('--requirements', required=True, help="Packages to install into the virtual environment.")
-    parser.add_argument('--venv-dir', required=True, help="Directory in which to generate the virtual environment.")
     parser.add_argument('--install-dir', help="Directory in which the virtual environment will be installed.")
     parser.add_argument('--python3', action='store_true',
                         help="Build the virtualenv with Python3 as the default interpreter.")
 
     args, unknown = parser.parse_known_args()
 
+    install_dir = os.path.realpath(args.install_dir)
+
+    os.environ['DH_VIRTUALENV_INSTALL_ROOT'] = os.path.dirname(install_dir)
+
     deploy = Deployment(
-        package_dir=args.venv_dir,
-        install_dir=os.path.abspath(args.install_dir) if args.install_dir else os.path.abspath(args.venv_dir),
+        package=os.path.basename(install_dir),
         requirements_filename=args.requirements,
         upgrade_pip=True,
         verbose=False,
@@ -42,22 +44,22 @@ if __name__ == '__main__':
         builtin_venv=args.python3,
     )
 
-    print('Creating virtualenv')
+    print('Generating virtualenv in {}'.format(deploy.package_dir))
     deploy.create_virtualenv()
 
-    print('Installing dependencies')
+    print('Installing requirements')
     deploy.install_dependencies()
 
-    print('Fixing paths')
+    print('Fixing virtualenv root to {}'.format(deploy.virtualenv_install_dir))
     deploy.fix_activate_path()
     deploy.fix_shebangs()
     deploy.fix_local_symlinks()
 
     # Remove all .py[co] files since they embed absolute paths
-    delete_bytecode(args.venv_dir)
+    delete_bytecode(deploy.package_dir)
 
     if not args.python3:
         # Remove local folder
-        shutil.rmtree(os.path.join(args.venv_dir, 'local'))
+        shutil.rmtree(os.path.join(deploy.package_dir, 'local'))
 
     sys.exit(0)

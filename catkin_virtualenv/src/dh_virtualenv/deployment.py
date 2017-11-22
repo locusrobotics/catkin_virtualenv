@@ -31,7 +31,7 @@ _PYTHON_INTERPRETERS_REGEX = r'\(' + r'\|'.join(PYTHON_INTERPRETERS) + r'\)'
 
 class Deployment(object):
     def __init__(self,
-                 package=None,
+                 package,
                  extra_urls=[],
                  preinstall=[],
                  pip_tool='pip',
@@ -47,28 +47,24 @@ class Deployment(object):
                  use_system_packages=False,
                  skip_install=False,
                  install_suffix=None,
-                 requirements_filename='requirements.txt',
-                 package_dir=None,
-                 install_dir=None):
+                 requirements_filename='requirements.txt'):
 
-        # self.package = package
-        #
-        # install_root = os.environ.get(ROOT_ENV_KEY, DEFAULT_INSTALL_DIR)
-        # self.install_suffix = install_suffix
-        #
+        self.package = package
+
+        install_root = os.environ.get(ROOT_ENV_KEY, DEFAULT_INSTALL_DIR)
+        self.install_suffix = install_suffix
+
+        # (pbovbel): this is the only modification to dh_virtualenv source
         # self.debian_root = os.path.join(
         #     'debian', package, install_root.lstrip('/'))
-        #
-        # if install_suffix is None:
-        #     self.virtualenv_install_dir = os.path.join(install_root, self.package)
-        #     self.package_dir = os.path.join(self.debian_root, package)
-        # else:
-        #     self.virtualenv_install_dir = os.path.join(install_root, install_suffix)
-        #     self.package_dir = os.path.join(self.debian_root, install_suffix)
+        self.debian_root = '.'
 
-        # (pbovbel) slightly modified to allow specifiying exactly which dir houses the generated and installed venv
-        self.package_dir = package_dir
-        self.virtualenv_install_dir = install_dir
+        if install_suffix is None:
+            self.virtualenv_install_dir = os.path.join(install_root, self.package)
+            self.package_dir = os.path.join(self.debian_root, package)
+        else:
+            self.virtualenv_install_dir = os.path.join(install_root, install_suffix)
+            self.package_dir = os.path.join(self.debian_root, install_suffix)
 
         self.bin_dir = os.path.join(self.package_dir, 'bin')
         self.local_bin_dir = os.path.join(self.package_dir, 'local', 'bin')

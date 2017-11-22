@@ -37,9 +37,9 @@ function(catkin_generate_virtualenv)
     DEPENDS ${requirements_list}
   )
 
-  # Build a virtualenv in CMAKE_BINARY_DIR, with internal file structure set up for devel- or install-space.
+  # Build a virtualenv, fixing up paths for its eventual location in ${PROJECT_NAME}_VENV_DIRECTORY
   add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/venv
-    COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv build_venv --requirements ${generated_requirements} --venv-dir ${CMAKE_BINARY_DIR}/venv --install-dir ${${PROJECT_NAME}_VENV_DIRECTORY} ${build_venv_extra}
+    COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv build_venv --requirements ${generated_requirements} --install-dir ${${PROJECT_NAME}_VENV_DIRECTORY} ${build_venv_extra}
     DEPENDS ${generated_requirements}
   )
 
