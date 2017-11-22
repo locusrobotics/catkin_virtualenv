@@ -11,7 +11,7 @@ Python nodes in the package. These will also be installed into any bloomed debia
 
 This library is GPL licensed due to the inclusion of dh_virtualenv.
 
-### Exporting python requirements:
+## Exporting python requirements:
 
 The package containing python modules with external library dependencies should define a `requirements.txt`:
 
@@ -48,7 +48,7 @@ install(FILES requirements.txt
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 ```
 
-### Bundling virtualenv:
+## Bundling virtualenv:
 
 It's possible to bundle all of a catkin package's python requirements, as well as those of its catkin dependencies,
 into a virtualenv. This process will also override the standard `catkin_install_python` macro to wrap a virtualenv
