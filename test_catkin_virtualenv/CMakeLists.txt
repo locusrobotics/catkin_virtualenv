@@ -22,6 +22,6 @@ if(CATKIN_ENABLE_TESTING)
       test/test_virtualenv_script
     DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
-  add_rostest(test/test_virtualenv_script.test)
+  add_rostest(test/virtualenv_script.test)
 
 endif()

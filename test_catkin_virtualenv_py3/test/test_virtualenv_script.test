@@ -1,4 +1,0 @@
-<?xml version="1.0"?>
-<launch>
-  <test test-name="test_virtualenv_script_py3" pkg="test_catkin_virtualenv_py3" type="test_virtualenv_script" />
-</launch>

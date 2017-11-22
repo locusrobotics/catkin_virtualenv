@@ -23,6 +23,6 @@ if(CATKIN_ENABLE_TESTING)
     DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
   # TODO(pbovbel): investigate rostest failure under python3
-  # add_rostest(test/test_virtualenv_script.test)
+  # add_rostest(test/virtualenv_script.test)
 
 endif()
