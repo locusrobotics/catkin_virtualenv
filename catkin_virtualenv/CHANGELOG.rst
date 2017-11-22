@@ -2,6 +2,11 @@
 Changelog for package catkin_virtualenv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fixup module path
+* Contributors: Paul Bovbel
+
 0.1.0 (2017-11-22)
 ------------------
 * Fix trusty support
