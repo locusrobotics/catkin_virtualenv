@@ -2,6 +2,11 @@
 Changelog for package test_catkin_virtualenv_py3
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix trusty support
+* Contributors: Paul Bovbel
+
 0.0.1 (2017-11-22)
 ------------------
 * Add license

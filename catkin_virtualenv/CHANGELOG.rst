@@ -2,6 +2,11 @@
 Changelog for package catkin_virtualenv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix trusty support
+* Contributors: Paul Bovbel
+
 0.0.1 (2017-11-22)
 ------------------
 * Add license
