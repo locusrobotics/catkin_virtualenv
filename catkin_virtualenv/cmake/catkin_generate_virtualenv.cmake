@@ -19,6 +19,23 @@
 function(catkin_generate_virtualenv)
   cmake_parse_arguments(ARG "PYTHON3" "" "" ${ARGN})
 
+  if(${ARG_PYTHON3})
+    set(build_venv_extra "--python3")
+    set(PYTHON_VERSION_MAJOR 3)
+
+    find_program(nosetests NAMES
+      "nosetests${PYTHON_VERSION_MAJOR}"
+      "nosetests-${PYTHON_VERSION_MAJOR}"
+      "nosetests")
+  endif()
+
+  set(nosetests "${${PROJECT_NAME}_VENV_DIRECTORY}/bin/python${PYTHON_VERSION_MAJOR} ${nosetests}")
+
+  # (pbovbel): NOSETESTS originally set by catkin here:
+  # <https://github.com/ros/catkin/blob/kinetic-devel/cmake/test/nosetests.cmake#L86>
+  message(STATUS "Using virtualenv to run Python nosetests: ${nosetests}")
+  set(NOSETESTS ${nosetests} PARENT_SCOPE)
+
   # Check if this package already has a virtualenv target before creating one
   if(TARGET ${PROJECT_NAME}_generate_virtualenv)
     message(WARNING "catkin_generate_virtualenv was called twice")
@@ -31,10 +48,6 @@ function(catkin_generate_virtualenv)
     OUTPUT_VARIABLE requirements_list
     OUTPUT_STRIP_TRAILING_WHITESPACE
   )
-
-  if(${ARG_PYTHON3})
-    set(build_venv_extra "--python3")
-  endif()
 
   set(generated_requirements ${CMAKE_BINARY_DIR}/generated_requirements.txt)
 
