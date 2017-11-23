@@ -26,10 +26,12 @@ function(catkin_generate_virtualenv)
   endif()
 
   set(venv_dir venv)
-  set(${PROJECT_NAME}_VENV_DEVEL_DIR ${CATKIN_DEVEL_PREFIX}/${CATKIN_PACKAGE_SHARE_DESTINATION}/${venv_dir})
-  set(${PROJECT_NAME}_VENV_DEVEL_DIR ${CATKIN_DEVEL_PREFIX}/${CATKIN_PACKAGE_SHARE_DESTINATION}/${venv_dir} PARENT_SCOPE)
-  set(${PROJECT_NAME}_VENV_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/${CATKIN_PACKAGE_SHARE_DESTINATION}/${venv_dir})
-  set(${PROJECT_NAME}_VENV_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/${CATKIN_PACKAGE_SHARE_DESTINATION}/${venv_dir} PARENT_SCOPE)
+
+  set(venv_devel_dir ${CATKIN_DEVEL_PREFIX}/${CATKIN_PACKAGE_SHARE_DESTINATION}/${venv_dir})
+  set(venv_install_dir ${CMAKE_INSTALL_PREFIX}/${CATKIN_PACKAGE_SHARE_DESTINATION}/${venv_dir})
+
+  set(${PROJECT_NAME}_VENV_DEVEL_DIR ${venv_devel_dir} PARENT_SCOPE)
+  set(${PROJECT_NAME}_VENV_INSTALL_DIR ${venv_install_dir} PARENT_SCOPE)
 
   if(${ARG_PYTHON3})
     set(build_venv_extra "--python3")
@@ -46,7 +48,7 @@ function(catkin_generate_virtualenv)
       set(nosetests ${NOSETESTS})
     endif()
 
-    set(nosetests "${${PROJECT_NAME}_VENV_DEVEL_DIR}/bin/python${PYTHON_VERSION_MAJOR} ${nosetests}")
+    set(nosetests "${venv_devel_dir}/bin/python${PYTHON_VERSION_MAJOR} ${nosetests}")
 
     # (pbovbel): NOSETESTS originally set by catkin here:
     # <https://github.com/ros/catkin/blob/kinetic-devel/cmake/test/nosetests.cmake#L86>
@@ -76,21 +78,21 @@ function(catkin_generate_virtualenv)
   )
 
   # Generate a virtualenv, fixing up paths for devel-space
-  add_custom_command(OUTPUT ${${PROJECT_NAME}_VENV_DEVEL_DIR}
-    COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${catkin_virtualenv_CMAKE_DIR}/build_venv.py --requirements ${generated_requirements} --root-dir ${${PROJECT_NAME}_VENV_DEVEL_DIR} ${build_venv_extra}
-    WORKING_DIRECTORY ${${PROJECT_NAME}_VENV_DEVEL_DIR}/..
+  add_custom_command(OUTPUT ${venv_devel_dir}
+    COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${catkin_virtualenv_CMAKE_DIR}/build_venv.py --requirements ${generated_requirements} --root-dir ${venv_devel_dir} ${build_venv_extra}
+    WORKING_DIRECTORY ${venv_devel_dir}/..
     DEPENDS ${generated_requirements}
   )
 
   # Generate a virtualenv, fixing up paths for install-space
   add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/${venv_dir}
-    COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${catkin_virtualenv_CMAKE_DIR}/build_venv.py --requirements ${generated_requirements} --root-dir ${${PROJECT_NAME}_VENV_INSTALL_DIR} ${build_venv_extra}
+    COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${catkin_virtualenv_CMAKE_DIR}/build_venv.py --requirements ${generated_requirements} --root-dir ${venv_install_dir} ${build_venv_extra}
     DEPENDS ${generated_requirements}
   )
 
   add_custom_target(${PROJECT_NAME}_generate_virtualenv ALL
     DEPENDS ${CMAKE_BINARY_DIR}/${venv_dir}
-    DEPENDS ${${PROJECT_NAME}_VENV_DEVEL_DIR}
+    DEPENDS ${venv_devel_dir}
     SOURCES ${requirements_list}
   )
 
