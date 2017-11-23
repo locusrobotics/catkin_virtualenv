@@ -5,16 +5,12 @@ find_package(catkin REQUIRED catkin_virtualenv)
 
 catkin_package()
 
+catkin_generate_virtualenv(PYTHON3)
+
 install(FILES requirements.txt
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
 if(CATKIN_ENABLE_TESTING)
-  catkin_generate_virtualenv(PYTHON3)
-
-  catkin_add_nosetests(test
-    DEPENDENCIES ${PROJECT_NAME}_generate_virtualenv
-  )
-
   find_package(rostest)
 
   catkin_install_python(
@@ -22,7 +18,13 @@ if(CATKIN_ENABLE_TESTING)
       test/test_virtualenv_script
     DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
+  catkin_add_nosetests(test
+    DEPENDENCIES ${PROJECT_NAME}_generate_virtualenv
+  )
+
   # TODO(pbovbel): investigate rostest failure under python3
-  # add_rostest(test/virtualenv_script.test)
+  # add_rostest(test/virtualenv_script.test
+  #   DEPENDENCIES ${PROJECT_NAME}_generate_virtualenv
+  # )
 
 endif()

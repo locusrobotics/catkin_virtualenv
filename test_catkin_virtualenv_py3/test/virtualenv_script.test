@@ -20,5 +20,5 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 -->
 <launch>
-  <test name="test_virtualenv_script_py3" pkg="test_catkin_virtualenv_py3" type="test_virtualenv_script" />
+  <test test-name="test_virtualenv_script_py3" pkg="test_catkin_virtualenv_py3" type="test_virtualenv_script" />
 </launch>

@@ -30,7 +30,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <test_depend>catkin_virtualenv</test_depend>
+  <build_depend>catkin_virtualenv</build_depend>
+
   <test_depend>python3-nose</test_depend>
   <test_depend>rostest</test_depend>
 

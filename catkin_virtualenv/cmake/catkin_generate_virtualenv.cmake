@@ -19,6 +19,29 @@
 function(catkin_generate_virtualenv)
   cmake_parse_arguments(ARG "PYTHON3" "" "" ${ARGN})
 
+  if(${ARG_PYTHON3})
+    set(build_venv_extra "--python3")
+    set(PYTHON_VERSION_MAJOR 3)
+  endif()
+
+  if(NOSETESTS)
+    if(${ARG_PYTHON3})
+      find_program(nosetests NAMES
+        "nosetests${PYTHON_VERSION_MAJOR}"
+        "nosetests-${PYTHON_VERSION_MAJOR}"
+        "nosetests")
+    else()
+      set(nosetests ${NOSETESTS})
+    endif()
+
+    set(nosetests "${${PROJECT_NAME}_VENV_DIRECTORY}/bin/python${PYTHON_VERSION_MAJOR} ${nosetests}")
+
+    # (pbovbel): NOSETESTS originally set by catkin here:
+    # <https://github.com/ros/catkin/blob/kinetic-devel/cmake/test/nosetests.cmake#L86>
+    message(STATUS "Using virtualenv to run Python nosetests: ${nosetests}")
+    set(NOSETESTS ${nosetests} PARENT_SCOPE)
+  endif()
+
   # Check if this package already has a virtualenv target before creating one
   if(TARGET ${PROJECT_NAME}_generate_virtualenv)
     message(WARNING "catkin_generate_virtualenv was called twice")
@@ -27,14 +50,10 @@ function(catkin_generate_virtualenv)
 
   # Collect all exported pip requirements files, from this package and all dependencies
   execute_process(
-    COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv glob_requirements --package-name ${PROJECT_NAME}
+    COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${catkin_virtualenv_CMAKE_DIR}/glob_requirements.py --package-name ${PROJECT_NAME}
     OUTPUT_VARIABLE requirements_list
     OUTPUT_STRIP_TRAILING_WHITESPACE
   )
-
-  if(${ARG_PYTHON3})
-    set(build_venv_extra "--python3")
-  endif()
 
   set(generated_requirements ${CMAKE_BINARY_DIR}/generated_requirements.txt)
 
@@ -46,13 +65,13 @@ function(catkin_generate_virtualenv)
 
   # Combine requirements into one list
   add_custom_command(OUTPUT ${generated_requirements}
-    COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv combine_requirements --requirements-list ${requirements_list} --output-file ${generated_requirements}
+    COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${catkin_virtualenv_CMAKE_DIR}/combine_requirements.py --requirements-list ${requirements_list} --output-file ${generated_requirements}
     DEPENDS ${requirements_list}
   )
 
   # Build a virtualenv, fixing up paths for its eventual location in ${PROJECT_NAME}_VENV_DIRECTORY
   add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/venv
-    COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv build_venv --requirements ${generated_requirements} --root-dir ${${PROJECT_NAME}_VENV_DIRECTORY} ${build_venv_extra}
+    COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${catkin_virtualenv_CMAKE_DIR}/build_venv.py --requirements ${generated_requirements} --root-dir ${${PROJECT_NAME}_VENV_DIRECTORY} ${build_venv_extra}
     DEPENDS ${generated_requirements}
   )
 
