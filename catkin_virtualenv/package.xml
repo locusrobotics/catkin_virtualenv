@@ -31,10 +31,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   <buildtool_depend>catkin</buildtool_depend>
 
   <build_export_depend>python-enum34</build_export_depend>
-  <build_export_depend>python-pip</build_export_depend>
   <build_export_depend>python-virtualenv</build_export_depend>
   <build_export_depend>python3-dev</build_export_depend>
-  <build_export_depend>rosbash</build_export_depend>
 
   <test_depend>roslint</test_depend>
 
