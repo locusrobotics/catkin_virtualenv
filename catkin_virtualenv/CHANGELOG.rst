@@ -2,6 +2,12 @@
 Changelog for package catkin_virtualenv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Drop rosbash dependency and move python scripts into cmake directory
+* More tweaks to get nosetests working in python3
+* Contributors: Paul Bovbel
+
 0.1.1 (2017-11-22)
 ------------------
 * Fixup module path
