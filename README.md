@@ -11,7 +11,7 @@ wrapper scripts for any Python scripts in the package. Both will be included in 
 
 This library is GPL licensed due to the inclusion of dh_virtualenv.
 
-For general help, please check the [FAQ](http://answers.ros.org/questions/tags:catkin_virtualenv). Report bugs on the [issue tracker](https://github.com/paulbovbel/frontier_exploration/issues).
+For general help, please check the [FAQ](http://answers.ros.org/questions/tags:catkin_virtualenv). Report bugs on the [issue tracker](https://github.com/locusrobotics/catkin_virtualenv/issues).
 
 ## Exporting python requirements:
 
