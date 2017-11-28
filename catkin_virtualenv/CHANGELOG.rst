@@ -2,8 +2,8 @@
 Changelog for package catkin_virtualenv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.3 (2017-11-27)
+------------------
 * Simplify install path
 * Clean up vars
 * Instantiate both a devel- and install-space venv
