@@ -6,10 +6,12 @@ This package provides a mechanism to:
   - bundle a virtualenv within a catkin package, inheriting requirements from any dependencies.
   - wrap python scripts and tests in a catkin package with a virtualenv loader.
 
-At CMake configure time, catkin will create a virtualenv inside the devel space, and create wrapper scripts for any
-Python nodes in the package. These will also be installed into any bloomed debian package.
+At build time, CMake macros provided by this package will create a virtualenv inside the devel space, and create
+wrapper scripts for any Python scripts in the package. Both will be included in any associated bloom artifacts.
 
 This library is GPL licensed due to the inclusion of dh_virtualenv.
+
+For general help, please check the (FAQ)[http://answers.ros.org/questions/tags:catkin_virtualenv]. Report bugs on the [issue tracker](https://github.com/paulbovbel/frontier_exploration/issues].
 
 ## Exporting python requirements:
 
