@@ -2,6 +2,9 @@
 Changelog for package test_catkin_virtualenv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.1.2 (2017-11-23)
 ------------------
 * Drop rosbash dependency and move python scripts into cmake directory

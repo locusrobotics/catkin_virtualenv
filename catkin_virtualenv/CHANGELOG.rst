@@ -2,6 +2,13 @@
 Changelog for package catkin_virtualenv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Simplify install path
+* Clean up vars
+* Instantiate both a devel- and install-space venv
+* Contributors: Paul Bovbel
+
 0.1.2 (2017-11-23)
 ------------------
 * Drop rosbash dependency and move python scripts into cmake directory
