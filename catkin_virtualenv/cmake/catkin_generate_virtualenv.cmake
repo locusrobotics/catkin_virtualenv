@@ -19,6 +19,20 @@
 function(catkin_generate_virtualenv)
   cmake_parse_arguments(ARG "PYTHON3" "" "" ${ARGN})
 
+  # Check if this package already has a virtualenv target before creating one
+  if(TARGET ${PROJECT_NAME}_generate_virtualenv)
+    message(WARNING "catkin_generate_virtualenv was called twice")
+    return()
+  endif()
+
+  set(venv_dir venv)
+
+  set(venv_devel_dir ${CATKIN_DEVEL_PREFIX}/${CATKIN_PACKAGE_SHARE_DESTINATION}/${venv_dir})
+  set(venv_install_dir ${CMAKE_INSTALL_PREFIX}/${CATKIN_PACKAGE_SHARE_DESTINATION}/${venv_dir})
+
+  set(${PROJECT_NAME}_VENV_DEVEL_DIR ${venv_devel_dir} PARENT_SCOPE)
+  set(${PROJECT_NAME}_VENV_INSTALL_DIR ${venv_install_dir} PARENT_SCOPE)
+
   if(${ARG_PYTHON3})
     set(build_venv_extra "--python3")
     set(PYTHON_VERSION_MAJOR 3)
@@ -34,18 +48,12 @@ function(catkin_generate_virtualenv)
       set(nosetests ${NOSETESTS})
     endif()
 
-    set(nosetests "${${PROJECT_NAME}_VENV_DIRECTORY}/bin/python${PYTHON_VERSION_MAJOR} ${nosetests}")
+    set(nosetests "${venv_devel_dir}/bin/python${PYTHON_VERSION_MAJOR} ${nosetests}")
 
     # (pbovbel): NOSETESTS originally set by catkin here:
     # <https://github.com/ros/catkin/blob/kinetic-devel/cmake/test/nosetests.cmake#L86>
     message(STATUS "Using virtualenv to run Python nosetests: ${nosetests}")
     set(NOSETESTS ${nosetests} PARENT_SCOPE)
-  endif()
-
-  # Check if this package already has a virtualenv target before creating one
-  if(TARGET ${PROJECT_NAME}_generate_virtualenv)
-    message(WARNING "catkin_generate_virtualenv was called twice")
-    return()
   endif()
 
   # Collect all exported pip requirements files, from this package and all dependencies
@@ -69,24 +77,26 @@ function(catkin_generate_virtualenv)
     DEPENDS ${requirements_list}
   )
 
-  # Build a virtualenv, fixing up paths for its eventual location in ${PROJECT_NAME}_VENV_DIRECTORY
-  add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/venv
-    COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${catkin_virtualenv_CMAKE_DIR}/build_venv.py --requirements ${generated_requirements} --root-dir ${${PROJECT_NAME}_VENV_DIRECTORY} ${build_venv_extra}
+  # Generate a virtualenv, fixing up paths for devel-space
+  add_custom_command(OUTPUT ${venv_devel_dir}
+    COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${catkin_virtualenv_CMAKE_DIR}/build_venv.py --requirements ${generated_requirements} --root-dir ${venv_devel_dir} ${build_venv_extra}
+    WORKING_DIRECTORY ${venv_devel_dir}/..
     DEPENDS ${generated_requirements}
   )
 
-  # Symlink virtualenv to the destination - this really only has an effect in devel-space.
-  add_custom_command(OUTPUT ${${PROJECT_NAME}_VENV_DIRECTORY}
-    COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_BINARY_DIR}/venv ${${PROJECT_NAME}_VENV_DIRECTORY} || true
-    DEPENDS ${CMAKE_BINARY_DIR}/venv
+  # Generate a virtualenv, fixing up paths for install-space
+  add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/${venv_dir}
+    COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${catkin_virtualenv_CMAKE_DIR}/build_venv.py --requirements ${generated_requirements} --root-dir ${venv_install_dir} ${build_venv_extra}
+    DEPENDS ${generated_requirements}
   )
 
   add_custom_target(${PROJECT_NAME}_generate_virtualenv ALL
-    DEPENDS ${${PROJECT_NAME}_VENV_DIRECTORY}
+    DEPENDS ${CMAKE_BINARY_DIR}/${venv_dir}
+    DEPENDS ${venv_devel_dir}
     SOURCES ${requirements_list}
   )
 
-  install(DIRECTORY ${CMAKE_BINARY_DIR}/venv
+  install(DIRECTORY ${CMAKE_BINARY_DIR}/${venv_dir}
     DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
     USE_SOURCE_PERMISSIONS)
 

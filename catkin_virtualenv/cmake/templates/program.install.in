@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-${${PROJECT_NAME}_VENV_DIRECTORY}/bin/python ${CMAKE_INSTALL_PREFIX}/${CATKIN_PACKAGE_SHARE_DESTINATION}/${install_location}/${program_basename} "$@"
+${${PROJECT_NAME}_VENV_INSTALL_DIR}/bin/python ${CMAKE_INSTALL_PREFIX}/${program_install_location}/${program_basename} "$@"

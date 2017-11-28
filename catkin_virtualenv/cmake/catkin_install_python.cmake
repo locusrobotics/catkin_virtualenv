@@ -55,7 +55,7 @@ function(catkin_install_python)
         )
       endif()
 
-      set(${install_location} catkin_virtualenv_scripts)
+      set(program_install_location ${CATKIN_PACKAGE_SHARE_DESTINATION}/catkin_virtualenv_scripts)
 
       # For devel-space support, we generate a bash script that invokes the source script via the virtualenv's
       # python interpreter.
@@ -75,7 +75,7 @@ function(catkin_install_python)
 
       install(
         FILES ${program_path}
-        DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/${install_location}
+        DESTINATION ${program_install_location}
       )
 
       install(
