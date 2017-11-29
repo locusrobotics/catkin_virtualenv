@@ -1,5 +1,9 @@
 # catkin_virtualenv
 
+[![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
+
+[![Build Status](https://travis-ci.org/locusrobotics/catkin_virtualenv.svg?branch=travis-ci)](https://travis-ci.org/locusrobotics/catkin_virtualenv)
+
 This package provides a mechanism to:
 
   - export python library requirements in `requirements.txt` format via `package.xml`.
