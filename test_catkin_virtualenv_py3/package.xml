@@ -39,4 +39,4 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     <pip_requirements>requirements.txt</pip_requirements>
   </export>
 
-s</package>
+</package>
