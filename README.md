@@ -1,5 +1,9 @@
 # catkin_virtualenv
 
+[![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
+
+[![Build Status](https://travis-ci.org/locusrobotics/catkin_virtualenv.svg?branch=devel)](https://travis-ci.org/locusrobotics/catkin_virtualenv)
+
 This package provides a mechanism to:
 
   - export python library requirements in `requirements.txt` format via `package.xml`.
@@ -83,11 +87,26 @@ Departing from convention, if these scripts are executable, `catkin build` will 
 because `catkin_install_python` will now generate new wrapper scripts into the devel and install space that bootstrap
 the virtualenv and `rosrun` gets confused if there's two executable scripts by the same name.
 
-Any unit tests in the package added via `catkin_add_nosetests` should work within the virtualenv as well. The only
-change is to add a dependency for the test target to the virtualenv target:
+Unit and integration tests will automatically pick up the virtualenv as well. The only change is to add a dependency 
+from the test target to the virtualenv target:
 
 ```
-catkin_add_nosetests(test
-  DEPENDENCIES ${PROJECT_NAME}_generate_virtualenv
+if(CATKIN_ENABLE_TESTING)
+
+  # nosetests
+  catkin_add_nosetests(test
+    DEPENDENCIES ${PROJECT_NAME}_generate_virtualenv
+  )
+
+  # rostests
+  find_package(rostest)
+  catkin_install_python(
+    PROGRAMS
+      test/test_script
+    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+
+  add_rostest(test/run_test_script.test
+    DEPENDENCIES ${PROJECT_NAME}_generate_virtualenv
+  )
 )
 ```

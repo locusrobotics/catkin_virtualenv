@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <!--
 Software License Agreement (GPL)
 
@@ -23,10 +24,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   <name>test_catkin_virtualenv</name>
   <version>0.1.3</version>
   <description>Package to test catkin_virtualenv.</description>
-  <license>GPL</license>
 
-  <author email="pbovbel@locusrobotics.com">Paul Bovbel</author>
   <maintainer email="pbovbel@locusrobotics.com">Paul Bovbel</maintainer>
+  <license>GPL</license>
+  <author email="pbovbel@locusrobotics.com">Paul Bovbel</author>
 
   <buildtool_depend>catkin</buildtool_depend>
 
