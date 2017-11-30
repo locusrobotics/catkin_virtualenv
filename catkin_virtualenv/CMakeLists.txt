@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(catkin_virtualenv)
 
-find_package(catkin)
+find_package(catkin REQUIRED)
 
 catkin_package(CFG_EXTRAS ${PROJECT_NAME}-extras.cmake)
 
@@ -13,7 +13,7 @@ install(DIRECTORY cmake
 )
 
 if(CATKIN_ENABLE_TESTING)
-  find_package(roslint)
+  find_package(roslint REQUIRED)
   roslint_python()
   roslint_add_test()
 
