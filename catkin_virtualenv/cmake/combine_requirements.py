@@ -41,6 +41,9 @@ def combine_requirements(requirements_list, output_file):
                     combined_requirements[requirement.name] = combined_requirements[requirement.name] + requirement
                 except KeyError:
                     combined_requirements[requirement.name] = requirement
+                except requirements.ReqMergeException as e:
+                    print("In files {}: {}".format(requirements_list, e), file=sys.stderr)
+                    raise
 
     for requirement in combined_requirements.values():
         output_file.write("{}\n".format(requirement))

@@ -33,29 +33,6 @@ function(catkin_generate_virtualenv)
   set(${PROJECT_NAME}_VENV_DEVEL_DIR ${venv_devel_dir} PARENT_SCOPE)
   set(${PROJECT_NAME}_VENV_INSTALL_DIR ${venv_install_dir} PARENT_SCOPE)
 
-  if(${ARG_PYTHON3})
-    set(build_venv_extra "--python3")
-    set(PYTHON_VERSION_MAJOR 3)
-  endif()
-
-  if(NOSETESTS)
-    if(${ARG_PYTHON3})
-      find_program(nosetests NAMES
-        "nosetests${PYTHON_VERSION_MAJOR}"
-        "nosetests-${PYTHON_VERSION_MAJOR}"
-        "nosetests")
-    else()
-      set(nosetests ${NOSETESTS})
-    endif()
-
-    set(nosetests "${venv_devel_dir}/bin/python${PYTHON_VERSION_MAJOR} ${nosetests}")
-
-    # (pbovbel): NOSETESTS originally set by catkin here:
-    # <https://github.com/ros/catkin/blob/kinetic-devel/cmake/test/nosetests.cmake#L86>
-    message(STATUS "Using virtualenv to run Python nosetests: ${nosetests}")
-    set(NOSETESTS ${nosetests} PARENT_SCOPE)
-  endif()
-
   # Collect all exported pip requirements files, from this package and all dependencies
   execute_process(
     COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${catkin_virtualenv_CMAKE_DIR}/glob_requirements.py --package-name ${PROJECT_NAME}
@@ -63,10 +40,17 @@ function(catkin_generate_virtualenv)
     OUTPUT_STRIP_TRAILING_WHITESPACE
   )
 
+  # Extra python 3 compatibility flags
+  if(${ARG_PYTHON3})
+    set(build_venv_extra "--python3")
+    set(PYTHON_VERSION_MAJOR 3)
+    list(APPEND requirements_list ${catkin_virtualenv_CMAKE_DIR}/python3_requirements.txt)
+  endif()
+
   set(generated_requirements ${CMAKE_BINARY_DIR}/generated_requirements.txt)
 
+  # Trigger a re-configure if any requirements file changes
   foreach(requirements_txt ${requirements_list})
-     # Trigger a re-configure if any requirements file changes
     stamp(${requirements_txt})
     message(STATUS "Including ${requirements_txt} in bundled virtualenv")
   endforeach()
@@ -90,6 +74,7 @@ function(catkin_generate_virtualenv)
     DEPENDS ${generated_requirements}
   )
 
+  # Per-package virtualenv target
   add_custom_target(${PROJECT_NAME}_generate_virtualenv ALL
     DEPENDS ${CMAKE_BINARY_DIR}/${venv_dir}
     DEPENDS ${venv_devel_dir}
@@ -102,5 +87,23 @@ function(catkin_generate_virtualenv)
 
   install(FILES ${generated_requirements}
     DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+
+  if(NOSETESTS)
+    if(${ARG_PYTHON3})
+      find_program(nosetests NAMES
+        "nosetests${PYTHON_VERSION_MAJOR}"
+        "nosetests-${PYTHON_VERSION_MAJOR}"
+        "nosetests")
+    else()
+      set(nosetests ${NOSETESTS})
+    endif()
+
+    set(nosetests "${venv_devel_dir}/bin/python${PYTHON_VERSION_MAJOR} ${nosetests}")
+
+    # (pbovbel): NOSETESTS originally set by catkin here:
+    # <https://github.com/ros/catkin/blob/kinetic-devel/cmake/test/nosetests.cmake#L86>
+    message(STATUS "Using virtualenv to run Python nosetests: ${nosetests}")
+    set(NOSETESTS ${nosetests} PARENT_SCOPE)
+    endif()
 
 endfunction()
