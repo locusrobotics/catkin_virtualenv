@@ -81,8 +81,9 @@ if __name__ == '__main__':
     # Remove all .py[co] files since they embed absolute paths
     delete_bytecode(deploy.package_dir)
 
-    if not args.python3:
+    local_dir = os.path.join(deploy.package_dir, 'local')
+    if os.path.exists(local_dir):
         # Remove local folder
-        shutil.rmtree(os.path.join(deploy.package_dir, 'local'))
+        shutil.rmtree(local_dir)
 
     sys.exit(0)

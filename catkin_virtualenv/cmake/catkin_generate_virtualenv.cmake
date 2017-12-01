@@ -104,6 +104,6 @@ function(catkin_generate_virtualenv)
     # <https://github.com/ros/catkin/blob/kinetic-devel/cmake/test/nosetests.cmake#L86>
     message(STATUS "Using virtualenv to run Python nosetests: ${nosetests}")
     set(NOSETESTS ${nosetests} PARENT_SCOPE)
-    endif()
+  endif()
 
 endfunction()
