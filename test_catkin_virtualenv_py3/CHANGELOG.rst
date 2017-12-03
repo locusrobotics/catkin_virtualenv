@@ -2,6 +2,18 @@
 Changelog for package test_catkin_virtualenv_py3
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#9 <https://github.com/locusrobotics/catkin_virtualenv/issues/9>`_ from locusrobotics/python3-compat
+  Python 3 compatiblity tweaks
+* Add base requirements file for python3 catkin; include extra data about requirement merge failure
+* Fix cmake lint errors
+* Add XML schema, README badges, fix travis config for debian jessie, and remove legacy scripts
+* Merge pull request `#5 <https://github.com/locusrobotics/catkin_virtualenv/issues/5>`_ from gavanderhoorn/manifest_fix
+  Remove stray 's' from test package manifests.
+* Remove stray 's' from test package manifests.
+* Contributors: Paul Bovbel, gavanderhoorn
+
 0.1.3 (2017-11-27)
 ------------------
 

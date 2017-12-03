@@ -2,6 +2,16 @@
 Changelog for package catkin_virtualenv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fixup CMake and local directory cleanup
+* Merge pull request `#9 <https://github.com/locusrobotics/catkin_virtualenv/issues/9>`_ from locusrobotics/python3-compat
+  Python 3 compatiblity tweaks
+* Add base requirements file for python3 catkin; include extra data about requirement merge failure
+* Fix cmake lint errors
+* Add XML schema, README badges, fix travis config for debian jessie, and remove legacy scripts
+* Contributors: Paul Bovbel
+
 0.1.3 (2017-11-27)
 ------------------
 * Simplify install path
