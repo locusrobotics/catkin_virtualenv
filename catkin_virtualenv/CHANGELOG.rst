@@ -2,8 +2,8 @@
 Changelog for package catkin_virtualenv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.4 (2017-12-03)
+------------------
 * Fixup CMake and local directory cleanup
 * Merge pull request `#9 <https://github.com/locusrobotics/catkin_virtualenv/issues/9>`_ from locusrobotics/python3-compat
   Python 3 compatiblity tweaks

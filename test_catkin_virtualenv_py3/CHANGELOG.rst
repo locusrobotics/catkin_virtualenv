@@ -2,8 +2,8 @@
 Changelog for package test_catkin_virtualenv_py3
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.4 (2017-12-03)
+------------------
 * Merge pull request `#9 <https://github.com/locusrobotics/catkin_virtualenv/issues/9>`_ from locusrobotics/python3-compat
   Python 3 compatiblity tweaks
 * Add base requirements file for python3 catkin; include extra data about requirement merge failure

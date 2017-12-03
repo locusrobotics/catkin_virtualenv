@@ -2,8 +2,8 @@
 Changelog for package test_catkin_virtualenv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.4 (2017-12-03)
+------------------
 * Fix cmake lint errors
 * Add XML schema, README badges, fix travis config for debian jessie, and remove legacy scripts
 * Merge pull request `#5 <https://github.com/locusrobotics/catkin_virtualenv/issues/5>`_ from gavanderhoorn/manifest_fix
