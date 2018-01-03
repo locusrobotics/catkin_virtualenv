@@ -22,21 +22,9 @@ For general help, please check the [FAQ](http://answers.ros.org/questions/tags:c
 The package containing python modules with external library dependencies should define a `requirements.txt`:
 
 ```
-GitPython==2.1.5
-psutil==5.2.2
-wrapt==1.10.10
-```
-
-It is good practice to include all dependencies with fixed versions in your requirements file. This will prevent a
-version bump upstream from breaking your build. To obtain this list:
-
-```
-cd $(mktemp -d)
-virtualenv venv
-source venv/bin/activate
-pip install <python-packages-of-interest>
-pip freeze --local | grep -v "pkg-resources" > requirements.txt
-cat requirements.txt
+GitPython>=2.1.5
+psutil>=5.2.2
+wrapt>=1.10.10
 ```
 
 Add an export to `package.xml`:
