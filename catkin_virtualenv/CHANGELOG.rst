@@ -2,6 +2,11 @@
 Changelog for package catkin_virtualenv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Re-enable pip upgrade
+* Contributors: Paul Bovbel
+
 0.1.5 (2018-01-10)
 ------------------
 * Disable pip upgrade
