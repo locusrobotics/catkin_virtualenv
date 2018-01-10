@@ -58,7 +58,7 @@ if __name__ == '__main__':
     deploy = Deployment(
         package=os.path.basename(root_dir),
         requirements_filename=args.requirements,
-        upgrade_pip=False,
+        upgrade_pip=True,
         verbose=False,
         use_system_packages=True,
         python=find_executable('python3') if args.python3 else find_executable('python2'),
