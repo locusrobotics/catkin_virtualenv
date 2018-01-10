@@ -2,6 +2,13 @@
 Changelog for package catkin_virtualenv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Disable pip upgrade
+* Drop strict requirements
+* Update package.xml
+* Contributors: Paul Bovbel
+
 0.1.4 (2017-12-03)
 ------------------
 * Fixup CMake and local directory cleanup

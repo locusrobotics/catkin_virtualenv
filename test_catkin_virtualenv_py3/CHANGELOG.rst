@@ -2,6 +2,11 @@
 Changelog for package test_catkin_virtualenv_py3
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Drop strict requirements
+* Contributors: Paul Bovbel
+
 0.1.4 (2017-12-03)
 ------------------
 * Merge pull request `#9 <https://github.com/locusrobotics/catkin_virtualenv/issues/9>`_ from locusrobotics/python3-compat
