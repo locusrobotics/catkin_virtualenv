@@ -2,8 +2,8 @@
 Changelog for package test_catkin_virtualenv_py3
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.5 (2018-01-10)
+------------------
 * Drop strict requirements
 * Contributors: Paul Bovbel
 
