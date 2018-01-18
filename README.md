@@ -60,6 +60,9 @@ In CMakeLists.txt:
 # Make sure to find-package `catkin_virtualenv`
 find_package(catkin REQUIRED ... catkin_virtualenv ...)
 
+# Must be called before catkin_generate_virtualenv
+catkin_package()
+
 # Generate the virtualenv, optionally with python 3 as the default interpreter:
 catkin_generate_virtualenv()
 # catkin_generate_virtualenv(PYTHON3)
