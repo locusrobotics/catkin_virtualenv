@@ -28,3 +28,6 @@ before_script:
   - git clone https://github.com/ros-industrial/industrial_ci.git .ci_config
 script:
   - source .ci_config/travis.sh
+branches:
+  only:
+  - devel
