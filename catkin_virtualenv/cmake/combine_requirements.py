@@ -29,6 +29,11 @@ comment_regex = re.compile('\s*#.*')
 
 
 def combine_requirements(requirements_list, output_file):
+    if len(requirements_list) == 1:
+        # skip combining
+        output_file.write(requirements_list[0].read())
+        return
+
     # type: (List[IO], IO) -> int
     combined_requirements = {}  # type: Dict[str, requirements.Requirement]
     for requirements_file in requirements_list:
