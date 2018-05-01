@@ -38,6 +38,7 @@ class Deployment(object):
                  preinstall=[],
                  pip_tool='pip',
                  upgrade_pip=False,
+                 pip_version=None,
                  index_url=None,
                  setuptools=False,
                  python=None,
@@ -74,6 +75,7 @@ class Deployment(object):
 
         self.preinstall = preinstall
         self.upgrade_pip = upgrade_pip
+        self.pip_version = pip_version
         self.extra_virtualenv_arg = extra_virtualenv_arg
         self.verbose = verbose
         self.setuptools = setuptools
@@ -107,13 +109,13 @@ class Deployment(object):
             self.pip_args.append('--log={0}'.format(os.path.abspath(self.log_file)))
 
         # Keep a copy with well-suported options only (for upgrading pip itself)
-        # self.pip_upgrade_args = self.pip_args[:]
-
-        # (pbovbel) Don't do a deep copy of pip args, since we want to keep the -q flag
-        self.pip_upgrade_args = self.pip_args
+        self.pip_upgrade_args = self.pip_args[:]
 
         # Add in any user supplied pip args
         self.pip_args.extend(extra_pip_arg)
+
+        # (pbovbel) Update pip_upgrade_args to keep flags like -q
+        self.pip_upgrade_args = self.pip_args
 
     @classmethod
     def from_options(cls, package, options):
@@ -181,9 +183,11 @@ class Deployment(object):
         # along lines of setuptools), but that does not get installed
         # by default virtualenv.
         if self.upgrade_pip:
+            # (pbovbel) allow pinning the pip version
+            pip_package = 'pip==' + self.pip_version if self.pip_version else 'pip'
             # First, bootstrap pip with a reduced option set (well-supported options)
-            print(self.pip_preinstall_prefix + self.pip_upgrade_args + ['-U', 'pip'])
-            subprocess.check_call(self.pip_preinstall_prefix + self.pip_upgrade_args + ['-U', 'pip'])
+            print(self.pip_preinstall_prefix + self.pip_upgrade_args + ['-U', pip_package])
+            subprocess.check_call(self.pip_preinstall_prefix + self.pip_upgrade_args + ['-U', pip_package])
         if self.preinstall:
             subprocess.check_call(self.pip_preinstall(*self.preinstall))
 
