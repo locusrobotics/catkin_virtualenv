@@ -17,6 +17,8 @@
 # along with dh-virtualenv. If not, see
 # <http://www.gnu.org/licenses/>.
 
+# Note for catkin_virtualenv users: local changes from upstream are marked with (pbovbel)
+
 import os
 import re
 import shutil
@@ -47,6 +49,8 @@ class Deployment(object):
                  use_system_packages=False,
                  skip_install=False,
                  install_suffix=None,
+                 log_file=tempfile.NamedTemporaryFile().name,  # (pbovbel): addition
+                 pip_version=None,  # (pbovbel): addition
                  requirements_filename='requirements.txt'):
 
         self.package = package
@@ -54,7 +58,7 @@ class Deployment(object):
         install_root = os.environ.get(ROOT_ENV_KEY, DEFAULT_INSTALL_DIR)
         self.install_suffix = install_suffix
 
-        # (pbovbel): this is the only modification to dh_virtualenv source
+        # (pbovbel): override the debian_root directory to allow a custom install path
         # self.debian_root = os.path.join(
         #     'debian', package, install_root.lstrip('/'))
         self.debian_root = '.'
@@ -71,8 +75,8 @@ class Deployment(object):
 
         self.preinstall = preinstall
         self.upgrade_pip = upgrade_pip
+        self.pip_version = pip_version
         self.extra_virtualenv_arg = extra_virtualenv_arg
-        self.log_file = tempfile.NamedTemporaryFile()
         self.verbose = verbose
         self.setuptools = setuptools
         self.python = python
@@ -98,11 +102,20 @@ class Deployment(object):
         self.pip_args.extend([
             '--extra-index-url={0}'.format(url) for url in extra_urls
         ])
-        self.pip_args.append('--log={0}'.format(os.path.abspath(self.log_file.name)))
+
+        # (pbovbel): make logging optional, since --log overrides -q flag for pip
+        self.log_file = log_file
+        if self.log_file:
+            self.pip_args.append('--log={0}'.format(os.path.abspath(self.log_file)))
+
         # Keep a copy with well-suported options only (for upgrading pip itself)
         self.pip_upgrade_args = self.pip_args[:]
+
         # Add in any user supplied pip args
         self.pip_args.extend(extra_pip_arg)
+
+        # (pbovbel) Set pip_upgrade_args here to keep flags like -q, disregard L111 above.
+        self.pip_upgrade_args = self.pip_args
 
     @classmethod
     def from_options(cls, package, options):
@@ -170,9 +183,11 @@ class Deployment(object):
         # along lines of setuptools), but that does not get installed
         # by default virtualenv.
         if self.upgrade_pip:
+            # (pbovbel) allow pinning the pip version
+            pip_package = 'pip==' + self.pip_version if self.pip_version else 'pip'
             # First, bootstrap pip with a reduced option set (well-supported options)
-            print(self.pip_preinstall_prefix + self.pip_upgrade_args + ['-U', 'pip'])
-            subprocess.check_call(self.pip_preinstall_prefix + self.pip_upgrade_args + ['-U', 'pip'])
+            print(self.pip_preinstall_prefix + self.pip_upgrade_args + ['-U', pip_package])
+            subprocess.check_call(self.pip_preinstall_prefix + self.pip_upgrade_args + ['-U', pip_package])
         if self.preinstall:
             subprocess.check_call(self.pip_preinstall(*self.preinstall))
 

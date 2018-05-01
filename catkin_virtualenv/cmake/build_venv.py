@@ -59,9 +59,11 @@ if __name__ == '__main__':
         package=os.path.basename(root_dir),
         requirements_filename=args.requirements,
         upgrade_pip=True,
-        verbose=False,
+        pip_version="9.0.3",
         use_system_packages=True,
         python=find_executable('python3') if args.python3 else find_executable('python2'),
+        extra_pip_arg=['-qq'],
+        log_file=None,
         # TODO(pbovbel) Builtin venv (python3-venv) is not available on trusty. This flag can be re-enabled when
         # trusty support is dropped.
         # builtin_venv=args.python3,
