@@ -38,7 +38,6 @@ class Deployment(object):
                  preinstall=[],
                  pip_tool='pip',
                  upgrade_pip=False,
-                 pip_version=None,
                  index_url=None,
                  setuptools=False,
                  python=None,
@@ -50,7 +49,8 @@ class Deployment(object):
                  use_system_packages=False,
                  skip_install=False,
                  install_suffix=None,
-                 log_file=tempfile.NamedTemporaryFile().name,
+                 log_file=tempfile.NamedTemporaryFile().name,  # (pbovbel): addition
+                 pip_version=None,  # (pbovbel): addition
                  requirements_filename='requirements.txt'):
 
         self.package = package
@@ -104,8 +104,8 @@ class Deployment(object):
         ])
 
         # (pbovbel): make logging optional, since --log overrides -q flag for pip
-        if log_file:
-            self.log_file = log_file
+        self.log_file = log_file
+        if self.log_file:
             self.pip_args.append('--log={0}'.format(os.path.abspath(self.log_file)))
 
         # Keep a copy with well-suported options only (for upgrading pip itself)
@@ -114,7 +114,7 @@ class Deployment(object):
         # Add in any user supplied pip args
         self.pip_args.extend(extra_pip_arg)
 
-        # (pbovbel) Update pip_upgrade_args to keep flags like -q
+        # (pbovbel) Set pip_upgrade_args here to keep flags like -q, disregard L111 above.
         self.pip_upgrade_args = self.pip_args
 
     @classmethod
