@@ -17,17 +17,11 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
-import importlib
 import rostest
 import sys
-import unittest
 
-
-class TestVirtualenv(unittest.TestCase):
-
-    def test_import_wrapt(self):
-        importlib.import_module("wrapt")
+from test_virtualenv_library import TestVirtualenv
 
 
 if __name__ == '__main__':
-    rostest.rosrun('test_catkin_virtualenv', 'test_virtualenv_script', TestVirtualenv, sys.argv)
+    rostest.rosrun('test_catkin_virtualenv_py3', 'test_virtualenv_script', TestVirtualenv, sys.argv)

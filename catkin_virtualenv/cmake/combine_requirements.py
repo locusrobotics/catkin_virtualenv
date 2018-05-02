@@ -25,7 +25,7 @@ import sys
 
 def combine_requirements(requirements_list, output_file):
     # type: (List[IO], IO) -> int
-    for requirements_file in requirements_list:
+    for requirements_file in reversed(requirements_list):
         output_file.write("-r {}\n".format(requirements_file))
     return 0
 
