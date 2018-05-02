@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 function(catkin_generate_virtualenv)
-  set(oneValueArgs PYTHON_VERSION_MAJOR USE_SYSTEM_PACKAGES)
+  set(oneValueArgs PYTHON_VERSION_MAJOR USE_SYSTEM_PACKAGES ISOLATE_REQUIREMENTS)
   cmake_parse_arguments(ARG "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
 
   # Check if this package already has a virtualenv target before creating one
@@ -34,6 +34,10 @@ function(catkin_generate_virtualenv)
     set(ARG_USE_SYSTEM_PACKAGES TRUE)
   endif()
 
+  if(NOT DEFINED ARG_ISOLATE_REQUIREMENTS)
+    set(ARG_ISOLATE_REQUIREMENTS FALSE)
+  endif()
+
   set(venv_dir venv)
 
   set(venv_devel_dir ${CATKIN_DEVEL_PREFIX}/${CATKIN_PACKAGE_SHARE_DESTINATION}/${venv_dir})
@@ -42,9 +46,14 @@ function(catkin_generate_virtualenv)
   set(${PROJECT_NAME}_VENV_DEVEL_DIR ${venv_devel_dir} PARENT_SCOPE)
   set(${PROJECT_NAME}_VENV_INSTALL_DIR ${venv_install_dir} PARENT_SCOPE)
 
+  if(${ARG_ISOLATE_REQUIREMENTS})
+    message(STATUS "Only using requirements from this catkin package")
+    set(glob_args "--no-deps")
+  endif()
+
   # Collect all exported pip requirements files, from this package and all dependencies
   execute_process(
-    COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${catkin_virtualenv_CMAKE_DIR}/glob_requirements.py --package-name ${PROJECT_NAME}
+    COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${catkin_virtualenv_CMAKE_DIR}/glob_requirements.py --package-name ${PROJECT_NAME} ${glob_args}
     OUTPUT_VARIABLE requirements_list
     OUTPUT_STRIP_TRAILING_WHITESPACE
   )

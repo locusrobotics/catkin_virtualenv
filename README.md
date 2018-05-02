@@ -63,9 +63,8 @@ find_package(catkin REQUIRED ... catkin_virtualenv ...)
 # Must be called before catkin_generate_virtualenv
 catkin_package()
 
-# Generate the virtualenv, optionally with python 3 as the default interpreter:
+# Generate the virtualenv:
 catkin_generate_virtualenv()
-# catkin_generate_virtualenv(PYTHON3)
 
 # Make sure your python executables are installed using `catkin_install_python`:
 catkin_install_python(
@@ -78,7 +77,7 @@ Departing from convention, if these scripts are executable, `catkin build` will 
 because `catkin_install_python` will now generate new wrapper scripts into the devel and install space that bootstrap
 the virtualenv and `rosrun` gets confused if there's two executable scripts by the same name.
 
-Unit and integration tests will automatically pick up the virtualenv as well. The only change is to add a dependency 
+Unit and integration tests will automatically pick up the virtualenv as well. The only change is to add a dependency
 from the test target to the virtualenv target:
 
 ```
@@ -101,3 +100,19 @@ if(CATKIN_ENABLE_TESTING)
   )
 )
 ```
+
+### Additional CMake Options:
+
+The following options are supported by `catkin_generate_virtualenv()`:
+
+```
+catkin_generate_virtualenv(
+  # Select an alternative major version of the python interpreter - it must be installed on the system.
+  PYTHON_VERSION_MAJOR 3  # Default 2
+
+  # Choose not to use underlying system packages. This excludes any python packages installed by apt or system-pip from the environment.
+  USE_SYSTEM_PACKAGES FALSE  # Default TRUE
+
+  # Disable including pip requirements from catkin dependencies of this package.
+  ISOLATE_REQUIREMENTS TRUE  # Default FALSE
+)

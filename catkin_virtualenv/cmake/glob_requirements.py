@@ -27,14 +27,14 @@ from catkin.find_in_workspaces import find_in_workspaces
 from catkin_pkg.package import parse_package
 
 
-tagname = "pip_requirements"
+CATKIN_VIRTUALENV_TAGNAME = "pip_requirements"
 
 
 def parse_exported_requirements(package):
     # type: (catkin_pkg.package.Package) -> List[str]
     requirements_list = []
     for export in package.exports:
-        if export.tagname == tagname:
+        if export.tagname == CATKIN_VIRTUALENV_TAGNAME:
             try:
                 requirements_path = find_in_workspaces(
                     project=package.name,
@@ -43,7 +43,7 @@ def parse_exported_requirements(package):
                 )[0]
             except:
                 print("Package {package} declares <{tagname}> {file}, which cannot be found in the package".format(
-                    package=package.name, tagname=tagname, file=export.content), file=sys.stderr)
+                    package=package.name, tagname=CATKIN_VIRTUALENV_TAGNAME, file=export.content), file=sys.stderr)
             else:
                 requirements_list.append(requirements_path)
     return requirements_list
@@ -69,7 +69,7 @@ def process_package(package_name, soft_fail=True):
         return parse_exported_requirements(package), dependencies
 
 
-def glob_requirements(package_name):
+def glob_requirements(package_name, no_deps):
     # type: (str) -> int
     package_queue = Queue()
     package_queue.put(package_name)
@@ -85,8 +85,9 @@ def glob_requirements(package_name):
                 package_name=queued_package, soft_fail=(queued_package != package_name))
             requirements_list = requirements_list + requirements
 
-            for dependency in dependencies:
-                package_queue.put(dependency.name)
+            if not no_deps:
+                for dependency in dependencies:
+                    package_queue.put(dependency.name)
 
     print(';'.join(requirements_list))
     return 0
@@ -95,6 +96,7 @@ def glob_requirements(package_name):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--package-name', type=str, required=True)
+    parser.add_argument('--no-deps', action="store_true")
     args, unknown = parser.parse_known_args()
 
     sys.exit(glob_requirements(**vars(args)))
