@@ -25,7 +25,7 @@ import re
 import shutil
 import sys
 
-from dh_virtualenv import Deployment
+from catkin_virtualenv import Deployment
 from distutils.spawn import find_executable
 
 

@@ -7,9 +7,6 @@ catkin_package()
 
 catkin_generate_virtualenv()
 
-install(FILES requirements.txt
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
-
 if(CATKIN_ENABLE_TESTING)
   find_package(rostest REQUIRED)
 
