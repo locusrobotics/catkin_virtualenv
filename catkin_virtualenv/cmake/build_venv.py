@@ -57,13 +57,18 @@ if __name__ == '__main__':
 
     os.environ['DH_VIRTUALENV_INSTALL_ROOT'] = os.path.dirname(root_dir)
 
+    python_executable = find_executable('python' + args.python_version)
+    if not python_executable:
+        print("Unable to find python executable 'python{}''".format(args.python_version), file=sys.stderr)
+        sys.exit(1)
+
     deploy = Deployment(
         package=os.path.basename(root_dir),
         requirements_filename=args.requirements,
         upgrade_pip=True,
         pip_version="9.0.3",
         use_system_packages=args.use_system_packages,
-        python=find_executable('python' + args.python_version),
+        python=python_executable,
         extra_pip_arg=['-qq'],
         log_file=None,
         # TODO(pbovbel) Builtin venv (python3-venv) is not available on trusty. This flag can be re-enabled when
