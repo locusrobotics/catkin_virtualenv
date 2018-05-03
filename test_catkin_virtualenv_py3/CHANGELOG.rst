@@ -2,8 +2,8 @@
 Changelog for package test_catkin_virtualenv_py3
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.0 (2018-05-03)
+------------------
 * Merge pull request `#16 <https://github.com/locusrobotics/catkin_virtualenv/issues/16>`_ from locusrobotics/system-site-packages
   Provide more CMake flags to customize behaviour
 * Implement ISOLATE_REQUIREMENTS and add docs
