@@ -59,6 +59,9 @@ function(catkin_generate_virtualenv)
   )
 
   set(PYTHON_VERSION_MAJOR ${ARG_PYTHON_VERSION_MAJOR})
+  if(NOT PYTHON_VERSION_MAJOR EQUAL 2)
+    list(APPEND requirements_list ${catkin_virtualenv_CMAKE_DIR}/python3_requirements.txt)
+  endif()
 
   set(generated_requirements ${CMAKE_BINARY_DIR}/generated_requirements.txt)
 
