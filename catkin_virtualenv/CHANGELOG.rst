@@ -2,6 +2,21 @@
 Changelog for package catkin_virtualenv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fixup python 3 dependencies
+* Merge pull request `#16 <https://github.com/locusrobotics/catkin_virtualenv/issues/16>`_ from locusrobotics/system-site-packages
+  Provide more CMake flags to customize behaviour
+* Make sure we find python exectuable
+* Implement ISOLATE_REQUIREMENTS and add docs
+* Make flags more flexible to support disabling system site packages
+* Merge pull request `#14 <https://github.com/locusrobotics/catkin_virtualenv/issues/14>`_ from locusrobotics/fix-pip
+  Fix issues due to pip 10 release
+* Review comments
+* Lock down pip version
+* Make logging optional
+* Contributors: Paul Bovbel
+
 0.1.6 (2018-01-10)
 ------------------
 * Re-enable pip upgrade
