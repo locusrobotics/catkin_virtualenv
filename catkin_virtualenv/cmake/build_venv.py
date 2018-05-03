@@ -47,7 +47,9 @@ if __name__ == '__main__':
     parser.add_argument(
         '--root-dir', required=True, help="Directory to which the virtualenv's hardcoded paths should be rewritten.")
     parser.add_argument(
-        '--python3', action='store_true', help="Build the virtualenv with Python3 as the default interpreter.")
+        '--python-version', default=2, help="Build the virtualenv with which python major version.")
+    parser.add_argument(
+        '--use-system-packages', action="store_true", help="Use system site packages.")
 
     args, unknown = parser.parse_known_args()
 
@@ -55,13 +57,18 @@ if __name__ == '__main__':
 
     os.environ['DH_VIRTUALENV_INSTALL_ROOT'] = os.path.dirname(root_dir)
 
+    python_executable = find_executable('python' + args.python_version)
+    if not python_executable:
+        print("Unable to find python executable 'python{}''".format(args.python_version), file=sys.stderr)
+        sys.exit(1)
+
     deploy = Deployment(
         package=os.path.basename(root_dir),
         requirements_filename=args.requirements,
         upgrade_pip=True,
         pip_version="9.0.3",
-        use_system_packages=True,
-        python=find_executable('python3') if args.python3 else find_executable('python2'),
+        use_system_packages=args.use_system_packages,
+        python=python_executable,
         extra_pip_arg=['-qq'],
         log_file=None,
         # TODO(pbovbel) Builtin venv (python3-venv) is not available on trusty. This flag can be re-enabled when

@@ -5,7 +5,9 @@ find_package(catkin REQUIRED COMPONENTS catkin_virtualenv)
 
 catkin_package()
 
-catkin_generate_virtualenv(PYTHON3)
+catkin_generate_virtualenv(
+  PYTHON_MAJOR_VERSION 3
+)
 
 install(FILES requirements.txt
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
