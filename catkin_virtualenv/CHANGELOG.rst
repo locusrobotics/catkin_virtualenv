@@ -2,8 +2,8 @@
 Changelog for package catkin_virtualenv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.1 (2018-06-04)
+------------------
 * Fix case and '.' handling
 * Bump pip to 10.0.1
 * Contributors: Paul Bovbel
