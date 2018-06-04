@@ -66,7 +66,7 @@ class ReqMergeException(RuntimeError):
 
 
 class Requirement(object):
-    name_regex = re.compile("^[A-Za-z0-9_-]+$")
+    name_regex = re.compile("^[A-Za-z0-9._-]+$")
 
     def __init__(self, string):
         # type: (str) -> None
@@ -75,7 +75,7 @@ class Requirement(object):
             if len(fields) > 1:
                 break
 
-        self.name = fields[0]
+        self.name = fields[0].lower()
         if not self.name_regex.match(self.name):
             raise RuntimeError("Invalid requirement name {}, must match {}".format(
                 string, self.name_regex.pattern))
