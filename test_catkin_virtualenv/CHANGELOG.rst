@@ -2,6 +2,9 @@
 Changelog for package test_catkin_virtualenv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.2.0 (2018-05-03)
 ------------------
 
