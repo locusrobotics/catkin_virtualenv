@@ -66,7 +66,7 @@ if __name__ == '__main__':
         package=os.path.basename(root_dir),
         requirements_filename=args.requirements,
         upgrade_pip=True,
-        pip_version="9.0.3",
+        pip_version="10.0.1",
         use_system_packages=args.use_system_packages,
         python=python_executable,
         extra_pip_arg=['-qq'],
