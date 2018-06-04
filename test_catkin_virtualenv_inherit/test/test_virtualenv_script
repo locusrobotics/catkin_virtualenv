@@ -24,4 +24,4 @@ from test_virtualenv_library import TestVirtualenv
 
 
 if __name__ == '__main__':
-    rostest.rosrun('test_catkin_virtualenv', 'test_virtualenv_script', TestVirtualenv, sys.argv)
+    rostest.rosrun('test_catkin_virtualenv_inherit', 'test_virtualenv_script', TestVirtualenv, sys.argv)

@@ -1,9 +1,8 @@
 <?xml version="1.0"?>
-<?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <!--
 Software License Agreement (GPL)
 
-\file      package.xml
+\file      virtualenv_script.test
 \authors   Paul Bovbel <pbovbel@locusrobotics.com>
 \copyright Copyright (c) (2017,), Locus Robotics, All rights reserved.
 
@@ -20,20 +19,6 @@ General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 -->
-<package format="2">
-  <name>catkin_virtualenv</name>
-  <version>0.2.0</version>
-  <description>Bundle python requirements in a catkin package via virtualenv.</description>
-
-  <maintainer email="pbovbel@locusrobotics.com">Paul Bovbel</maintainer>
-  <license>GPL</license>
-  <author email="pbovbel@locusrobotics.com">Paul Bovbel</author>
-
-  <buildtool_depend>catkin</buildtool_depend>
-
-  <build_export_depend>python-virtualenv</build_export_depend>
-  <build_export_depend>python3-dev</build_export_depend>
-
-  <test_depend>roslint</test_depend>
-
-</package>
+<launch>
+  <test test-name="virtualenv_script" pkg="test_catkin_virtualenv" type="test_virtualenv_script" />
+</launch>

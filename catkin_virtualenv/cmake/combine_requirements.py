@@ -20,40 +20,19 @@
 from __future__ import print_function
 
 import argparse
-import re
 import sys
-
-from catkin_virtualenv import requirements
-
-comment_regex = re.compile('\s*#.*')
 
 
 def combine_requirements(requirements_list, output_file):
     # type: (List[IO], IO) -> int
-    combined_requirements = {}  # type: Dict[str, requirements.Requirement]
-    for requirements_file in requirements_list:
-        contents = requirements_file.read()
-        contents = comment_regex.sub('', contents)
-        for requirement_string in contents.splitlines():
-            if requirement_string and not requirement_string.isspace():
-                requirement = requirements.Requirement(requirement_string)
-                try:
-                    combined_requirements[requirement.name] = combined_requirements[requirement.name] + requirement
-                except KeyError:
-                    combined_requirements[requirement.name] = requirement
-                except requirements.ReqMergeException as e:
-                    print("In files {}: {}".format(requirements_list, e), file=sys.stderr)
-                    raise
-
-    for requirement in combined_requirements.values():
-        output_file.write("{}\n".format(requirement))
-
+    for requirements_file in reversed(requirements_list):
+        output_file.write("-r {}\n".format(requirements_file))
     return 0
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--requirements-list', type=argparse.FileType('r'), nargs='*', required=True)
+    parser.add_argument('--requirements-list', type=str, nargs='*', required=True)
     parser.add_argument('--output-file', type=argparse.FileType('w'), required=True)
     args, unknown = parser.parse_known_args()
 

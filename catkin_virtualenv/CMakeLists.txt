@@ -17,5 +17,4 @@ if(CATKIN_ENABLE_TESTING)
   roslint_python()
   roslint_add_test()
 
-  catkin_add_nosetests(test)
 endif()

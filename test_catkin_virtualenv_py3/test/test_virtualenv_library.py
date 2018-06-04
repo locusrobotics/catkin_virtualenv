@@ -22,5 +22,6 @@ import unittest
 
 class TestVirtualenv(unittest.TestCase):
 
-    def test_import_wrapt(self):
-        importlib.import_module("wrapt")
+    def test_import_pqdict(self):
+        pqdict = importlib.import_module("pqdict")
+        self.assertEquals(pqdict.__version__, "1.0.0")

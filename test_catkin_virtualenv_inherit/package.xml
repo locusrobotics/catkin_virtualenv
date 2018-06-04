@@ -21,9 +21,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 -->
 <package format="2">
-  <name>catkin_virtualenv</name>
-  <version>0.2.0</version>
-  <description>Bundle python requirements in a catkin package via virtualenv.</description>
+  <name>test_catkin_virtualenv_inherit</name>
+  <version>0.1.6</version>
+  <description>Package to test catkin_virtualenv inheriting dependencies from dependencies.</description>
 
   <maintainer email="pbovbel@locusrobotics.com">Paul Bovbel</maintainer>
   <license>GPL</license>
@@ -31,9 +31,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <build_export_depend>python-virtualenv</build_export_depend>
-  <build_export_depend>python3-dev</build_export_depend>
+  <build_depend>catkin_virtualenv</build_depend>
 
-  <test_depend>roslint</test_depend>
+  <depend>test_catkin_virtualenv</depend>
+
+  <test_depend>rostest</test_depend>
 
 </package>
