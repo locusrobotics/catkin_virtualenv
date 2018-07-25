@@ -20,10 +20,7 @@ env:
     - ROS_DISTRO="indigo"
     - ROS_DISTRO="kinetic"
     - ROS_DISTRO="lunar"
-    - ROS_DISTRO="kinetic" OS_NAME=debian OS_CODE_NAME=jessie
-matrix:
-  allow_failures:
-    - env: ROS_DISTRO="kinetic" OS_NAME=debian OS_CODE_NAME=stretch
+    - ROS_DISTRO="melodic"
 before_script:
   - git clone https://github.com/ros-industrial/industrial_ci.git .ci_config
 script:
