@@ -66,7 +66,7 @@ class ReqMergeException(RuntimeError):
 
 
 class Requirement(object):
-    name_regex = re.compile("^[A-Za-z0-9._-]+$")
+    name_regex = re.compile("^[][A-Za-z0-9._-]+$")
 
     def __init__(self, string):
         # type: (str) -> None
