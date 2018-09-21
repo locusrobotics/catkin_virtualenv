@@ -25,7 +25,7 @@ from functools import total_ordering
 
 @total_ordering
 class SemVer(object):
-    version_regex = re.compile("^[0-9\.\w]+$")
+    version_regex = re.compile("^[\.\w]+$")
 
     def __init__(self, string):
         # type: (str) -> None
