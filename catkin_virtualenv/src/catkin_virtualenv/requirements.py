@@ -25,7 +25,7 @@ from functools import total_ordering
 
 @total_ordering
 class SemVer(object):
-    version_regex = re.compile("^[0-9\.]+$")
+    version_regex = re.compile("^[0-9\.\w]+$")
 
     def __init__(self, string):
         # type: (str) -> None
@@ -33,7 +33,12 @@ class SemVer(object):
             raise RuntimeError("Invalid requirement version {}, must match {}".format(
                 string, self.version_regex.pattern))
 
-        self._version = [int(v) for v in string.split('.')]
+        self._version = []
+        for v in string.split('.'):
+            if v.isdigit():
+                self._version.append(v)
+
+        self._version_string = string
 
     def __eq__(self, other):
         # type: (SemVer, SemVer) -> bool
@@ -45,7 +50,7 @@ class SemVer(object):
 
     def __str__(self):
         # type: (SemVer) -> str
-        return '.'.join([str(v) for v in self._version])
+        return self._version_string
 
 
 class ReqType(Enum):
