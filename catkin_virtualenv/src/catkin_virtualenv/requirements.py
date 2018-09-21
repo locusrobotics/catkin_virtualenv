@@ -25,7 +25,7 @@ from functools import total_ordering
 
 @total_ordering
 class SemVer(object):
-    version_regex = re.compile("^[\.\w]+$")
+    version_regex = re.compile("^[\w\.]+$")
 
     def __init__(self, string):
         # type: (str) -> None
@@ -36,7 +36,7 @@ class SemVer(object):
         self._version = []
         for v in string.split('.'):
             if v.isdigit():
-                self._version.append(v)
+                self._version.append(int(v))
 
         self._version_string = string
 
