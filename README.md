@@ -107,8 +107,8 @@ The following options are supported by `catkin_generate_virtualenv()`:
 
 ```
 catkin_generate_virtualenv(
-  # Select an alternative major version of the python interpreter - it must be installed on the system.
-  PYTHON_VERSION_MAJOR 3  # Default 2
+  # Select an alternative version of the python interpreter - it must be installed on the system. Minor version is optional.
+  PYTHON_VERSION 3.7  # Default 2
 
   # Choose not to use underlying system packages. This excludes any python packages installed by apt or system-pip from the environment.
   USE_SYSTEM_PACKAGES FALSE  # Default TRUE
