@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 function(catkin_generate_virtualenv)
-  set(oneValueArgs PYTHON_VERSION_MAJOR USE_SYSTEM_PACKAGES ISOLATE_REQUIREMENTS)
+  set(oneValueArgs PYTHON_VERSION PYTHON_VERSION_MAJOR USE_SYSTEM_PACKAGES ISOLATE_REQUIREMENTS)
   set(multiValueArgs EXTRA_PIP_ARGS)
   cmake_parse_arguments(ARG "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
 
@@ -27,9 +27,15 @@ function(catkin_generate_virtualenv)
     return()
   endif()
 
+  # Backwards compatibility for PYTHON_VERSION_MAJOR. If defined, Used as fallback if PYTHON_VERSION is undefined.
   if(NOT DEFINED ARG_PYTHON_VERSION_MAJOR)
     set(ARG_PYTHON_VERSION_MAJOR 2)
   endif()
+
+  if(NOT DEFINED ARG_PYTHON_VERSION)
+    set(ARG_PYTHON_VERSION ${ARG_PYTHON_VERSION_MAJOR})
+  endif()
+
 
   if(NOT DEFINED ARG_USE_SYSTEM_PACKAGES)
     set(ARG_USE_SYSTEM_PACKAGES TRUE)
@@ -66,8 +72,8 @@ function(catkin_generate_virtualenv)
     OUTPUT_STRIP_TRAILING_WHITESPACE
   )
 
-  set(PYTHON_VERSION_MAJOR ${ARG_PYTHON_VERSION_MAJOR})
-  if(NOT PYTHON_VERSION_MAJOR EQUAL 2)
+  set(PYTHON_VERSION ${ARG_PYTHON_VERSION})
+  if(NOT PYTHON_VERSION LESS 3)
     list(APPEND requirements_list ${catkin_virtualenv_CMAKE_DIR}/python3_requirements.txt)
   endif()
 
@@ -92,14 +98,14 @@ function(catkin_generate_virtualenv)
 
   # Generate a virtualenv, fixing up paths for devel-space
   add_custom_command(OUTPUT ${venv_devel_dir}
-    COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${catkin_virtualenv_CMAKE_DIR}/build_venv.py --root-dir ${venv_devel_dir} --requirements ${generated_requirements} --python-version ${ARG_PYTHON_VERSION_MAJOR} ${venv_args} --extra-pip-args ${processed_pip_args}
+    COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${catkin_virtualenv_CMAKE_DIR}/build_venv.py --root-dir ${venv_devel_dir} --requirements ${generated_requirements} --python-version ${PYTHON_VERSION} ${venv_args} --extra-pip-args ${processed_pip_args}
     WORKING_DIRECTORY ${venv_devel_dir}/..
     DEPENDS ${generated_requirements}
   )
 
   # Generate a virtualenv, fixing up paths for install-space
   add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/${venv_dir}
-    COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${catkin_virtualenv_CMAKE_DIR}/build_venv.py --root-dir ${venv_install_dir} --requirements ${generated_requirements} --python-version ${ARG_PYTHON_VERSION_MAJOR} ${venv_args} --extra-pip-args ${processed_pip_args}
+    COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${catkin_virtualenv_CMAKE_DIR}/build_venv.py --root-dir ${venv_install_dir} --requirements ${generated_requirements} --python-version ${PYTHON_VERSION} ${venv_args} --extra-pip-args ${processed_pip_args}
     DEPENDS ${generated_requirements}
   )
 
