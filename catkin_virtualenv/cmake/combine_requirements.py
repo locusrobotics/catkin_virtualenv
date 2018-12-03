@@ -23,9 +23,9 @@ import argparse
 import re
 import sys
 
-from catkin_virtualenv import requirements
+from packaging.requirements import Requirement
 
-comment_regex = re.compile('\s*#.*')
+comment_regex = re.compile(r'\s*#.*')
 
 
 def combine_requirements(requirements_list, output_file):
@@ -36,14 +36,9 @@ def combine_requirements(requirements_list, output_file):
         contents = comment_regex.sub('', contents)
         for requirement_string in contents.splitlines():
             if requirement_string and not requirement_string.isspace():
-                requirement = requirements.Requirement(requirement_string)
-                try:
-                    combined_requirements[requirement.name] = combined_requirements[requirement.name] + requirement
-                except KeyError:
+                requirement = Requirement(requirement_string)
+                if requirement.name not in combined_requirements:
                     combined_requirements[requirement.name] = requirement
-                except requirements.ReqMergeException as e:
-                    print("In files {}: {}".format(requirements_list, e), file=sys.stderr)
-                    raise
 
     for requirement in combined_requirements.values():
         output_file.write("{}\n".format(requirement))
