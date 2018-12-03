@@ -115,4 +115,9 @@ catkin_generate_virtualenv(
 
   # Disable including pip requirements from catkin dependencies of this package.
   ISOLATE_REQUIREMENTS TRUE  # Default FALSE
+
+  # Provide extra arguments to the underlying pip invocation
+  EXTRA_PIP_ARGS 
+    --no-binary=:all:
+    -vvv
 )

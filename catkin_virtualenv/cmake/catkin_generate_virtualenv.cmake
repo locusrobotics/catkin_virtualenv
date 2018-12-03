@@ -42,7 +42,9 @@ function(catkin_generate_virtualenv)
   if (NOT DEFINED ARG_EXTRA_PIP_ARGS)
     set(ARG_EXTRA_PIP_ARGS "-qq")
   endif()
-  string(REPLACE ";" "\ " extra_pip_args "${ARG_EXTRA_PIP_ARGS}")
+  string(REPLACE ";" "\ " processed_pip_args "${ARG_EXTRA_PIP_ARGS}")
+  # Needed to add quotes around pip args
+  set(processed_pip_args \\\"${processed_pip_args}\\\")
 
   set(venv_dir venv)
 
@@ -90,14 +92,14 @@ function(catkin_generate_virtualenv)
 
   # Generate a virtualenv, fixing up paths for devel-space
   add_custom_command(OUTPUT ${venv_devel_dir}
-    COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${catkin_virtualenv_CMAKE_DIR}/build_venv.py --root-dir ${venv_devel_dir} --requirements ${generated_requirements} --python-version ${ARG_PYTHON_VERSION_MAJOR} ${venv_args} --extra-pip-args \\\"${extra_pip_args}\\\"
+    COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${catkin_virtualenv_CMAKE_DIR}/build_venv.py --root-dir ${venv_devel_dir} --requirements ${generated_requirements} --python-version ${ARG_PYTHON_VERSION_MAJOR} ${venv_args} --extra-pip-args ${processed_pip_args}
     WORKING_DIRECTORY ${venv_devel_dir}/..
     DEPENDS ${generated_requirements}
   )
 
   # Generate a virtualenv, fixing up paths for install-space
   add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/${venv_dir}
-    COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${catkin_virtualenv_CMAKE_DIR}/build_venv.py --root-dir ${venv_install_dir} --requirements ${generated_requirements} --python-version ${ARG_PYTHON_VERSION_MAJOR} ${venv_args} --extra-pip-args \\\"${extra_pip_args}\\\"
+    COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${catkin_virtualenv_CMAKE_DIR}/build_venv.py --root-dir ${venv_install_dir} --requirements ${generated_requirements} --python-version ${ARG_PYTHON_VERSION_MAJOR} ${venv_args} --extra-pip-args ${processed_pip_args}
     DEPENDS ${generated_requirements}
   )
 
