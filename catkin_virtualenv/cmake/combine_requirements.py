@@ -23,9 +23,13 @@ import argparse
 import re
 import sys
 
+from collections import namedtuple
 from packaging.requirements import Requirement
 
 comment_regex = re.compile(r'\s*#.*')
+
+CombinedRequirement = namedtuple("CombinedRequirement", "requirement source supressed_set")
+SupressedRequirement = namedtuple("SupressedRequirement", "requirement source")
 
 
 def combine_requirements(requirements_list, output_file):
@@ -38,10 +42,22 @@ def combine_requirements(requirements_list, output_file):
             if requirement_string and not requirement_string.isspace():
                 requirement = Requirement(requirement_string)
                 if requirement.name not in combined_requirements:
-                    combined_requirements[requirement.name] = requirement
+                    combined_requirements[requirement.name] = CombinedRequirement(
+                        requirement=requirement, 
+                        source=requirements_file.name, 
+                        supressed_set=set()
+                    )
+                else:
+                    combined_requirements[requirement.name].supressed_set.add(
+                        SupressedRequirement(
+                            requirement=requirement,
+                            source=requirements_file.name)
+                        )
 
-    for requirement in combined_requirements.values():
-        output_file.write("{}\n".format(requirement))
+    for entry in combined_requirements.values():
+        output_file.write("{} # from {}\n".format(entry.requirement, entry.source))
+        for supressed in entry.supressed_set:
+            output_file.write("# supressed {} from {}\n".format(supressed.requirement, supressed.source))
 
     return 0
 
