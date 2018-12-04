@@ -1,7 +1,6 @@
-#!/usr/bin/env python
 # Software License Agreement (GPL)
 #
-# \file      test_virtualenv_script
+# \file      test_virtualenv_library.py
 # \authors   Paul Bovbel <pbovbel@locusrobotics.com>
 # \copyright Copyright (c) (2017,), Locus Robotics, All rights reserved.
 #
@@ -18,8 +17,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 import importlib
-import rostest
-import sys
 import unittest
 
 
@@ -27,8 +24,4 @@ class TestVirtualenv(unittest.TestCase):
 
     def test_import(self):
         requests = importlib.import_module("requests")
-        self.assertEquals(requests.__version__, "2.20.1")
-
-
-if __name__ == '__main__':
-    rostest.rosrun('test_catkin_virtualenv', 'test_virtualenv_script', TestVirtualenv, sys.argv)
+        self.assertEquals(requests.__version__, "2.19.1")

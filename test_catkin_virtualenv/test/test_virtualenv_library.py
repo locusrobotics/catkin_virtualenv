@@ -22,5 +22,6 @@ import unittest
 
 class TestVirtualenv(unittest.TestCase):
 
-    def test_import_wrapt(self):
-        importlib.import_module("wrapt")
+    def test_import(self):
+        requests = importlib.import_module("requests")
+        self.assertEquals(requests.__version__, "2.20.1")
