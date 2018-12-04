@@ -73,9 +73,7 @@ if __name__ == '__main__':
         python=python_executable,
         extra_pip_arg=args.extra_pip_args[1:-1].split(' '),
         log_file=None,
-        # TODO(pbovbel) Builtin venv (python3-venv) is not available on trusty. This flag can be re-enabled when
-        # trusty support is dropped.
-        # builtin_venv=args.python3,
+        builtin_venv=args.python_version >= 3,
     )
 
     print('Generating virtualenv in {}'.format(deploy.package_dir))
