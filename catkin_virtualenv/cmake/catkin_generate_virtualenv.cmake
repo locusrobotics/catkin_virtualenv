@@ -75,9 +75,7 @@ function(catkin_generate_virtualenv)
   )
 
   # Include common requirements that ROS makes available in system environment for py2
-  if(NOT ARG_PYTHON_VERSION LESS 3 OR ARG_ISOLATE_REQUIREMENTS)
-    list(APPEND requirements_list ${catkin_virtualenv_CMAKE_DIR}/common_requirements.txt)
-  endif()
+  list(APPEND requirements_list ${catkin_virtualenv_CMAKE_DIR}/common_requirements.txt)
 
   set(generated_requirements ${CMAKE_BINARY_DIR}/generated_requirements.txt)
 
