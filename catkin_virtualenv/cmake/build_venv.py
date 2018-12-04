@@ -23,6 +23,7 @@ import argparse
 import os
 import re
 import shutil
+import subprocess
 import sys
 
 from dh_virtualenv.deployment import Deployment
@@ -37,6 +38,20 @@ def delete_bytecode(directory):
         for f in files:
             if _BYTECODE_REGEX.match(f):
                 os.remove(os.path.join(root, f))
+
+def find_python(version):
+    python_executable = find_executable('python' + version)
+    if not python_executable:
+        raise RuntimeError("Unable to find python executable 'python{}''".format(args.python_version), file=sys.stderr)
+    return python_executable
+
+def check_venv_module(python_executable):
+    try:
+        with open(os.devnull, 'w') as devnull:
+            subprocess.check_call(python_executable + " -c 'import venv'", shell=True, stderr=devnull)
+        return True
+    except subprocess.CalledProcessError:
+        return False
 
 
 if __name__ == '__main__':
@@ -59,10 +74,7 @@ if __name__ == '__main__':
 
     os.environ['DH_VIRTUALENV_INSTALL_ROOT'] = os.path.dirname(root_dir)
 
-    python_executable = find_executable('python' + args.python_version)
-    if not python_executable:
-        print("Unable to find python executable 'python{}''".format(args.python_version), file=sys.stderr)
-        sys.exit(1)
+    python_executable = find_python(args.python_version)
 
     deploy = Deployment(
         package=os.path.basename(root_dir),
@@ -72,7 +84,7 @@ if __name__ == '__main__':
         python=python_executable,
         extra_pip_arg=args.extra_pip_args[1:-1].split(' '),
         log_file=None,
-        builtin_venv=args.python_version >= 3,
+        builtin_venv=check_venv_module(python_executable),
     )
 
     print('Generating virtualenv in {}'.format(deploy.package_dir))
