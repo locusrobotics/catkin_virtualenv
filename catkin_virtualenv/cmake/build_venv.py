@@ -47,11 +47,11 @@ if __name__ == '__main__':
     parser.add_argument(
         '--root-dir', required=True, help="Directory to which the virtualenv's hardcoded paths should be rewritten.")
     parser.add_argument(
-        '--python-version', default=2, help="Build the virtualenv with which python major version.")
+        '--python-version', help="Build the virtualenv with which python major version.")
     parser.add_argument(
         '--use-system-packages', action="store_true", help="Use system site packages.")
     parser.add_argument(
-        '--extra-pip-args', default='"-qq"', type=str, help="Extra pip args for install.")
+        '--extra-pip-args', type=str, help="Extra pip args for install.")
 
     args, unknown = parser.parse_known_args()
 
