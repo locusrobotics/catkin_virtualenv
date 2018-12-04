@@ -2,6 +2,13 @@
 Changelog for package test_catkin_virtualenv_py3
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge repeated requirements (`#32 <https://github.com/locusrobotics/catkin_virtualenv/issues/32>`_)
+* Merge pull request `#31 <https://github.com/locusrobotics/catkin_virtualenv/issues/31>`_ from locusrobotics/add-extra-pip-args
+  Clean up extra_pip_args PR
+* Contributors: Paul Bovbel, Shingo Kitagawa
+
 0.2.1 (2018-06-04)
 ------------------
 

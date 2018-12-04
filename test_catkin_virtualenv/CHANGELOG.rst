@@ -2,6 +2,11 @@
 Changelog for package test_catkin_virtualenv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge repeated requirements (`#32 <https://github.com/locusrobotics/catkin_virtualenv/issues/32>`_)
+* Contributors: Paul Bovbel
+
 0.2.1 (2018-06-04)
 ------------------
 
