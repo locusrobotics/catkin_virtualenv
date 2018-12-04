@@ -25,7 +25,7 @@ import re
 import shutil
 import sys
 
-from dh_virtualenv import Deployment
+from dh_virtualenv.deployment import Deployment
 from distutils.spawn import find_executable
 
 
@@ -33,7 +33,7 @@ _BYTECODE_REGEX = re.compile('.*.py[co]')
 
 
 def delete_bytecode(directory):
-    for root, dirs, files in os.walk(directory):
+    for root, _, files in os.walk(directory):
         for f in files:
             if _BYTECODE_REGEX.match(f):
                 os.remove(os.path.join(root, f))
@@ -51,7 +51,7 @@ if __name__ == '__main__':
     parser.add_argument(
         '--use-system-packages', action="store_true", help="Use system site packages.")
     parser.add_argument(
-        '--extra-pip-args', type=str, help="Extra pip args for install.")
+        '--extra-pip-args', default="\"\"", type=str, help="Extra pip args for install.")
 
     args, unknown = parser.parse_known_args()
 
