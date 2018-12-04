@@ -74,8 +74,9 @@ function(catkin_generate_virtualenv)
     OUTPUT_STRIP_TRAILING_WHITESPACE
   )
 
-  if(NOT ARG_PYTHON_VERSION LESS 3)
-    list(APPEND requirements_list ${catkin_virtualenv_CMAKE_DIR}/python3_requirements.txt)
+  # Include common requirements that ROS makes available in system environment for py2
+  if(NOT ARG_PYTHON_VERSION LESS 3 OR ARG_ISOLATE_REQUIREMENTS)
+    list(APPEND requirements_list ${catkin_virtualenv_CMAKE_DIR}/common_requirements.txt)
   endif()
 
   set(generated_requirements ${CMAKE_BINARY_DIR}/generated_requirements.txt)
