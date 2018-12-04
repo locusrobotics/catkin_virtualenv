@@ -68,7 +68,7 @@ function(catkin_generate_virtualenv)
 
   # Collect all exported pip requirements files, from this package and all dependencies
   execute_process(
-    COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${catkin_virtualenv_CMAKE_DIR}/glob_requirements.py
+    COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv glob_requirements
       --package-name ${PROJECT_NAME} ${glob_args}
     OUTPUT_VARIABLE requirements_list
     OUTPUT_STRIP_TRAILING_WHITESPACE
@@ -87,7 +87,7 @@ function(catkin_generate_virtualenv)
 
   # Combine requirements into one list
   add_custom_command(OUTPUT ${generated_requirements}
-    COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${catkin_virtualenv_CMAKE_DIR}/combine_requirements.py
+    COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv combine_requirements
       --requirements-list ${requirements_list} --output-file ${generated_requirements}
     DEPENDS ${requirements_list}
   )
@@ -99,7 +99,7 @@ function(catkin_generate_virtualenv)
 
   # Generate a virtualenv, fixing up paths for devel-space
   add_custom_command(OUTPUT ${venv_devel_dir}
-    COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${catkin_virtualenv_CMAKE_DIR}/build_venv.py
+    COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv build_venv
       --root-dir ${venv_devel_dir} --root-dir ${venv_install_dir} --requirements ${generated_requirements}
       --python-version ${ARG_PYTHON_VERSION} ${venv_args} --extra-pip-args ${processed_pip_args}
     WORKING_DIRECTORY ${venv_devel_dir}/..
@@ -108,7 +108,7 @@ function(catkin_generate_virtualenv)
 
   # Generate a virtualenv, fixing up paths for install-space
   add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/${venv_dir}
-    COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${catkin_virtualenv_CMAKE_DIR}/build_venv.py
+    COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv build_venv
       --root-dir ${venv_install_dir} --root-dir ${venv_install_dir} --requirements ${generated_requirements}
       --python-version ${ARG_PYTHON_VERSION} ${venv_args} --extra-pip-args ${processed_pip_args}
     DEPENDS ${generated_requirements}
