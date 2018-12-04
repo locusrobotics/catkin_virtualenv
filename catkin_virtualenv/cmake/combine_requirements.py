@@ -28,8 +28,8 @@ from packaging.requirements import Requirement
 
 comment_regex = re.compile(r'\s*#.*')
 
-CombinedRequirement = namedtuple("CombinedRequirement", "requirement source supressed_set")
-SupressedRequirement = namedtuple("SupressedRequirement", "requirement source")
+CombinedRequirement = namedtuple("CombinedRequirement", "requirement source suppressed_set")
+SuppressedRequirement = namedtuple("SuppressedRequirement", "requirement source")
 
 
 def combine_requirements(requirements_list, output_file):
@@ -45,19 +45,19 @@ def combine_requirements(requirements_list, output_file):
                     combined_requirements[requirement.name] = CombinedRequirement(
                         requirement=requirement, 
                         source=requirements_file.name, 
-                        supressed_set=set()
+                        suppressed_set=set()
                     )
                 else:
-                    combined_requirements[requirement.name].supressed_set.add(
-                        SupressedRequirement(
+                    combined_requirements[requirement.name].suppressed_set.add(
+                        SuppressedRequirement(
                             requirement=requirement,
                             source=requirements_file.name)
                         )
 
     for entry in combined_requirements.values():
         output_file.write("{} # from {}\n".format(entry.requirement, entry.source))
-        for supressed in entry.supressed_set:
-            output_file.write("# supressed {} from {}\n".format(supressed.requirement, supressed.source))
+        for suppressed in entry.suppressed_set:
+            output_file.write("# suppressed {} from {}\n".format(suppressed.requirement, suppressed.source))
 
     return 0
 
