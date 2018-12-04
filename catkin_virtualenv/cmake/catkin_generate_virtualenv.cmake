@@ -117,22 +117,9 @@ function(catkin_generate_virtualenv)
   install(FILES ${generated_requirements}
     DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
-  if(NOSETESTS)
-    if(${ARG_PYTHON3})
-      find_program(nosetests NAMES
-        "nosetests${PYTHON_VERSION_MAJOR}"
-        "nosetests-${PYTHON_VERSION_MAJOR}"
-        "nosetests")
-    else()
-      set(nosetests ${NOSETESTS})
-    endif()
-
-    set(nosetests "${venv_devel_dir}/bin/python${PYTHON_VERSION_MAJOR} ${nosetests}")
-
-    # (pbovbel): NOSETESTS originally set by catkin here:
-    # <https://github.com/ros/catkin/blob/kinetic-devel/cmake/test/nosetests.cmake#L86>
-    message(STATUS "Using virtualenv to run Python nosetests: ${nosetests}")
-    set(NOSETESTS ${nosetests} PARENT_SCOPE)
-  endif()
+  # (pbovbel): NOSETESTS originally set by catkin here:
+  # <https://github.com/ros/catkin/blob/kinetic-devel/cmake/test/nosetests.cmake#L86>
+  message(STATUS "Using virtualenv to run Python nosetests: ${nosetests}")
+  set(NOSETESTS "${venv_devel_dir}/bin/python -m nose" PARENT_SCOPE)
 
 endfunction()

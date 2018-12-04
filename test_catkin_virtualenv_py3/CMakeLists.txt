@@ -24,9 +24,8 @@ if(CATKIN_ENABLE_TESTING)
     DEPENDENCIES ${PROJECT_NAME}_generate_virtualenv
   )
 
-  # TODO(pbovbel): investigate rostest failure under python3
-  # add_rostest(test/virtualenv_script.test
-  #   DEPENDENCIES ${PROJECT_NAME}_generate_virtualenv
-  # )
+  add_rostest(test/virtualenv_script.test
+    DEPENDENCIES ${PROJECT_NAME}_generate_virtualenv
+  )
 
 endif()
