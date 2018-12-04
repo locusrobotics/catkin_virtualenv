@@ -49,7 +49,8 @@ function(catkin_install_python)
       )
 
       if(is_program_executable STREQUAL "0")
-        message(WARNING "Making ${program_path} non-executable. Otherwise 'rosrun ${PROJECT_NAME} ${program_basename}' will not work as expected.")
+        message(WARNING "Making ${program_path} non-executable. Otherwise 'rosrun ${PROJECT_NAME} ${program_basename}' \
+will not work as expected.")
         execute_process(
           COMMAND ${CATKIN_ENV} chmod -x ${program_path}  # This is touching the source space
         )
