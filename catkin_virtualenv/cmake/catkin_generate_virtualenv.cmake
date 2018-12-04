@@ -27,15 +27,15 @@ function(catkin_generate_virtualenv)
     return()
   endif()
 
-  # Backwards compatibility for PYTHON_VERSION_MAJOR. If defined, Used as fallback if PYTHON_VERSION is undefined.
-  if(NOT DEFINED ARG_PYTHON_VERSION_MAJOR)
-    set(ARG_PYTHON_VERSION_MAJOR 2)
+  # Backwards compatibility for PYTHON_VERSION_MAJOR, overriding PYTHON_VERSION
+  if(DEFINED ARG_PYTHON_VERSION_MAJOR)
+    set(ARG_PYTHON_VERSION ${ARG_PYTHON_VERSION_MAJOR})
+    message(WARNING "PYTHON_VERSION_MAJOR has been deprecated, please set PYTHON_VERSION instead")
   endif()
 
   if(NOT DEFINED ARG_PYTHON_VERSION)
-    set(ARG_PYTHON_VERSION ${ARG_PYTHON_VERSION_MAJOR})
+    set(ARG_PYTHON_VERSION 2)
   endif()
-
 
   if(NOT DEFINED ARG_USE_SYSTEM_PACKAGES)
     set(ARG_USE_SYSTEM_PACKAGES TRUE)
