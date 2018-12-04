@@ -1,2 +1,2 @@
 rospkg
-catkin-pkg
+catkin-pkg-modules
