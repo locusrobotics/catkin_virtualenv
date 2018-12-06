@@ -43,8 +43,8 @@ def combine_requirements(requirements_list, output_file):
                 requirement = Requirement(requirement_string)
                 if requirement.name not in combined_requirements:
                     combined_requirements[requirement.name] = CombinedRequirement(
-                        requirement=requirement, 
-                        source=requirements_file.name, 
+                        requirement=requirement,
+                        source=requirements_file.name,
                         suppressed_set=set()
                     )
                 else:
