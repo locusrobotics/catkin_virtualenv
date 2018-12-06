@@ -48,6 +48,7 @@ def find_python(version):
 def check_venv_module(python_executable):
     try:
         with open(os.devnull, 'w') as devnull:
+            # "-c 'import venv'" does not work with the subprocess module, but '-cimport venv' does
             subprocess.check_call([python_executable, '-cimport venv'], stderr=devnull)
         return True
     except subprocess.CalledProcessError:
