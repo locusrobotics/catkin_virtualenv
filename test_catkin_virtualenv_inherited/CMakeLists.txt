@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5.1)
 project(test_catkin_virtualenv_inherited)
 
 find_package(catkin REQUIRED COMPONENTS catkin_virtualenv)

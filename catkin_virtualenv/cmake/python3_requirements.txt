@@ -1,2 +1,0 @@
-rospkg
-catkin-pkg

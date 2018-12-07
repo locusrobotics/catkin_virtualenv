@@ -23,9 +23,10 @@ import argparse
 import os
 import re
 import shutil
+import subprocess
 import sys
 
-from dh_virtualenv import Deployment
+from dh_virtualenv.deployment import Deployment
 from distutils.spawn import find_executable
 
 
@@ -33,10 +34,25 @@ _BYTECODE_REGEX = re.compile('.*.py[co]')
 
 
 def delete_bytecode(directory):
-    for root, dirs, files in os.walk(directory):
+    for root, _, files in os.walk(directory):
         for f in files:
             if _BYTECODE_REGEX.match(f):
                 os.remove(os.path.join(root, f))
+
+def find_python(version):
+    python_executable = find_executable('python' + version)
+    if not python_executable:
+        raise RuntimeError("Unable to find python executable 'python{}''".format(args.python_version), file=sys.stderr)
+    return python_executable
+
+def check_venv_module(python_executable):
+    try:
+        with open(os.devnull, 'w') as devnull:
+            # "-c 'import venv'" does not work with the subprocess module, but '-cimport venv' does
+            subprocess.check_call([python_executable, '-cimport venv'], stderr=devnull)
+        return True
+    except subprocess.CalledProcessError:
+        return False
 
 
 if __name__ == '__main__':
@@ -47,11 +63,11 @@ if __name__ == '__main__':
     parser.add_argument(
         '--root-dir', required=True, help="Directory to which the virtualenv's hardcoded paths should be rewritten.")
     parser.add_argument(
-        '--python-version', default=2, help="Build the virtualenv with which python major version.")
+        '--python-version', help="Build the virtualenv with which python major version.")
     parser.add_argument(
         '--use-system-packages', action="store_true", help="Use system site packages.")
     parser.add_argument(
-        '--extra-pip-args', default='"-qq"', type=str, help="Extra pip args for install.")
+        '--extra-pip-args', default="\"\"", type=str, help="Extra pip args for install.")
 
     args, unknown = parser.parse_known_args()
 
@@ -59,23 +75,17 @@ if __name__ == '__main__':
 
     os.environ['DH_VIRTUALENV_INSTALL_ROOT'] = os.path.dirname(root_dir)
 
-    python_executable = find_executable('python' + args.python_version)
-    if not python_executable:
-        print("Unable to find python executable 'python{}''".format(args.python_version), file=sys.stderr)
-        sys.exit(1)
+    python_executable = find_python(args.python_version)
 
     deploy = Deployment(
         package=os.path.basename(root_dir),
         requirements_filename=args.requirements,
         upgrade_pip=True,
-        pip_version="10.0.1",
         use_system_packages=args.use_system_packages,
         python=python_executable,
         extra_pip_arg=args.extra_pip_args[1:-1].split(' '),
         log_file=None,
-        # TODO(pbovbel) Builtin venv (python3-venv) is not available on trusty. This flag can be re-enabled when
-        # trusty support is dropped.
-        # builtin_venv=args.python3,
+        builtin_venv=check_venv_module(python_executable),
     )
 
     print('Generating virtualenv in {}'.format(deploy.package_dir))

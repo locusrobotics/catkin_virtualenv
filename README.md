@@ -6,9 +6,9 @@
 
 This package provides a mechanism to:
 
-  - export python library requirements in `requirements.txt` format via `package.xml`.
-  - bundle a virtualenv within a catkin package, inheriting requirements from any dependencies.
-  - wrap python scripts and tests in a catkin package with a virtualenv loader.
+- export python library requirements in `requirements.txt` format via `package.xml`.
+- bundle a virtualenv within a catkin package, inheriting requirements from any dependencies.
+- wrap python scripts and tests in a catkin package with a virtualenv loader.
 
 At build time, CMake macros provided by this package will create a virtualenv inside the devel space, and create
 wrapper scripts for any Python scripts in the package. Both will be included in any associated bloom artifacts.
@@ -17,11 +17,11 @@ This library is GPL licensed due to the inclusion of dh_virtualenv.
 
 For general help, please check the [FAQ](http://answers.ros.org/questions/tags:catkin_virtualenv). Report bugs on the [issue tracker](https://github.com/locusrobotics/catkin_virtualenv/issues).
 
-## Exporting python requirements:
+## Exporting python requirements
 
 The package containing python modules with external library dependencies should define a `requirements.txt`:
 
-```
+```python
 GitPython>=2.1.5
 psutil>=5.2.2
 wrapt>=1.10.10
@@ -29,7 +29,7 @@ wrapt>=1.10.10
 
 Add an export to `package.xml`:
 
-```
+```xml
 <export>
   <pip_requirements>requirements.txt</pip_requirements>
 </export>
@@ -37,12 +37,12 @@ Add an export to `package.xml`:
 
 Make sure to install the requirements file in `CMakeLists.txt`:
 
-```
+```cmake
 install(FILES requirements.txt
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 ```
 
-## Bundling virtualenv:
+## Bundling virtualenv
 
 It's possible to bundle all of a catkin package's python requirements, as well as those of its catkin dependencies,
 into a virtualenv. This process will also override the standard `catkin_install_python` macro to wrap a virtualenv
@@ -53,13 +53,13 @@ This operation does not do any dependency resolution - similar to how `pip` oper
 
 Add an build dependency to `package.xml`:
 
-```
+```xml
 <build_depend>catkin_virtualenv</build_depend>
 ```
 
 In CMakeLists.txt:
 
-```
+```cmake
 # Make sure to find-package `catkin_virtualenv`
 find_package(catkin REQUIRED ... catkin_virtualenv ...)
 
@@ -83,7 +83,7 @@ the virtualenv and `rosrun` gets confused if there's two executable scripts by t
 Unit and integration tests will automatically pick up the virtualenv as well. The only change is to add a dependency
 from the test target to the virtualenv target:
 
-```
+```cmake
 if(CATKIN_ENABLE_TESTING)
 
   # nosetests
@@ -92,7 +92,6 @@ if(CATKIN_ENABLE_TESTING)
   )
 
   # rostests
-  find_package(rostest)
   catkin_install_python(
     PROGRAMS
       test/test_script
@@ -104,14 +103,14 @@ if(CATKIN_ENABLE_TESTING)
 )
 ```
 
-### Additional CMake Options:
+### Additional CMake Options
 
 The following options are supported by `catkin_generate_virtualenv()`:
 
-```
+```cmake
 catkin_generate_virtualenv(
-  # Select an alternative major version of the python interpreter - it must be installed on the system.
-  PYTHON_VERSION_MAJOR 3  # Default 2
+  # Select an alternative version of the python interpreter - it must be installed on the system. Minor version is optional.
+  PYTHON_VERSION 3.7  # Default 2
 
   # Choose not to use underlying system packages. This excludes any python packages installed by apt or system-pip from the environment.
   USE_SYSTEM_PACKAGES FALSE  # Default TRUE
@@ -120,7 +119,7 @@ catkin_generate_virtualenv(
   ISOLATE_REQUIREMENTS TRUE  # Default FALSE
 
   # Provide extra arguments to the underlying pip invocation
-  EXTRA_PIP_ARGS 
+  EXTRA_PIP_ARGS
     --no-binary=:all:
     -vvv
 )
