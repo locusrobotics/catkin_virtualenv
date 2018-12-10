@@ -18,17 +18,26 @@
 # <http://www.gnu.org/licenses/>.
 
 # Note for catkin_virtualenv users: local changes from upstream are marked with (pbovbel)
+from __future__ import print_function
+
 
 import os
 import re
 import shutil
 import subprocess
+import sys
 import tempfile
 
 ROOT_ENV_KEY = 'DH_VIRTUALENV_INSTALL_ROOT'
 DEFAULT_INSTALL_DIR = '/opt/venvs/'
 PYTHON_INTERPRETERS = ['python', 'pypy', 'ipy', 'jython']
 _PYTHON_INTERPRETERS_REGEX = r'\(' + r'\|'.join(PYTHON_INTERPRETERS) + r'\)'
+
+
+# (pbovbel)
+def check_call(cmd, *args, **kwargs):
+    print(' '.join(cmd), file=sys.stderr)
+    subprocess.check_call(cmd, *args, **kwargs)
 
 
 class Deployment(object):
@@ -166,7 +175,7 @@ class Deployment(object):
                 virtualenv.extend(self.extra_virtualenv_arg)
 
         virtualenv.append(self.package_dir)
-        subprocess.check_call(virtualenv)
+        check_call(virtualenv)
 
     def venv_bin(self, binary_name):
         return os.path.abspath(os.path.join(self.bin_dir, binary_name))
@@ -187,19 +196,19 @@ class Deployment(object):
             pip_package = 'pip==' + self.pip_version if self.pip_version else 'pip'
             # First, bootstrap pip with a reduced option set (well-supported options)
             print(self.pip_preinstall_prefix + self.pip_upgrade_args + ['-U', pip_package])
-            subprocess.check_call(self.pip_preinstall_prefix + self.pip_upgrade_args + ['-U', pip_package])
+            check_call(self.pip_preinstall_prefix + self.pip_upgrade_args + ['-U', pip_package])
         if self.preinstall:
-            subprocess.check_call(self.pip_preinstall(*self.preinstall))
+            check_call(self.pip_preinstall(*self.preinstall))
 
         requirements_path = os.path.join(self.sourcedirectory, self.requirements_filename)
         if os.path.exists(requirements_path):
-            subprocess.check_call(self.pip('-r', requirements_path))
+            check_call(self.pip('-r', requirements_path))
 
     def run_tests(self):
         python = self.venv_bin('python')
         setup_py = os.path.join(self.sourcedirectory, 'setup.py')
         if os.path.exists(setup_py):
-            subprocess.check_call([python, 'setup.py', 'test'], cwd=self.sourcedirectory)
+            check_call([python, 'setup.py', 'test'], cwd=self.sourcedirectory)
 
     def find_script_files(self):
         """Find list of files containing python shebangs in the bin directory"""
@@ -218,7 +227,7 @@ class Deployment(object):
         for f in self.find_script_files():
             regex = r's-^#!.*bin/\(env \)\?{names}\"\?-#!{pythonpath}-'\
                 .format(names=_PYTHON_INTERPRETERS_REGEX, pythonpath=re.escape(pythonpath))
-            subprocess.check_call(['sed', '-i', regex, f])
+            check_call(['sed', '-i', regex, f])
 
     def fix_activate_path(self):
         """Replace the `VIRTUAL_ENV` path in bin/activate to reflect the
@@ -255,7 +264,7 @@ class Deployment(object):
 
     def install_package(self):
         if not self.skip_install:
-            subprocess.check_call(self.pip('.'), cwd=os.path.abspath(self.sourcedirectory))
+            check_call(self.pip('.'), cwd=os.path.abspath(self.sourcedirectory))
 
     def fix_local_symlinks(self):
         # The virtualenv might end up with a local folder that points outside the package
