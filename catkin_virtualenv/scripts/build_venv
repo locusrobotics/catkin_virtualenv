@@ -116,7 +116,10 @@ if __name__ == '__main__':
             args.retries -= 1
             if args.retries >= 0:
                 print("Error, clearing virtualenv and retrying: {}".format(e), file=sys.stderr)
-                shutil.rmtree(root_dir)
+                try:
+                    shutil.rmtree(root_dir)
+                except:
+                    pass
                 continue
             else:
                 raise
