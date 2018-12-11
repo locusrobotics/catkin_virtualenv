@@ -46,8 +46,6 @@ def find_python(version):
     return python_executable
 
 def check_venv_module(python_executable):
-    subprocess.check_call("which python || echo 'cant find python'", shell=True)
-    subprocess.check_call("which virtualenv || echo 'cant find virtualenv'", shell=True)
     try:
         with open(os.devnull, 'w') as devnull:
             # "-c 'import venv'" does not work with the subprocess module, but '-cimport venv' does

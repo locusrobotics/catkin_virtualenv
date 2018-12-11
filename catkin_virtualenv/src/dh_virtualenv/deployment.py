@@ -34,9 +34,9 @@ PYTHON_INTERPRETERS = ['python', 'pypy', 'ipy', 'jython']
 _PYTHON_INTERPRETERS_REGEX = r'\(' + r'\|'.join(PYTHON_INTERPRETERS) + r'\)'
 
 
-# (pbovbel)
+# (pbovbel) Log subprocess calls
 def check_call(cmd, *args, **kwargs):
-    print(' '.join(cmd), file=sys.stderr)
+    print(' '.join(cmd))
     subprocess.check_call(cmd, *args, **kwargs)
 
 
@@ -175,6 +175,8 @@ class Deployment(object):
                 virtualenv.extend(self.extra_virtualenv_arg)
 
         virtualenv.append(self.package_dir)
+        print(subprocess.check_output("which python || echo 'cant find python'", shell=True), file=sys.stderr)
+        print(subprocess.check_output("which virtualenv || echo 'cant find virtualenv'", shell=True), file=sys.stderr)
         check_call(virtualenv)
 
     def venv_bin(self, binary_name):
