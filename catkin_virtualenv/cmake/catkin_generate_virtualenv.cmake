@@ -100,7 +100,7 @@ function(catkin_generate_virtualenv)
   # Generate a virtualenv, fixing up paths for devel-space
   add_custom_command(OUTPUT ${venv_devel_dir}
     COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv build_venv
-      --root-dir ${venv_devel_dir} --root-dir ${venv_install_dir} --requirements ${generated_requirements}
+      --root-dir ${venv_devel_dir} --requirements ${generated_requirements}
       --python-version ${ARG_PYTHON_VERSION} ${venv_args} --extra-pip-args ${processed_pip_args}
     WORKING_DIRECTORY ${venv_devel_dir}/..
     DEPENDS ${generated_requirements}
@@ -109,7 +109,7 @@ function(catkin_generate_virtualenv)
   # Generate a virtualenv, fixing up paths for install-space
   add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/${venv_dir}
     COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv build_venv
-      --root-dir ${venv_install_dir} --root-dir ${venv_install_dir} --requirements ${generated_requirements}
+      --root-dir ${venv_install_dir} --requirements ${generated_requirements}
       --python-version ${ARG_PYTHON_VERSION} ${venv_args} --extra-pip-args ${processed_pip_args}
     DEPENDS ${generated_requirements}
   )
