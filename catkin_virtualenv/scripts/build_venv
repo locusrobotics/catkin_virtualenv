@@ -42,7 +42,7 @@ def delete_bytecode(directory):
 def find_python(version):
     python_executable = find_executable('python' + version)
     if not python_executable:
-        raise RuntimeError("Unable to find python executable 'python{}''".format(args.python_version), file=sys.stderr)
+        raise RuntimeError("Unable to find python executable 'python{}''".format(args.python_version))
     return python_executable
 
 def check_venv_module(python_executable):
@@ -64,6 +64,8 @@ if __name__ == '__main__':
         '--root-dir', required=True, help="Directory to which the virtualenv's hardcoded paths should be rewritten.")
     parser.add_argument(
         '--python-version', help="Build the virtualenv with which python major version.")
+    parser.add_argument(
+        '--retries', type=int, default=0, help="Number of times to retry buiding virtualenv.")
     parser.add_argument(
         '--use-system-packages', action="store_true", help="Use system site packages.")
     parser.add_argument(
@@ -88,23 +90,38 @@ if __name__ == '__main__':
         builtin_venv=check_venv_module(python_executable),
     )
 
-    print('Generating virtualenv in {}'.format(deploy.package_dir))
-    deploy.create_virtualenv()
+    while True:
+        try:
+            print('Generating virtualenv in {}'.format(deploy.package_dir))
+            deploy.create_virtualenv()
 
-    print('Installing requirements')
-    deploy.install_dependencies()
+            print('Installing requirements')
+            deploy.install_dependencies()
 
-    print('Fixing virtualenv root to {}'.format(deploy.virtualenv_install_dir))
-    deploy.fix_activate_path()
-    deploy.fix_shebangs()
-    deploy.fix_local_symlinks()
+            print('Fixing virtualenv root to {}'.format(deploy.virtualenv_install_dir))
+            deploy.fix_activate_path()
+            deploy.fix_shebangs()
+            deploy.fix_local_symlinks()
 
-    # Remove all .py[co] files since they embed absolute paths
-    delete_bytecode(deploy.package_dir)
+            # Remove all .py[co] files since they embed absolute paths
+            delete_bytecode(deploy.package_dir)
 
-    local_dir = os.path.join(deploy.package_dir, 'local')
-    if os.path.exists(local_dir):
-        # Remove local folder
-        shutil.rmtree(local_dir)
+            local_dir = os.path.join(deploy.package_dir, 'local')
+            if os.path.exists(local_dir):
+                # Remove local folder
+                shutil.rmtree(local_dir)
+        except Exception as e:
+            args.retries -= 1
+            if args.retries >= 0:
+                print("Error, clearing virtualenv and retrying: {}".format(e), file=sys.stderr)
+                try:
+                    shutil.rmtree(root_dir)
+                except:
+                    pass
+                continue
+            else:
+                raise
+
+        break
 
     sys.exit(0)
