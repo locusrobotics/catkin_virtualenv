@@ -25,7 +25,6 @@ import os
 import re
 import shutil
 import subprocess
-import sys
 import tempfile
 
 ROOT_ENV_KEY = 'DH_VIRTUALENV_INSTALL_ROOT'
@@ -175,8 +174,6 @@ class Deployment(object):
                 virtualenv.extend(self.extra_virtualenv_arg)
 
         virtualenv.append(self.package_dir)
-        print(subprocess.check_output("which python || echo 'cant find python'", shell=True), file=sys.stderr)
-        print(subprocess.check_output("which virtualenv || echo 'cant find virtualenv'", shell=True), file=sys.stderr)
         check_call(virtualenv)
 
     def venv_bin(self, binary_name):
