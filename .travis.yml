@@ -17,7 +17,6 @@ env:
     - ROS_PARALLEL_JOBS=-j1
     - ROS_PARALLEL_TEST_JOBS=-j1
   matrix:
-    - ROS_DISTRO="indigo"
     - ROS_DISTRO="kinetic"
     - ROS_DISTRO="lunar"
     - ROS_DISTRO="melodic"
