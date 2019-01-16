@@ -2,8 +2,8 @@
 Changelog for package catkin_virtualenv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.3.0 (2019-01-16)
+------------------
 * Add retry to virtualenv creation (`#34 <https://github.com/locusrobotics/catkin_virtualenv/issues/34>`_)
   * Echo check_call to stderr
   * Fixup bug from `#33 <https://github.com/locusrobotics/catkin_virtualenv/issues/33>`_
