@@ -155,23 +155,23 @@ class Deployment(object):
         else:
             virtualenv = ['virtualenv']
 
-            if self.use_system_packages:
-                virtualenv.append('--system-site-packages')
-            else:
-                virtualenv.append('--no-site-packages')
-
-            if self.setuptools:
-                virtualenv.append('--setuptools')
-
-            if self.verbose:
-                virtualenv.append('--verbose')
-
             if self.python:
                 virtualenv.extend(('--python', self.python))
 
-            # Add in any user supplied pip args
-            if self.extra_virtualenv_arg:
-                virtualenv.extend(self.extra_virtualenv_arg)
+        if self.use_system_packages:
+            virtualenv.append('--system-site-packages')
+        else:
+            virtualenv.append('--no-site-packages')
+
+        if self.setuptools:
+            virtualenv.append('--setuptools')
+
+        if self.verbose:
+            virtualenv.append('--verbose')
+
+        # Add in any user supplied pip args
+        if self.extra_virtualenv_arg:
+            virtualenv.extend(self.extra_virtualenv_arg)
 
         virtualenv.append(self.package_dir)
         check_call(virtualenv)
