@@ -235,8 +235,9 @@ class Deployment(object):
         """
         pythonpath = os.path.join(self.virtualenv_install_dir, 'bin/python')
         for f in self.find_script_files():
-            regex = (r's-^#!.*bin/\(env \)\?{names}\"\?-#!{pythonpath}-;'
-                     r"s-^'''exec'.*bin/{names}-'''exec' {pythonpath}-"
+            regex = (
+                r's-^#!.*bin/\(env \)\?{names}\"\?-#!{pythonpath}-;'
+                r"s-^'''exec'.*bin/{names}-'''exec' {pythonpath}-"
             ).format(names=_PYTHON_INTERPRETERS_REGEX, pythonpath=re.escape(pythonpath))
             check_call(['sed', '-i', regex, f])
 
