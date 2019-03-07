@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5.1)
-project(test_catkin_virtualenv_py3)
+project(test_catkin_virtualenv_py3_isolated)
 
 find_package(catkin REQUIRED COMPONENTS catkin_virtualenv)
 
@@ -7,6 +7,7 @@ catkin_package()
 
 catkin_generate_virtualenv(
   PYTHON_VERSION 3
+  USE_SYSTEM_PACKAGES TRUE
 )
 
 install(FILES requirements.txt
