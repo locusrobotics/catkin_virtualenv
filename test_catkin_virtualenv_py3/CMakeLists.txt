@@ -7,7 +7,7 @@ catkin_package()
 
 catkin_generate_virtualenv(
   PYTHON_VERSION 3
-  USE_SYSTEM_PACKAGES FALSE
+  # USE_SYSTEM_PACKAGES FALSE
 )
 
 install(FILES requirements.txt
