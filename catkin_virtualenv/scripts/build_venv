@@ -45,11 +45,11 @@ def find_python(version):
         raise RuntimeError("Unable to find python executable 'python{}''".format(args.python_version))
     return python_executable
 
-def check_venv_module(python_executable):
+def check_module(python_executable, module):
     try:
         with open(os.devnull, 'w') as devnull:
             # "-c 'import venv'" does not work with the subprocess module, but '-cimport venv' does
-            subprocess.check_call([python_executable, '-cimport venv'], stderr=devnull)
+            subprocess.check_call([python_executable, '-cimport {}'.format(module)], stderr=devnull)
         return True
     except subprocess.CalledProcessError:
         return False
@@ -87,7 +87,8 @@ if __name__ == '__main__':
         python=python_executable,
         extra_pip_arg=args.extra_pip_args[1:-1].split(' '),
         log_file=None,
-        builtin_venv=check_venv_module(python_executable),
+        builtin_venv=check_module(python_executable, 'venv'),
+        builtin_pip=check_module(python_executable, 'pip'),
     )
 
     while True:

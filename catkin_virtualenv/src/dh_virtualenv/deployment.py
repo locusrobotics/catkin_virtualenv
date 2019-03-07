@@ -36,7 +36,7 @@ _PYTHON_INTERPRETERS_REGEX = r'\(' + r'\|'.join(PYTHON_INTERPRETERS) + r'\)'
 # (pbovbel) Log subprocess calls
 def check_call(cmd, *args, **kwargs):
     print(' '.join(cmd))
-    subprocess.check_call(cmd, *args, **kwargs)
+    return subprocess.check_call(cmd, *args, **kwargs)
 
 
 class Deployment(object):
@@ -50,6 +50,7 @@ class Deployment(object):
                  setuptools=False,
                  python=None,
                  builtin_venv=False,
+                 builtin_pip=False,
                  sourcedirectory=None,
                  verbose=False,
                  extra_pip_arg=[],
@@ -98,8 +99,12 @@ class Deployment(object):
         # executable. Otherwise it would just blow up due to too long
         # shebang-line.
         python = self.venv_bin('python')
-        self.pip_preinstall_prefix = [python, self.venv_bin('pip')]
-        self.pip_prefix = [python, self.venv_bin(pip_tool)]
+        if builtin_pip:
+            self.pip_preinstall_prefix = [python, '-m', 'pip']
+            self.pip_prefix = [python, '-m', pip_tool]
+        else:
+            self.pip_preinstall_prefix = [python, self.venv_bin('pip')]
+            self.pip_prefix = [python, self.venv_bin(pip_tool)]
         self.pip_args = ['install']
 
         if self.verbose:
@@ -137,6 +142,7 @@ class Deployment(object):
                    setuptools=options.setuptools,
                    python=options.python,
                    builtin_venv=options.builtin_venv,
+                   builtin_pip=options.builtin_pip,
                    sourcedirectory=options.sourcedirectory,
                    verbose=verbose,
                    extra_pip_arg=options.extra_pip_arg,
@@ -215,12 +221,13 @@ class Deployment(object):
 
     def find_script_files(self):
         """Find list of files containing python shebangs in the bin directory"""
-        command = ['grep', '-l', '-r', '-e',
-                   r'^#!.*bin/\(env \)\?{0}'.format(_PYTHON_INTERPRETERS_REGEX),
+        command = ['grep', '-l', '-r',
+                   '-e', r'^#!.*bin/\(env \)\?{0}'.format(_PYTHON_INTERPRETERS_REGEX),
+                   '-e', r"^'''exec.*bin/{0}".format(_PYTHON_INTERPRETERS_REGEX),
                    self.bin_dir]
         grep_proc = subprocess.Popen(command, stdout=subprocess.PIPE)
         files, stderr = grep_proc.communicate()
-        return files.decode('utf-8').strip().split('\n')
+        return set(f for f in files.decode('utf-8').strip().split('\n') if f)
 
     def fix_shebangs(self):
         """Translate /usr/bin/python and /usr/bin/env python shebang
@@ -228,8 +235,10 @@ class Deployment(object):
         """
         pythonpath = os.path.join(self.virtualenv_install_dir, 'bin/python')
         for f in self.find_script_files():
-            regex = r's-^#!.*bin/\(env \)\?{names}\"\?-#!{pythonpath}-'\
-                .format(names=_PYTHON_INTERPRETERS_REGEX, pythonpath=re.escape(pythonpath))
+            regex = (
+                r's-^#!.*bin/\(env \)\?{names}\"\?-#!{pythonpath}-;'
+                r"s-^'''exec'.*bin/{names}-'''exec' {pythonpath}-"
+            ).format(names=_PYTHON_INTERPRETERS_REGEX, pythonpath=re.escape(pythonpath))
             check_call(['sed', '-i', regex, f])
 
     def fix_activate_path(self):
