@@ -2,6 +2,18 @@
 Changelog for package catkin_virtualenv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Pin pip to known-working version (`#38 <https://github.com/locusrobotics/catkin_virtualenv/issues/38>`_)
+* Fix python3 isolated builds (`#37 <https://github.com/locusrobotics/catkin_virtualenv/issues/37>`_)
+  - Pull in an upstream fix to deal with new shebang styles
+  - add a new test for isolated py3 virtualenvs
+  - switch to using an internal pip module
+* venv module doesn't support no-site-packages arg
+* Pass arguments to internal venv module if specified (`#36 <https://github.com/locusrobotics/catkin_virtualenv/issues/36>`_)
+* Add missing dependency
+* Contributors: Paul Bovbel
+
 0.3.0 (2019-01-16)
 ------------------
 * Add retry to virtualenv creation (`#34 <https://github.com/locusrobotics/catkin_virtualenv/issues/34>`_)
