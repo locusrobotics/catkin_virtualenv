@@ -2,8 +2,8 @@
 Changelog for package catkin_virtualenv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.0 (2019-03-18)
+------------------
 * Pin pip to known-working version (`#38 <https://github.com/locusrobotics/catkin_virtualenv/issues/38>`_)
 * Fix python3 isolated builds (`#37 <https://github.com/locusrobotics/catkin_virtualenv/issues/37>`_)
   - Pull in an upstream fix to deal with new shebang styles
