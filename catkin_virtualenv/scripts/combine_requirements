@@ -24,7 +24,8 @@ import re
 import sys
 
 from collections import namedtuple
-from packaging.requirements import Requirement
+from packaging.requirements import Requirement, InvalidRequirement
+from catkin_virtualenv.requirements import VcsRequirement
 
 comment_regex = re.compile(r'\s*#.*')
 
@@ -40,7 +41,16 @@ def combine_requirements(requirements_list, output_file):
         contents = comment_regex.sub('', contents)
         for requirement_string in contents.splitlines():
             if requirement_string and not requirement_string.isspace():
-                requirement = Requirement(requirement_string)
+                # Hack in support for VCS requirements. First try to match a SemVer requirement then a VCS requirement.
+                try:
+                    requirement = Requirement(requirement_string)
+                except InvalidRequirement as e:
+                    try:
+                        requirement = VcsRequirement(requirement_string)
+                    except RuntimeError as err:
+                        raise RuntimeError(
+                            "Could not match requirement for VCS or SemVer: {}, {}".format(str(e), str(err)))
+
                 if requirement.name not in combined_requirements:
                     combined_requirements[requirement.name] = CombinedRequirement(
                         requirement=requirement,

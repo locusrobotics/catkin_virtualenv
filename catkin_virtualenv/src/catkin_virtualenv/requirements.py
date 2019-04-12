@@ -65,6 +65,57 @@ class ReqMergeException(RuntimeError):
         return "Cannot merge requirements {} and {}".format(self.req, self.other)
 
 
+class VcsRequirement(object):
+    '''A non-semver requirement from a version control source.
+    eg. svn+http://myrepo/svn/MyApp#egg=MyApp
+    '''
+
+    # Borrowing https://github.com/pypa/pipenv/tree/dde2e52cb8bc9bfca7af6c6b1a4576faf00e84f1/pipenv/vendor/requirements
+    VCS_SCHEMES = [
+        'git',
+        'git+https',
+        'git+ssh',
+        'git+git',
+        'hg+http',
+        'hg+https',
+        'hg+static-http',
+        'hg+ssh',
+        'svn',
+        'svn+svn',
+        'svn+http',
+        'svn+https',
+        'svn+ssh',
+        'bzr+http',
+        'bzr+https',
+        'bzr+ssh',
+        'bzr+sftp',
+        'bzr+ftp',
+        'bzr+lp',
+    ]
+
+    name_regex = re.compile(
+        r'^(?P<scheme>{0})://'.format(r'|'.join(
+            [scheme.replace('+', r'\+') for scheme in VCS_SCHEMES])) +
+        r'((?P<login>[^/@]+)@)?'
+        r'(?P<path>[^#@]+)'
+        r'(@(?P<revision>[^#]+))?'
+        r'(#egg=(?P<name>[^&]+))?$'
+    )
+
+    def __init__(self, string):
+        self.name = string
+
+        if not self.name_regex.match(string):
+            raise RuntimeError("Invalid VCS requirement name {}, must match {}".format(string, self.name_regex))
+
+    def __str__(self):
+        return self.name
+
+    def __add__(self, other):
+        # Not sure where this gets used. Because we don't do versions it may be safe to just always return self.
+        return copy(self)
+
+
 class Requirement(object):
     name_regex = re.compile("^[][A-Za-z0-9._-]+$")
 
