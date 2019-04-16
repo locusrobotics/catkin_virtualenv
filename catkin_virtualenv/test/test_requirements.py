@@ -22,4 +22,18 @@ from catkin_virtualenv.requirements import VcsRequirement
 
 
 class TestRequirements(unittest.TestCase):
-    pass
+
+    def test_vcs_requirement_parse(self):
+        string = "git+git://github.com/pytransitions/transitions@dev-async#egg=transitions"
+        req = VcsRequirement(string)
+        self.assertEqual(req.name, "transitions")
+
+    def test_vcs_requirement_parse_no_name(self):
+        string = "git+git://github.com/pytransitions/transitions@dev-async"
+        with self.assertRaises(RuntimeError):
+            _ = VcsRequirement(string)
+
+    def test_vcs_requirement_parse_invalid(self):
+        string = "asdf"
+        with self.assertRaises(RuntimeError):
+            _ = VcsRequirement(string)

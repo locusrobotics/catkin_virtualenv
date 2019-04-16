@@ -57,10 +57,10 @@ class VcsRequirement(object):
     )
 
     def __init__(self, string):
-        self.name = string
+        match = self.name_regex.search(string)
+        if match is None:
+            raise RuntimeError("No match for {}".format(self.name_regex.pattern))
 
-        if not self.name_regex.match(string):
-            raise RuntimeError("Invalid VCS requirement name {}, must match {}".format(string, self.name_regex))
-
-    def __str__(self):
-        return self.name
+        self.name = match.group('name')
+        if self.name is None:
+            raise RuntimeError("No project name '#egg=<name>' was provided")
