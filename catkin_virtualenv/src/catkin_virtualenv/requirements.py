@@ -18,6 +18,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 import re
 
+from packaging.requirements import InvalidRequirement
 
 class VcsRequirement(object):
     '''A non-semver requirement from a version control system.
@@ -59,8 +60,8 @@ class VcsRequirement(object):
     def __init__(self, string):
         match = self.name_regex.search(string)
         if match is None:
-            raise RuntimeError("No match for {}".format(self.name_regex.pattern))
+            raise InvalidRequirement("No match for {}".format(self.name_regex.pattern))
 
         self.name = match.group('name')
         if self.name is None:
-            raise RuntimeError("No project name '#egg=<name>' was provided")
+            raise InvalidRequirement("No project name '#egg=<name>' was provided")

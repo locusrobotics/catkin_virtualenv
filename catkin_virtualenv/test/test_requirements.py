@@ -19,6 +19,7 @@
 import unittest
 
 from catkin_virtualenv.requirements import VcsRequirement
+from packaging.requirements import InvalidRequirement
 
 
 class TestRequirements(unittest.TestCase):
@@ -30,10 +31,10 @@ class TestRequirements(unittest.TestCase):
 
     def test_vcs_requirement_parse_no_name(self):
         string = "git+git://github.com/pytransitions/transitions@dev-async"
-        with self.assertRaises(RuntimeError):
+        with self.assertRaises(InvalidRequirement):
             _ = VcsRequirement(string)
 
     def test_vcs_requirement_parse_invalid(self):
         string = "asdf"
-        with self.assertRaises(RuntimeError):
+        with self.assertRaises(InvalidRequirement):
             _ = VcsRequirement(string)

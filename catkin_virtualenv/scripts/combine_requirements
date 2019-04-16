@@ -47,7 +47,7 @@ def combine_requirements(requirements_list, output_file):
                 except InvalidRequirement as semver_err:
                     try:
                         requirement = VcsRequirement(requirement_string)
-                    except RuntimeError as vcs_err:
+                    except InvalidRequirement as vcs_err:
                         raise RuntimeError(
                             "Could not match requirement {} for VCS ({}) or SemVer ({})".format(
                                 requirement_string, str(vcs_err), str(semver_err)))
