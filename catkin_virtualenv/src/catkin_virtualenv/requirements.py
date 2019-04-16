@@ -68,9 +68,6 @@ class ReqMergeException(RuntimeError):
 class VcsRequirement(object):
     '''A non-semver requirement from a version control system.
     eg. svn+http://myrepo/svn/MyApp#egg=MyApp
-
-    I'm reimplementing the Requirement class below, but it looks like we don't use it. So maybe some of this
-    reimplementation is unnecessary. Instead we might want to be reimplementing `packaging.Requirement`
     '''
 
     # Borrowing https://github.com/pypa/pipenv/tree/dde2e52cb8bc9bfca7af6c6b1a4576faf00e84f1/pipenv/vendor/requirements
@@ -113,10 +110,6 @@ class VcsRequirement(object):
 
     def __str__(self):
         return self.name
-
-    def __add__(self, other):
-        # Not sure where this gets used. Because we don't do versions it may be safe to just always return self.
-        return copy(self)
 
 
 class Requirement(object):
