@@ -24,9 +24,10 @@ import re
 import sys
 
 from collections import namedtuple
-from packaging.requirements import Requirement
+from packaging.requirements import Requirement, InvalidRequirement
+from catkin_virtualenv.requirements import VcsRequirement
 
-comment_regex = re.compile(r'\s*#.*')
+comment_regex = re.compile(r'\s*#\s.*$', flags=re.MULTILINE)
 
 CombinedRequirement = namedtuple("CombinedRequirement", "requirement source suppressed_set")
 SuppressedRequirement = namedtuple("SuppressedRequirement", "requirement source")
@@ -37,10 +38,23 @@ def combine_requirements(requirements_list, output_file):
     combined_requirements = {}  # type: Dict[str, requirements.Requirement]
     for requirements_file in requirements_list:
         contents = requirements_file.read()
+
+        # Filter out any 'comment' lines
         contents = comment_regex.sub('', contents)
+
         for requirement_string in contents.splitlines():
             if requirement_string and not requirement_string.isspace():
-                requirement = Requirement(requirement_string)
+                # First try to match a SemVer requirement then a VCS requirement.
+                try:
+                    requirement = Requirement(requirement_string)
+                except InvalidRequirement as semver_err:
+                    try:
+                        requirement = VcsRequirement(requirement_string)
+                    except InvalidRequirement as vcs_err:
+                        raise RuntimeError(
+                            "Could not match requirement {} for VCS ({}) or SemVer ({})".format(
+                                requirement_string, str(vcs_err), str(semver_err)))
+
                 if requirement.name not in combined_requirements:
                     combined_requirements[requirement.name] = CombinedRequirement(
                         requirement=requirement,
