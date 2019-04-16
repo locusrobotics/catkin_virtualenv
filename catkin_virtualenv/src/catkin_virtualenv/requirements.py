@@ -58,10 +58,16 @@ class VcsRequirement(object):
     )
 
     def __init__(self, string):
-        match = self.name_regex.search(string)
+        self.string = string
+
+        match = self.name_regex.search(self.string)
         if match is None:
             raise InvalidRequirement("No match for {}".format(self.name_regex.pattern))
 
         self.name = match.group('name')
         if self.name is None:
             raise InvalidRequirement("No project name '#egg=<name>' was provided")
+
+
+    def __str__(self):
+        return self.string
