@@ -20,6 +20,7 @@ import re
 
 from packaging.requirements import InvalidRequirement
 
+
 class VcsRequirement(object):
     '''A non-semver requirement from a version control system.
     eg. svn+http://myrepo/svn/MyApp#egg=MyApp
@@ -67,7 +68,6 @@ class VcsRequirement(object):
         self.name = match.group('name')
         if self.name is None:
             raise InvalidRequirement("No project name '#egg=<name>' was provided")
-
 
     def __str__(self):
         return self.string
