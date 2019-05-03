@@ -17,8 +17,6 @@ env:
     - ROS_PARALLEL_JOBS=-j1
     - ROS_PARALLEL_TEST_JOBS=-j1
   matrix:
-    - ROS_DISTRO="kinetic"
-    - ROS_DISTRO="lunar"
     - ROS_DISTRO="melodic"
 before_script:
   - git clone https://github.com/ros-industrial/industrial_ci.git .ci_config
