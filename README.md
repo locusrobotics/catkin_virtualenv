@@ -76,11 +76,11 @@ catkin_install_python(
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 ```
 
-Departing from convention, if these scripts are executable, `catkin build` will make them non-executable. This is
-because `catkin_install_python` will now generate new wrapper scripts into the devel and install space that bootstrap
-the virtualenv and `rosrun` gets confused if there's two executable scripts by the same name.
+Departing from convention, `scripts/do_python_things` should not be executable, and `catkin build` will warn to that effect.
+This package works by hijacking `catkin_install_python` to generate new wrapper scripts into the devel and install space,
+which bootstrap the `virtualenv`. In addition, `rosrun` gets confused if there's two executable files with the same name.
 
-Unit and integration tests will automatically pick up the virtualenv as well. The only change is to add a dependency
+Unit and integration tests will automatically pick up the `virtualenv` as well. The only change is to add a dependency
 from the test target to the virtualenv target:
 
 ```cmake
