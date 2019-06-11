@@ -2,6 +2,11 @@
 Changelog for package catkin_virtualenv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* VCS support (`#40 <https://github.com/locusrobotics/catkin_virtualenv/issues/40>`_)
+* Contributors: Paul Bovbel
+
 0.4.0 (2019-03-18)
 ------------------
 * Pin pip to known-working version (`#38 <https://github.com/locusrobotics/catkin_virtualenv/issues/38>`_)
