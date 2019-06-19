@@ -65,7 +65,7 @@ def process_package(package_name, soft_fail=True):
             return [], []
     else:
         package = parse_package(package_path)
-        dependencies = package.build_depends + package.exec_depends + package.test_depends
+        dependencies = package.build_depends + package.test_depends
         return parse_exported_requirements(package), dependencies
 
 
