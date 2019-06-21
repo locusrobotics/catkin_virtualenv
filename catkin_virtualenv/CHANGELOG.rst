@@ -2,8 +2,8 @@
 Changelog for package catkin_virtualenv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.5.0 (2019-06-21)
+------------------
 * Don't inherit requirements from exec_depends (`#45 <https://github.com/locusrobotics/catkin_virtualenv/issues/45>`_)
 * Contributors: Paul Bovbel
 
