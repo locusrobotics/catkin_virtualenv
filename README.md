@@ -42,6 +42,8 @@ install(FILES requirements.txt
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 ```
 
+If a catkin package exports dependencies in a `requirements.txt` file, any dependent catkin package that bundles a virtualenv (see below) will inherit those dependencies.
+
 ## Bundling virtualenv
 
 It's possible to bundle all of a catkin package's python requirements, as well as those of its catkin dependencies,
@@ -51,10 +53,14 @@ loader around the specified python scripts.
 This operation does not do any dependency resolution - similar to how `pip` operates, the topmost dependency declaration
 'wins' (https://github.com/pypa/pip/issues/988).
 
-Add an build dependency to `package.xml`:
+Add an build dependency on catkin_virtualenv to `package.xml`, as well as on any library packages you may want. Traditionally
 
 ```xml
 <build_depend>catkin_virtualenv</build_depend>
+
+<!-- In a catkin/python world, this would normally be an exec_depend. However, if `some_python_library` exports 
+requirements.txt, it needs to be pulled in at build time as well -->
+<depend>some_python_library</depend>
 ```
 
 In CMakeLists.txt:
