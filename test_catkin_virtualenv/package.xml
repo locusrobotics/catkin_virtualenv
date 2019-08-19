@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 -->
 <package format="2">
   <name>test_catkin_virtualenv</name>
-  <version>0.4.0</version>
+  <version>0.4.1</version>
   <description>Package to test catkin_virtualenv.</description>
 
   <maintainer email="pbovbel@locusrobotics.com">Paul Bovbel</maintainer>
