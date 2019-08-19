@@ -5,6 +5,12 @@ Changelog for package test_catkin_virtualenv_py3_isolated
 0.4.1 (2019-08-19)
 ------------------
 
+Forthcoming
+-----------
+* 0.4.1
+* Update changelog
+* Contributors: Paul Bovbel
+
 0.4.0 (2019-03-18)
 ------------------
 * Fix python3 isolated builds (`#37 <https://github.com/locusrobotics/catkin_virtualenv/issues/37>`_)
