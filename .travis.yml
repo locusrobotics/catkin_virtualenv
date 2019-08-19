@@ -25,4 +25,4 @@ script:
   - source .ci_config/travis.sh
 branches:
   only:
-  - devel
+  - master
