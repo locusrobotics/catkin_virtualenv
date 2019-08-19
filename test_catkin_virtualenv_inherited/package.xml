@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 -->
 <package format="2">
   <name>test_catkin_virtualenv_inherited</name>
-  <version>0.5.0</version>
+  <version>0.5.1</version>
   <description>Package to test inherited requirements.</description>
 
   <maintainer email="pbovbel@locusrobotics.com">Paul Bovbel</maintainer>
