@@ -2,6 +2,13 @@
 Changelog for package catkin_virtualenv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* catkin-pkg-modules has disappeared off pypi (`#46 <https://github.com/locusrobotics/catkin_virtualenv/issues/46>`_)
+  * catkin-pkg-modules has disappeared off pypi, but catkin-pkg is still there
+  * Version all requirements
+* Contributors: Paul Bovbel
+
 0.5.0 (2019-06-21)
 ------------------
 * Don't inherit requirements from exec_depends (`#45 <https://github.com/locusrobotics/catkin_virtualenv/issues/45>`_)
