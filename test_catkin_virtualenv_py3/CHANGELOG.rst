@@ -2,6 +2,9 @@
 Changelog for package test_catkin_virtualenv_py3
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.4.0 (2019-03-18)
 ------------------
 
