@@ -10,8 +10,8 @@ Changelog for package catkin_virtualenv
   (cherry picked from commit 3b189e9eae3d72f7d3fbea2264c04e5cd7f8b95d)
 * Contributors: Paul Bovbel
 
-Forthcoming
------------
+0.4.2 (2019-08-19)
+------------------
 * 0.4.1
 * Update changelog
 * catkin-pkg-modules has disappeared off pypi (`#46 <https://github.com/locusrobotics/catkin_virtualenv/issues/46>`_)

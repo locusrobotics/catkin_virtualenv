@@ -5,8 +5,8 @@ Changelog for package test_catkin_virtualenv_py3_isolated
 0.4.1 (2019-08-19)
 ------------------
 
-Forthcoming
------------
+0.4.2 (2019-08-19)
+------------------
 * 0.4.1
 * Update changelog
 * Contributors: Paul Bovbel
