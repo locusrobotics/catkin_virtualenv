@@ -47,7 +47,6 @@ class Deployment(object):
                  pip_tool='pip',
                  upgrade_pip=False,
                  index_url=None,
-                 setuptools=False,
                  python=None,
                  builtin_venv=False,
                  builtin_pip=False,
@@ -87,7 +86,6 @@ class Deployment(object):
         self.pip_version = pip_version
         self.extra_virtualenv_arg = extra_virtualenv_arg
         self.verbose = verbose
-        self.setuptools = setuptools
         self.python = python
         self.builtin_venv = builtin_venv
         self.sourcedirectory = '.' if sourcedirectory is None else sourcedirectory
@@ -130,28 +128,6 @@ class Deployment(object):
         # (pbovbel) Set pip_upgrade_args here to keep flags like -q, disregard L111 above.
         self.pip_upgrade_args = self.pip_args
 
-    @classmethod
-    def from_options(cls, package, options):
-        verbose = options.verbose or os.environ.get('DH_VERBOSE') == '1'
-        return cls(package,
-                   extra_urls=options.extra_index_url,
-                   preinstall=options.preinstall,
-                   pip_tool=options.pip_tool,
-                   upgrade_pip=options.upgrade_pip,
-                   index_url=options.index_url,
-                   setuptools=options.setuptools,
-                   python=options.python,
-                   builtin_venv=options.builtin_venv,
-                   builtin_pip=options.builtin_pip,
-                   sourcedirectory=options.sourcedirectory,
-                   verbose=verbose,
-                   extra_pip_arg=options.extra_pip_arg,
-                   extra_virtualenv_arg=options.extra_virtualenv_arg,
-                   use_system_packages=options.use_system_packages,
-                   skip_install=options.skip_install,
-                   install_suffix=options.install_suffix,
-                   requirements_filename=options.requirements_filename)
-
     def clean(self):
         shutil.rmtree(self.debian_root)
 
@@ -173,11 +149,12 @@ class Deployment(object):
             else:
                 virtualenv.append('--no-site-packages')
 
-        if self.setuptools:
-            virtualenv.append('--setuptools')
+            # py2's virtualenv command will try install latest setuptools. setuptools>=45 not compatible with py2
+            virtualenv.append('--no-setuptools')
+            self.preinstall = ['setuptools<45'] + self.preinstall
 
-        if self.verbose:
-            virtualenv.append('--verbose')
+            if self.verbose:
+                virtualenv.append('--verbose')
 
         # Add in any user supplied pip args
         if self.extra_virtualenv_arg:
@@ -204,8 +181,8 @@ class Deployment(object):
             # (pbovbel) allow pinning the pip version
             pip_package = 'pip==' + self.pip_version if self.pip_version else 'pip'
             # First, bootstrap pip with a reduced option set (well-supported options)
-            print(self.pip_preinstall_prefix + self.pip_upgrade_args + ['-U', pip_package])
             check_call(self.pip_preinstall_prefix + self.pip_upgrade_args + ['-U', pip_package])
+
         if self.preinstall:
             check_call(self.pip_preinstall(*self.preinstall))
 
