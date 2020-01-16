@@ -47,7 +47,7 @@ class Deployment(object):
                  pip_tool='pip',
                  upgrade_pip=False,
                  index_url=None,
-                 setuptools=False,
+                 setuptools=True,
                  python=None,
                  builtin_venv=False,
                  builtin_pip=False,
@@ -173,11 +173,11 @@ class Deployment(object):
             else:
                 virtualenv.append('--no-site-packages')
 
-        if self.setuptools:
-            virtualenv.append('--setuptools')
+            if not self.setuptools:
+                virtualenv.append('--no-setuptools')
 
-        if self.verbose:
-            virtualenv.append('--verbose')
+            if self.verbose:
+                virtualenv.append('--verbose')
 
         # Add in any user supplied pip args
         if self.extra_virtualenv_arg:
