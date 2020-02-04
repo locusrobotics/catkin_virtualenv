@@ -4,12 +4,6 @@ import sys
 
 from setproctitle import setproctitle
 
-PREFIX = "__name:="
-
-for arg in sys.argv:
-    if arg.startswith(PREFIX):
-        node_name = arg[len(PREFIX):]
-        setproctitle(' '.join([node_name] + sys.argv[1:]))
-        break
-
-exec(open("${program_path}").read())
+program_path = "${program_path}"
+setproctitle(' '.join([program_path] + sys.argv[1:]))
+exec(open(program_path).read())
