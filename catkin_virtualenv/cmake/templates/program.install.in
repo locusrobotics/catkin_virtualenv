@@ -1,5 +1,15 @@
-#!/usr/bin/env bash
-node_name="$(echo "$@" | sed 's/.*__name:=\([^ ]*\).*/\1/')"
-name_prefix="$([ -v node_name ] && echo "-a $node_name")"
-exec $name_prefix ${${PROJECT_NAME}_VENV_INSTALL_DIR}/bin/python \
-    ${CMAKE_INSTALL_PREFIX}/${program_install_location}/${program_basename} "$@"
+#!${${PROJECT_NAME}_VENV_INSTALL_DIR}/bin/python
+import re
+import sys
+
+from setproctitle import setproctitle
+
+PREFIX = "__name:="
+
+for arg in sys.argv:
+    if arg.startswith(PREFIX):
+        node_name = arg[len(PREFIX):]
+        setproctitle(' '.join([node_name] + sys.argv[1:]))
+        break
+
+exec(open("${CMAKE_INSTALL_PREFIX}/${program_install_location}/${program_basename}").read())
