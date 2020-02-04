@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-${${PROJECT_NAME}_VENV_INSTALL_DIR}/bin/python ${CMAKE_INSTALL_PREFIX}/${program_install_location}/${program_basename} "$@"
+exec ${${PROJECT_NAME}_VENV_INSTALL_DIR}/bin/python ${CMAKE_INSTALL_PREFIX}/${program_install_location}/${program_basename} "$@"
