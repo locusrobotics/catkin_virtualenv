@@ -1,2 +1,5 @@
 #!/usr/bin/env bash
-exec ${${PROJECT_NAME}_VENV_DEVEL_DIR}/bin/python ${program_path} "$@"
+node_name="$(echo "$@" | sed 's/.*__name:=\([^ ]*\).*/\1/')"
+name_prefix="$([ -v node_name ] && echo "-a $node_name")"
+exec $name_prefix ${${PROJECT_NAME}_VENV_DEVEL_DIR}/bin/python \
+    ${program_path} "$@"
