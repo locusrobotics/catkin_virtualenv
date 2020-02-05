@@ -2,6 +2,13 @@
 Changelog for package catkin_virtualenv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* First python2 issue of 2020 (#49)
+  * Clean up options, virtualenv installs setuptools by default
+  * Make sure we install a compatible setuptools version for py2 venv
+* Contributors: Paul Bovbel
+
 0.5.1 (2019-08-19)
 ------------------
 * catkin-pkg-modules has disappeared off pypi (`#46 <https://github.com/locusrobotics/catkin_virtualenv/issues/46>`_)

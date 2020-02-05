@@ -2,6 +2,9 @@
 Changelog for package test_catkin_virtualenv_py3_isolated
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.5.1 (2019-08-19)
 ------------------
 
