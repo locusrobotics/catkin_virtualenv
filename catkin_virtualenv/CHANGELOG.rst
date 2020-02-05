@@ -2,8 +2,8 @@
 Changelog for package catkin_virtualenv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.5.2 (2020-02-05)
+------------------
 * First python2 issue of 2020 (#49)
   * Clean up options, virtualenv installs setuptools by default
   * Make sure we install a compatible setuptools version for py2 venv

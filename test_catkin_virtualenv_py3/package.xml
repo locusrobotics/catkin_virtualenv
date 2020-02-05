@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 -->
 <package format="2">
   <name>test_catkin_virtualenv_py3</name>
-  <version>0.5.1</version>
+  <version>0.5.2</version>
   <description>Package to test catkin_virtualenv in Python 3.</description>
 
   <maintainer email="pbovbel@locusrobotics.com">Paul Bovbel</maintainer>
