@@ -42,6 +42,7 @@ def check_call(cmd, *args, **kwargs):
 class Deployment(object):
     def __init__(self,
                  package,
+                 requirements_path,
                  extra_urls=[],
                  preinstall=[],
                  pip_tool='pip',
@@ -50,33 +51,26 @@ class Deployment(object):
                  python=None,
                  builtin_venv=False,
                  builtin_pip=False,
-                 sourcedirectory=None,
                  verbose=False,
                  extra_pip_arg=[],
                  extra_virtualenv_arg=[],
                  use_system_packages=False,
                  skip_install=False,
-                 install_suffix=None,
                  log_file=tempfile.NamedTemporaryFile().name,  # (pbovbel): addition
                  pip_version=None,  # (pbovbel): addition
-                 requirements_filename='requirements.txt'):
+                 ):
 
         self.package = package
 
         install_root = os.environ.get(ROOT_ENV_KEY, DEFAULT_INSTALL_DIR)
-        self.install_suffix = install_suffix
 
         # (pbovbel): override the debian_root directory to allow a custom install path
         # self.debian_root = os.path.join(
         #     'debian', package, install_root.lstrip('/'))
         self.debian_root = '.'
 
-        if install_suffix is None:
-            self.virtualenv_install_dir = os.path.join(install_root, self.package)
-            self.package_dir = os.path.join(self.debian_root, package)
-        else:
-            self.virtualenv_install_dir = os.path.join(install_root, install_suffix)
-            self.package_dir = os.path.join(self.debian_root, install_suffix)
+        self.virtualenv_install_dir = os.path.join(install_root, self.package)
+        self.package_dir = os.path.join(self.debian_root, package)
 
         self.bin_dir = os.path.join(self.package_dir, 'bin')
         self.local_bin_dir = os.path.join(self.package_dir, 'local', 'bin')
@@ -88,10 +82,9 @@ class Deployment(object):
         self.verbose = verbose
         self.python = python
         self.builtin_venv = builtin_venv
-        self.sourcedirectory = '.' if sourcedirectory is None else sourcedirectory
         self.use_system_packages = use_system_packages
         self.skip_install = skip_install
-        self.requirements_filename = requirements_filename
+        self.requirements_path = requirements_path
 
         # We need to prefix the pip run with the location of python
         # executable. Otherwise it would just blow up due to too long
@@ -146,8 +139,6 @@ class Deployment(object):
 
             if self.use_system_packages:
                 virtualenv.append('--system-site-packages')
-            else:
-                virtualenv.append('--no-site-packages')
 
             # py2's virtualenv command will try install latest setuptools. setuptools>=45 not compatible with py2
             virtualenv.append('--no-setuptools')
@@ -186,15 +177,7 @@ class Deployment(object):
         if self.preinstall:
             check_call(self.pip_preinstall(*self.preinstall))
 
-        requirements_path = os.path.join(self.sourcedirectory, self.requirements_filename)
-        if os.path.exists(requirements_path):
-            check_call(self.pip('-r', requirements_path))
-
-    def run_tests(self):
-        python = self.venv_bin('python')
-        setup_py = os.path.join(self.sourcedirectory, 'setup.py')
-        if os.path.exists(setup_py):
-            check_call([python, 'setup.py', 'test'], cwd=self.sourcedirectory)
+        check_call(self.pip('-r', self.requirements_path))
 
     def find_script_files(self):
         """Find list of files containing python shebangs in the bin directory"""
@@ -250,10 +233,6 @@ class Deployment(object):
                 fh.seek(0)
                 fh.truncate()
                 fh.write(content)
-
-    def install_package(self):
-        if not self.skip_install:
-            check_call(self.pip('.'), cwd=os.path.abspath(self.sourcedirectory))
 
     def fix_local_symlinks(self):
         # The virtualenv might end up with a local folder that points outside the package

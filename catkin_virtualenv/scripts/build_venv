@@ -81,7 +81,7 @@ if __name__ == '__main__':
 
     deploy = Deployment(
         package=os.path.basename(root_dir),
-        requirements_filename=args.requirements,
+        requirements_path=args.requirements,
         upgrade_pip=True,
         use_system_packages=args.use_system_packages,
         python=python_executable,
