@@ -27,7 +27,7 @@ from collections import namedtuple
 from packaging.requirements import Requirement, InvalidRequirement
 from catkin_virtualenv.requirements import VcsRequirement
 
-comment_regex = re.compile(r'\s*#\s.*$', flags=re.MULTILINE)
+comment_regex = re.compile(r'\s*#.*$', flags=re.MULTILINE)
 
 CombinedRequirement = namedtuple("CombinedRequirement", "requirement source suppressed_set")
 SuppressedRequirement = namedtuple("SuppressedRequirement", "requirement source")
