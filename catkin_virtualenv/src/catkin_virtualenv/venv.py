@@ -26,6 +26,7 @@ import shutil
 import subprocess
 from distutils.spawn import find_executable
 
+from . import check_call
 from .collect_requirements import collect_requirements
 
 _BYTECODE_REGEX = re.compile('.*.py[co]')
@@ -77,7 +78,7 @@ class Virtualenv:
             virtualenv.append('--system-site-packages')
 
         virtualenv.append(self.path)
-        subprocess.check_call(virtualenv)
+        check_call(virtualenv)
 
         venv_python = self._venv_bin('python')
 
@@ -89,7 +90,7 @@ class Virtualenv:
 
         pip_args = ['install'] + extra_pip_args
 
-        subprocess.check_call(pip_tool + pip_args + preinstall)
+        check_call(pip_tool + pip_args + preinstall)
 
     def sync(self, requirements, extra_pip_args):
         """ Sync a virtualenv with the specified requirements. """
@@ -99,7 +100,7 @@ class Virtualenv:
         if extra_pip_args:
             command += ['--pip-args', "\'" +' '.join(extra_pip_args) + "\'"]
 
-        subprocess.check_call(command)
+        check_call(command)
 
     def freeze(self, package_name, output_requirements, no_deps, no_overwrite, extra_pip_args):
         """ Create a frozen requirement set from a set of input specifications. """
@@ -123,8 +124,7 @@ class Virtualenv:
 
         command += ['-o', output_requirements]
 
-        logger.info(command)
-        subprocess.check_call(command)
+        check_call(command)
         logger.info("Wrote new lock file to {}".format(output_requirements))
 
     def relocate(self, target_dir):
@@ -147,7 +147,7 @@ class Virtualenv:
         try:
             with open(os.devnull, 'w') as devnull:
                 # "-c 'import venv'" does not work with the subprocess module, but '-cimport venv' does
-                subprocess.check_call([python_executable, '-cimport {}'.format(module)], stderr=devnull)
+                check_call([python_executable, '-cimport {}'.format(module)], stderr=devnull)
             return True
         except subprocess.CalledProcessError:
             return False
@@ -179,7 +179,7 @@ class Virtualenv:
                 r's-^#!.*bin/\(env \)\?{names}\"\?-#!{pythonpath}-;'
                 r"s-^'''exec'.*bin/{names}-'''exec' {pythonpath}-"
             ).format(names=_PYTHON_INTERPRETERS_REGEX, pythonpath=re.escape(pythonpath))
-            subprocess.check_call(['sed', '-i', regex, f])
+            check_call(['sed', '-i', regex, f])
 
     def _fix_activate_path(self, target_dir):
         """Replace the `VIRTUAL_ENV` path in bin/activate to reflect the

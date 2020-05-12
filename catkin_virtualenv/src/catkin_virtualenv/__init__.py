@@ -31,6 +31,6 @@ def configure_logging():
         logging.config.dictConfig(yaml.safe_load(config))
 
 
-# def check_call(cmd, *args, **kwargs):
-#     logger.info(' '.join(cmd))
-#     return subprocess.check_call(cmd, *args, **kwargs)
+def check_call(cmd, *args, **kwargs):
+    logger.info(' '.join(cmd))
+    return subprocess.check_call(cmd, *args, **kwargs)
