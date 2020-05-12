@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 function(catkin_generate_virtualenv)
-  set(oneValueArgs PYTHON_VERSION PYTHON_VERSION_MAJOR USE_SYSTEM_PACKAGES ISOLATE_REQUIREMENTS)
+  set(oneValueArgs PYTHON_VERSION USE_SYSTEM_PACKAGES ISOLATE_REQUIREMENTS TEST_FROZEN)
   set(multiValueArgs EXTRA_PIP_ARGS)
   cmake_parse_arguments(ARG "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
 
@@ -25,12 +25,6 @@ function(catkin_generate_virtualenv)
   if(TARGET ${PROJECT_NAME}_generate_virtualenv)
     message(WARNING "catkin_generate_virtualenv was called twice")
     return()
-  endif()
-
-  # Backwards compatibility for PYTHON_VERSION_MAJOR, overriding PYTHON_VERSION
-  if(DEFINED ARG_PYTHON_VERSION_MAJOR)
-    set(ARG_PYTHON_VERSION ${ARG_PYTHON_VERSION_MAJOR})
-    message(WARNING "PYTHON_VERSION_MAJOR has been deprecated, please set PYTHON_VERSION instead")
   endif()
 
   if(NOT DEFINED ARG_PYTHON_VERSION)
@@ -45,8 +39,12 @@ function(catkin_generate_virtualenv)
     set(ARG_ISOLATE_REQUIREMENTS FALSE)
   endif()
 
+  if(NOT DEFINED ARG_TEST_FROZEN)
+    set(ARG_TEST_FROZEN TRUE)
+  endif()
+
   if (NOT DEFINED ARG_EXTRA_PIP_ARGS)
-    set(ARG_EXTRA_PIP_ARGS "-qq")
+    set(ARG_EXTRA_PIP_ARGS "-qq" "--retries 10" "--timeout 30")
   endif()
   # Convert CMake list to ' '-separated list
   string(REPLACE ";" "\ " processed_pip_args "${ARG_EXTRA_PIP_ARGS}")
@@ -100,7 +98,7 @@ function(catkin_generate_virtualenv)
   # Generate a virtualenv, fixing up paths for devel-space
   add_custom_command(OUTPUT ${venv_devel_dir}
     COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv build_venv
-      --root-dir ${venv_devel_dir} --requirements ${generated_requirements} --retries 3
+      --target-dir ${venv_devel_dir} --requirements ${generated_requirements} --retries 3
       --python-version ${ARG_PYTHON_VERSION} ${venv_args} --extra-pip-args ${processed_pip_args}
     WORKING_DIRECTORY ${venv_devel_dir}/..
     DEPENDS ${generated_requirements}
@@ -109,7 +107,7 @@ function(catkin_generate_virtualenv)
   # Generate a virtualenv, fixing up paths for install-space
   add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/${venv_dir}
     COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv build_venv
-      --root-dir ${venv_install_dir} --requirements ${generated_requirements} --retries 3
+      --target-dir ${venv_install_dir} --requirements ${generated_requirements} --retries 3
       --python-version ${ARG_PYTHON_VERSION} ${venv_args} --extra-pip-args ${processed_pip_args}
     DEPENDS ${generated_requirements}
   )
@@ -134,3 +132,6 @@ function(catkin_generate_virtualenv)
   set(NOSETESTS "${venv_devel_dir}/bin/python -m nose" PARENT_SCOPE)
 
 endfunction()
+
+
+file(create_virtualenv)

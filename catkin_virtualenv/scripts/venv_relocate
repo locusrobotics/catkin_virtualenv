@@ -1,6 +1,7 @@
+#!/usr/bin/env python
 # Software License Agreement (GPL)
 #
-# \file      __init__.py
+# \file      venv_relocate
 # \authors   Paul Bovbel <pbovbel@locusrobotics.com>
 # \copyright Copyright (c) (2017,), Locus Robotics, All rights reserved.
 #
@@ -17,20 +18,24 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-import logging
-import logging.config
-import os
-import subprocess
-import yaml
+import argparse
 
-logger = logging.getLogger(__name__)
+from catkin_virtualenv import configure_logging
+from catkin_virtualenv.venv import Virtualenv
 
 
-def configure_logging():
-    with open(os.environ['ROS_PYTHON_LOG_CONFIG_FILE']) as config:
-        logging.config.dictConfig(yaml.safe_load(config))
+if __name__ == '__main__':
+    configure_logging()
 
+    parser = argparse.ArgumentParser(description=Virtualenv.relocate.__doc__)
+    parser.add_argument(
+        'venv', help="Path where virtualenv currently is")
+    parser.add_argument(
+        '--target-dir', required=True, help="Path where virtualenv will live.")
 
-# def check_call(cmd, *args, **kwargs):
-#     logger.info(' '.join(cmd))
-#     return subprocess.check_call(cmd, *args, **kwargs)
+    args, unknown = parser.parse_known_args()
+
+    venv = Virtualenv(args.venv)
+    venv.relocate(
+        target_dir=args.target_dir,
+    )

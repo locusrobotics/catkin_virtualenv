@@ -17,6 +17,8 @@ catkin_install_python(
     scripts/build_venv
     scripts/combine_requirements
     scripts/glob_requirements
+    # scripts/check_frozen
+    scripts/venv_init
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

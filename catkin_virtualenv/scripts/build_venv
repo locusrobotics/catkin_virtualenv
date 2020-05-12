@@ -61,7 +61,7 @@ if __name__ == '__main__':
     parser.add_argument(
         '--requirements', required=True, help="A requirements.txt file specifying dependencies.")
     parser.add_argument(
-        '--root-dir', required=True, help="Directory to which the virtualenv's hardcoded paths should be rewritten.")
+        '--target-dir', required=True, help="Directory to which the virtualenv's hardcoded paths should be rewritten.")
     parser.add_argument(
         '--python-version', help="Build the virtualenv with which python major version.")
     parser.add_argument(
@@ -73,14 +73,14 @@ if __name__ == '__main__':
 
     args, unknown = parser.parse_known_args()
 
-    root_dir = os.path.realpath(args.root_dir)
+    target_dir = os.path.realpath(args.target_dir)
 
-    os.environ['DH_VIRTUALENV_INSTALL_ROOT'] = os.path.dirname(root_dir)
+    os.environ['DH_VIRTUALENV_INSTALL_ROOT'] = os.path.dirname(target_dir)
 
     python_executable = find_python(args.python_version)
 
     deploy = Deployment(
-        package=os.path.basename(root_dir),
+        package=os.path.basename(target_dir),
         requirements_path=args.requirements,
         upgrade_pip=True,
         use_system_packages=args.use_system_packages,
@@ -95,6 +95,7 @@ if __name__ == '__main__':
     while True:
         try:
             print('Generating virtualenv in {}'.format(deploy.package_dir))
+            deploy.clean()
             deploy.create_virtualenv()
 
             print('Installing requirements')
@@ -116,10 +117,6 @@ if __name__ == '__main__':
             args.retries -= 1
             if args.retries >= 0:
                 print("Error, clearing virtualenv and retrying: {}".format(e), file=sys.stderr)
-                try:
-                    shutil.rmtree(root_dir)
-                except:
-                    pass
                 continue
             else:
                 raise

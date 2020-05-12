@@ -1,0 +1,10 @@
+- script to glob_requirements, including flags for:
+  --ignore-root glob requirement of dependencies only
+
+- script to venv_init, including python, pip, and pip-tools
+- script to venv_freeze to generate a requirements.txt based on list of requirements files
+- script to venv_sync, to install requirements into virtualenv based on requirements list
+- script to venv_relocate, to fixup paths for some other directory
+
+- target for installspace venv
+- target for devel

@@ -122,7 +122,10 @@ class Deployment(object):
         self.pip_upgrade_args = self.pip_args
 
     def clean(self):
-        shutil.rmtree(self.debian_root)
+        try:
+            shutil.rmtree(self.package)
+        except:
+            pass
 
     def create_virtualenv(self):
         if self.builtin_venv:
