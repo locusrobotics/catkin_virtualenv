@@ -137,7 +137,6 @@ class Virtualenv:
         # self._fix_local_symlinks()
         local_dir = os.path.join(self.path, 'local')
         if os.path.exists(local_dir):
-            # Remove local folder
             shutil.rmtree(local_dir)
 
     def _venv_bin(self, binary_name):
@@ -166,7 +165,7 @@ class Virtualenv:
                    '-e', r"^'''exec.*bin/{0}".format(_PYTHON_INTERPRETERS_REGEX),
                    os.path.join(self.path, 'bin')]
         grep_proc = subprocess.Popen(command, stdout=subprocess.PIPE)
-        files, stderr = grep_proc.communicate()
+        files, _ = grep_proc.communicate()
         return set(f for f in files.decode('utf-8').strip().split('\n') if f)
 
     def _fix_shebangs(self, target_dir):
