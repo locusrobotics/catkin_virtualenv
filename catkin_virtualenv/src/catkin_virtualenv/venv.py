@@ -123,9 +123,9 @@ class Virtualenv:
 
         command += ['-o', output_requirements]
 
-        logger.info("Writing new lock file")
         logger.info(command)
         subprocess.check_call(command)
+        logger.info("Wrote new lock file to {}".format(output_requirements))
 
     def relocate(self, target_dir):
         """ Relocate a virtualenv to another directory. """

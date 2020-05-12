@@ -95,26 +95,37 @@ function(catkin_generate_virtualenv)
   # Sync requirements
   add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/${venv_dir}/bin/activate
     COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv venv_sync ${venv_dir}
-    --requirements ${ARG_LOCK_FILE} --extra-pip-args ${processed_pip_args} --no-overwrite
+      --requirements ${ARG_LOCK_FILE} --extra-pip-args ${processed_pip_args} --no-overwrite
     DEPENDS
       ${CMAKE_BINARY_DIR}/${venv_dir}/bin/python
       ${ARG_LOCK_FILE}
   )
 
   # Prepare relocated versions for develspace and installspace
-  add_custom_command(OUTPUT ${venv_devel_dir}
+  add_custom_command(OUTPUT ${venv_devel_dir} ${venv_dir}_install
     COMMAND ${CMAKE_COMMAND} -E copy_directory ${venv_dir} ${venv_devel_dir}
     COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv venv_relocate ${venv_devel_dir} --target-dir ${venv_devel_dir}
-    COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv venv_relocate ${venv_dir} --target-dir ${venv_install_dir}
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${venv_dir} ${venv_dir}_install
+    COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv venv_relocate ${venv_dir}_install --target-dir ${venv_install_dir}
     DEPENDS ${CMAKE_BINARY_DIR}/${venv_dir}/bin/activate
   )
 
   # Per-package virtualenv target
   add_custom_target(${PROJECT_NAME}_generate_virtualenv ALL
+    DEPENDS
+      ${venv_devel_dir}
+      ${venv_dir}_install
+  )
+
+  # Manually-invoked target to write out ARG_LOCK_FILE
+  add_custom_target(${PROJECT_NAME}_freeze
+    COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv venv_freeze ${venv_devel_dir}
+      --package-name ${PROJECT_NAME} --output-requirements ${ARG_LOCK_FILE} ${freeze_args}
+      --extra-pip-args ${processed_pip_args}
     DEPENDS ${venv_devel_dir}
   )
 
-  install(DIRECTORY ${CMAKE_BINARY_DIR}/${venv_dir}
+  install(DIRECTORY ${venv_dir}_install
     DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
     USE_SOURCE_PERMISSIONS)
 
