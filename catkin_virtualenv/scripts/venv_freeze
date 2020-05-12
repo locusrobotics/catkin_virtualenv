@@ -27,13 +27,17 @@ from catkin_virtualenv.venv import Virtualenv
 if __name__ == '__main__':
     configure_logging()
 
-parser = argparse.ArgumentParser(description=Virtualenv.initialize.__doc__)
+    parser = argparse.ArgumentParser(description=Virtualenv.freeze.__doc__)
     parser.add_argument(
         'venv', help="Path of virtualenv to manage")
     parser.add_argument(
         '--package-name', required=True, help="Package name that virtualenv belongs to.")
     parser.add_argument(
         '--output-requirements', required=True, help="Where to write frozen requirements.")
+    parser.add_argument(
+        '--no-deps', action="store_true", help="Only lock requirements from the top-level package.")
+    parser.add_argument(
+        '--no-overwrite', action="store_true", help="Don't overwrite frozen file if it exists.")
     parser.add_argument(
         '--extra-pip-args', default="\"\"", type=str, help="Extra pip args for install.")
 
@@ -45,5 +49,7 @@ parser = argparse.ArgumentParser(description=Virtualenv.initialize.__doc__)
     venv.freeze(
         package_name=args.package_name,
         output_requirements=args.output_requirements,
+        no_deps=args.no_deps,
+        no_overwrite=args.no_overwrite,
         extra_pip_args=extra_pip_args.split(' ') if extra_pip_args else [],
     )

@@ -20,6 +20,7 @@
 from __future__ import print_function
 
 import os
+import logging
 import re
 import shutil
 import subprocess
@@ -31,6 +32,8 @@ _BYTECODE_REGEX = re.compile('.*.py[co]')
 
 PYTHON_INTERPRETERS = ['python', 'pypy', 'ipy', 'jython']
 _PYTHON_INTERPRETERS_REGEX = r'\(' + r'\|'.join(PYTHON_INTERPRETERS) + r'\)'
+
+logger = logging.getLogger(__name__)
 
 
 class Virtualenv:
@@ -98,19 +101,30 @@ class Virtualenv:
 
         subprocess.check_call(command)
 
-    def freeze(self, package_name, output_requirements, extra_pip_args):
+    def freeze(self, package_name, output_requirements, no_deps, no_overwrite, extra_pip_args):
         """ Create a frozen requirement set from a set of input specifications. """
+        if no_overwrite and os.path.exists(output_requirements):
+            logger.info("Lock file already exists, not overwriting")
+            return
+
         pip_compile = self._venv_bin('pip-compile')
         command = [pip_compile]
 
-        input_requirements = collect_requirements(package_name)
+        input_requirements = collect_requirements(package_name, no_deps)
         command += input_requirements
+
+        if os.path.normpath(output_requirements) in input_requirements:
+            raise RuntimeError("Trying to write locked requirements {} into a path specified as input: {}".format(
+                output_requirements, input_requirements)
+            )
 
         if extra_pip_args:
             command += ['--pip-args', "\'" +' '.join(extra_pip_args) + "\'"]
 
         command += ['-o', output_requirements]
 
+        logger.info("Writing new lock file")
+        logger.info(command)
         subprocess.check_call(command)
 
     def relocate(self, target_dir):

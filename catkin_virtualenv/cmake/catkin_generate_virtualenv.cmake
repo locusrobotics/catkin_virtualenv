@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 function(catkin_generate_virtualenv)
-  set(oneValueArgs PYTHON_VERSION USE_SYSTEM_PACKAGES ISOLATE_REQUIREMENTS TEST_FROZEN)
+  set(oneValueArgs PYTHON_VERSION PYTHON_INTERPRETER USE_SYSTEM_PACKAGES ISOLATE_REQUIREMENTS LOCK_FILE)
   set(multiValueArgs EXTRA_PIP_ARGS)
   cmake_parse_arguments(ARG "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
 
@@ -27,8 +27,14 @@ function(catkin_generate_virtualenv)
     return()
   endif()
 
-  if(NOT DEFINED ARG_PYTHON_VERSION)
-    set(ARG_PYTHON_VERSION 2)
+  # Handle defaults and warnings
+  if(DEFINED ARG_PYTHON_VERSION)
+    message(WARNING "PYTHON_VERSION has been deprecated, set 'PYTHON_INTERPRETER python${ARG_PYTHON_VERSION}' instead")
+    set(ARG_PYTHON_INTERPRETER "python${ARG_PYTHON_VERSION}")
+  endif()
+
+  if(NOT DEFINED ARG_PYTHON_INTERPRETER)
+    set(ARG_PYTHON_INTERPRETER "python2")
   endif()
 
   if(NOT DEFINED ARG_USE_SYSTEM_PACKAGES)
@@ -39,13 +45,16 @@ function(catkin_generate_virtualenv)
     set(ARG_ISOLATE_REQUIREMENTS FALSE)
   endif()
 
-  if(NOT DEFINED ARG_TEST_FROZEN)
-    set(ARG_TEST_FROZEN TRUE)
+  if(NOT DEFINED ARG_LOCK_FILE)
+    set(ARG_LOCK_FILE "${CMAKE_BINARY_DIR}/requirements.txt")
+    message(WARNING "Please define a LOCK_FILE relative to your sources, and commit together to prevent dependency drift.")
   endif()
 
   if (NOT DEFINED ARG_EXTRA_PIP_ARGS)
-    set(ARG_EXTRA_PIP_ARGS "-qq" "--retries 10" "--timeout 30")
+    # set(ARG_EXTRA_PIP_ARGS "-qq" "--retries 10" "--timeout 30")
+    set(ARG_EXTRA_PIP_ARGS "-qq")
   endif()
+
   # Convert CMake list to ' '-separated list
   string(REPLACE ";" "\ " processed_pip_args "${ARG_EXTRA_PIP_ARGS}")
   # Double-escape needed to get quote down through cmake->make->shell layering
@@ -61,69 +70,55 @@ function(catkin_generate_virtualenv)
 
   if(${ARG_ISOLATE_REQUIREMENTS})
     message(STATUS "Only using requirements from this catkin package")
-    set(glob_args "--no-deps")
+    set(freeze_args "--no-deps")
   endif()
-
-  # Collect all exported pip requirements files, from this package and all dependencies
-  execute_process(
-    COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv glob_requirements
-      --package-name ${PROJECT_NAME} ${glob_args}
-    OUTPUT_VARIABLE requirements_list
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-  )
-
-  # Include common requirements that ROS makes available in system environment for py2
-  list(APPEND requirements_list ${catkin_virtualenv_CMAKE_DIR}/common_requirements.txt)
-
-  set(generated_requirements ${CMAKE_BINARY_DIR}/generated_requirements.txt)
-
-  # Trigger a re-configure if any requirements file changes
-  foreach(requirements_txt ${requirements_list})
-    stamp(${requirements_txt})
-    message(STATUS "Including ${requirements_txt} in bundled virtualenv")
-  endforeach()
-
-  # Combine requirements into one list
-  add_custom_command(OUTPUT ${generated_requirements}
-    COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv combine_requirements
-      --requirements-list ${requirements_list} --output-file ${generated_requirements}
-    DEPENDS ${requirements_list}
-  )
 
   if(${ARG_USE_SYSTEM_PACKAGES})
     message(STATUS "Using system site packages")
-    set(venv_args "--use-system-packages")
+    set(venv_args "${venv_args} --use-system-packages")
   endif()
 
-  # Generate a virtualenv, fixing up paths for devel-space
-  add_custom_command(OUTPUT ${venv_devel_dir}
-    COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv build_venv
-      --target-dir ${venv_devel_dir} --requirements ${generated_requirements} --retries 3
-      --python-version ${ARG_PYTHON_VERSION} ${venv_args} --extra-pip-args ${processed_pip_args}
-    WORKING_DIRECTORY ${venv_devel_dir}/..
-    DEPENDS ${generated_requirements}
+  # Generate a virtualenv
+  add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/${venv_dir}/bin/python
+    COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv venv_init ${venv_dir}
+      --python ${ARG_PYTHON_INTERPRETER} ${venv_args} --extra-pip-args ${processed_pip_args}
   )
 
-  # Generate a virtualenv, fixing up paths for install-space
-  add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/${venv_dir}
-    COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv build_venv
-      --target-dir ${venv_install_dir} --requirements ${generated_requirements} --retries 3
-      --python-version ${ARG_PYTHON_VERSION} ${venv_args} --extra-pip-args ${processed_pip_args}
-    DEPENDS ${generated_requirements}
+  # Freeze requirements
+  add_custom_command(OUTPUT ${ARG_LOCK_FILE}
+    COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv venv_freeze ${venv_dir}
+      --package-name ${PROJECT_NAME} --output-requirements ${ARG_LOCK_FILE} ${freeze_args}
+      --no-overwrite --extra-pip-args ${processed_pip_args}
+    DEPENDS ${CMAKE_BINARY_DIR}/${venv_dir}/bin/python
+  )
+
+  # Sync requirements
+  add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/${venv_dir}/bin/activate
+    COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv venv_sync ${venv_dir}
+    --requirements ${ARG_LOCK_FILE} --extra-pip-args ${processed_pip_args} --no-overwrite
+    DEPENDS
+      ${CMAKE_BINARY_DIR}/${venv_dir}/bin/python
+      ${ARG_LOCK_FILE}
+  )
+
+  # Prepare relocated versions for develspace and installspace
+  add_custom_command(OUTPUT ${venv_devel_dir}
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${venv_dir} ${venv_devel_dir}
+    COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv venv_relocate ${venv_devel_dir} --target-dir ${venv_devel_dir}
+    COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv venv_relocate ${venv_dir} --target-dir ${venv_install_dir}
+    DEPENDS ${CMAKE_BINARY_DIR}/${venv_dir}/bin/activate
   )
 
   # Per-package virtualenv target
   add_custom_target(${PROJECT_NAME}_generate_virtualenv ALL
-    DEPENDS ${CMAKE_BINARY_DIR}/${venv_dir}
     DEPENDS ${venv_devel_dir}
-    SOURCES ${requirements_list}
   )
 
   install(DIRECTORY ${CMAKE_BINARY_DIR}/${venv_dir}
     DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
     USE_SOURCE_PERMISSIONS)
 
-  install(FILES ${generated_requirements}
+  install(FILES ${ARG_LOCK_FILE}
     DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
   # (pbovbel): NOSETESTS originally set by catkin here:
@@ -132,6 +127,3 @@ function(catkin_generate_virtualenv)
   set(NOSETESTS "${venv_devel_dir}/bin/python -m nose" PARENT_SCOPE)
 
 endfunction()
-
-
-file(create_virtualenv)
