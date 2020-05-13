@@ -116,7 +116,7 @@ if(CATKIN_ENABLE_TESTING)
 
 ### Locking depedencies
 
-This project leverages the `pip-tools` project to lock all python dependency versions - this will prevent your project
+This project leverages `pip-compile` to lock all python dependency versions - this will prevent your project
 from spontaneously combusting in the future! The file specified as `LOCK_FILE` will be used to store exact versions,
 and should be checked in with your sources.
 
