@@ -21,13 +21,8 @@ function(catkin_generate_virtualenv)
   set(multiValueArgs EXTRA_PIP_ARGS)
   cmake_parse_arguments(ARG "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
 
-  # Check if this package already has a virtualenv target before creating one
-  if(TARGET ${PROJECT_NAME}_generate_virtualenv)
-    message(WARNING "catkin_generate_virtualenv was called twice")
-    return()
-  endif()
+  ### Handle argument defaults and deprecations
 
-  # Handle defaults and warnings
   if(DEFINED ARG_PYTHON_VERSION)
     message(WARNING "PYTHON_VERSION has been deprecated, set 'PYTHON_INTERPRETER python${ARG_PYTHON_VERSION}' instead")
     set(ARG_PYTHON_INTERPRETER "python${ARG_PYTHON_VERSION}")
@@ -37,12 +32,14 @@ function(catkin_generate_virtualenv)
     set(ARG_PYTHON_INTERPRETER "python2")
   endif()
 
-  if(NOT DEFINED ARG_USE_SYSTEM_PACKAGES)
-    set(ARG_USE_SYSTEM_PACKAGES TRUE)
+  if(NOT DEFINED ARG_USE_SYSTEM_PACKAGES OR ARG_USE_SYSTEM_PACKAGES)
+    message(STATUS "Using system site packages")
+    set(venv_args "${venv_args} --use-system-packages")
   endif()
 
-  if(NOT DEFINED ARG_ISOLATE_REQUIREMENTS)
-    set(ARG_ISOLATE_REQUIREMENTS FALSE)
+  if(ARG_ISOLATE_REQUIREMENTS)
+    message(STATUS "Only using requirements from this catkin package")
+    set(freeze_args "${freeze_args} --no-deps")
   endif()
 
   if(NOT DEFINED ARG_LOCK_FILE)
@@ -60,6 +57,14 @@ function(catkin_generate_virtualenv)
   # Double-escape needed to get quote down through cmake->make->shell layering
   set(processed_pip_args \\\"${processed_pip_args}\\\")
 
+  # Check if this package already has a virtualenv target before creating one
+  if(TARGET ${PROJECT_NAME}_generate_virtualenv)
+    message(WARNING "catkin_generate_virtualenv was called twice")
+    return()
+  endif()
+
+  ### Start building virtualenv
+
   set(venv_dir venv)
 
   set(venv_devel_dir ${CATKIN_DEVEL_PREFIX}/${CATKIN_PACKAGE_SHARE_DESTINATION}/${venv_dir})
@@ -68,32 +73,22 @@ function(catkin_generate_virtualenv)
   set(${PROJECT_NAME}_VENV_DEVEL_DIR ${venv_devel_dir} PARENT_SCOPE)
   set(${PROJECT_NAME}_VENV_INSTALL_DIR ${venv_install_dir} PARENT_SCOPE)
 
-  if(${ARG_ISOLATE_REQUIREMENTS})
-    message(STATUS "Only using requirements from this catkin package")
-    set(freeze_args "--no-deps")
-  endif()
-
-  if(${ARG_USE_SYSTEM_PACKAGES})
-    message(STATUS "Using system site packages")
-    set(venv_args "${venv_args} --use-system-packages")
-  endif()
-
-  # Generate a virtualenv
-  add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/${venv_dir}/bin/python
+  add_custom_command(COMMENT "Generate virtualenv in ${CMAKE_BINARY_DIR}/${venv_dir}"
+    OUTPUT ${CMAKE_BINARY_DIR}/${venv_dir}/bin/python
     COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv venv_init ${venv_dir}
       --python ${ARG_PYTHON_INTERPRETER} ${venv_args} --extra-pip-args ${processed_pip_args}
   )
 
-  # Freeze requirements
-  add_custom_command(OUTPUT ${CMAKE_SOURCE_DIR}/${ARG_LOCK_FILE}
+  add_custom_command(COMMENT "Create lock file if it doesn't exist ${CMAKE_SOURCE_DIR}/${ARG_LOCK_FILE}"
+    OUTPUT ${CMAKE_SOURCE_DIR}/${ARG_LOCK_FILE}
     COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv venv_freeze ${venv_dir}
       --package-name ${PROJECT_NAME} --output-requirements ${CMAKE_SOURCE_DIR}/${ARG_LOCK_FILE} ${freeze_args}
       --no-overwrite --extra-pip-args ${processed_pip_args}
     DEPENDS ${CMAKE_BINARY_DIR}/${venv_dir}/bin/python
   )
 
-  # Sync requirements
-  add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/${venv_dir}/bin/activate
+  add_custom_command(COMMENT "Sync locked requirements to ${CMAKE_BINARY_DIR}/${venv_dir}"
+    OUTPUT ${CMAKE_BINARY_DIR}/${venv_dir}/bin/activate
     COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv venv_sync ${venv_dir}
       --requirements ${CMAKE_SOURCE_DIR}/${ARG_LOCK_FILE} --extra-pip-args ${processed_pip_args} --no-overwrite
     DEPENDS
@@ -101,8 +96,8 @@ function(catkin_generate_virtualenv)
       ${CMAKE_SOURCE_DIR}/${ARG_LOCK_FILE}
   )
 
-  # Prepare relocated versions for develspace and installspace
-  add_custom_command(OUTPUT ${venv_devel_dir} install/${venv_dir}
+  add_custom_command(COMMENT "Prepare relocated virtualenvs for develspace and installspace"
+    OUTPUT ${venv_devel_dir} install/${venv_dir}
     COMMAND ${CMAKE_COMMAND} -E copy_directory ${venv_dir} ${venv_devel_dir}
     COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv venv_relocate ${venv_devel_dir} --target-dir ${venv_devel_dir}
     COMMAND ${CMAKE_COMMAND} -E copy_directory ${venv_dir} install/${venv_dir}
@@ -110,15 +105,15 @@ function(catkin_generate_virtualenv)
     DEPENDS ${CMAKE_BINARY_DIR}/${venv_dir}/bin/activate
   )
 
-  # Per-package virtualenv target
   add_custom_target(${PROJECT_NAME}_generate_virtualenv ALL
+    COMMENT "Per-package virtualenv target"
     DEPENDS
       ${venv_devel_dir}
       install/${venv_dir}
   )
 
-  # Manually-invoked target to write out ARG_LOCK_FILE
   add_custom_target(venv_freeze
+    COMMENT "Manually invoked target to write out ${ARG_LOCK_FILE}"
     COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv venv_freeze ${venv_devel_dir}
       --package-name ${PROJECT_NAME} --output-requirements ${CMAKE_SOURCE_DIR}/${ARG_LOCK_FILE} ${freeze_args}
       --extra-pip-args ${processed_pip_args}
