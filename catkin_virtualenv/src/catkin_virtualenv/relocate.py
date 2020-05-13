@@ -37,7 +37,7 @@ def find_script_files(venv_dir):
         os.path.join(venv_dir, 'bin')]
     grep_proc = subprocess.Popen(command, stdout=subprocess.PIPE)
     files, _ = grep_proc.communicate()
-    return set(f for f in files.decode('utf-8').strip().split('\n') if f)
+    return {f for f in files.decode('utf-8').strip().split('\n') if f}
 
 
 def fix_shebangs(venv_dir, target_dir):
