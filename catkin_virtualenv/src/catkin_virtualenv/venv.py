@@ -107,7 +107,7 @@ class Virtualenv:
             return
 
         pip_compile = self._venv_bin('pip-compile')
-        command = [pip_compile]
+        command = [pip_compile, '--no-header']
 
         input_requirements = collect_requirements(package_name, no_deps)
         command += input_requirements
