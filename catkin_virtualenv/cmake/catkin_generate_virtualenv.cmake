@@ -45,6 +45,8 @@ function(catkin_generate_virtualenv)
   if(NOT DEFINED ARG_LOCK_FILE)
     set(ARG_LOCK_FILE "${CMAKE_BINARY_DIR}/requirements.txt")
     message(WARNING "Please define a LOCK_FILE relative to your sources, and commit together to prevent dependency drift.")
+  else()
+    set(ARG_LOCK_FILE "${CMAKE_SOURCE_DIR}/${ARG_LOCK_FILE}")
   endif()
 
   if (NOT DEFINED ARG_EXTRA_PIP_ARGS)
@@ -78,10 +80,10 @@ function(catkin_generate_virtualenv)
       --python ${ARG_PYTHON_INTERPRETER} ${venv_args} --extra-pip-args ${processed_pip_args}
   )
 
-  add_custom_command(COMMENT "Create lock file if it doesn't exist ${CMAKE_SOURCE_DIR}/${ARG_LOCK_FILE}"
-    OUTPUT ${CMAKE_SOURCE_DIR}/${ARG_LOCK_FILE}
+  add_custom_command(COMMENT "Create lock file if it doesn't exist ${ARG_LOCK_FILE}"
+    OUTPUT ${ARG_LOCK_FILE}
     COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv venv_freeze ${venv_dir}
-      --package-name ${PROJECT_NAME} --output-requirements ${CMAKE_SOURCE_DIR}/${ARG_LOCK_FILE} ${freeze_args}
+      --package-name ${PROJECT_NAME} --output-requirements ${ARG_LOCK_FILE} ${freeze_args}
       --no-overwrite --extra-pip-args ${processed_pip_args}
     DEPENDS ${CMAKE_BINARY_DIR}/${venv_dir}/bin/python
   )
@@ -89,10 +91,10 @@ function(catkin_generate_virtualenv)
   add_custom_command(COMMENT "Sync locked requirements to ${CMAKE_BINARY_DIR}/${venv_dir}"
     OUTPUT ${CMAKE_BINARY_DIR}/${venv_dir}/bin/activate
     COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv venv_sync ${venv_dir}
-      --requirements ${CMAKE_SOURCE_DIR}/${ARG_LOCK_FILE} --extra-pip-args ${processed_pip_args} --no-overwrite
+      --requirements ${ARG_LOCK_FILE} --extra-pip-args ${processed_pip_args} --no-overwrite
     DEPENDS
       ${CMAKE_BINARY_DIR}/${venv_dir}/bin/python
-      ${CMAKE_SOURCE_DIR}/${ARG_LOCK_FILE}
+      ${ARG_LOCK_FILE}
   )
 
   add_custom_command(COMMENT "Prepare relocated virtualenvs for develspace and installspace"
@@ -114,7 +116,7 @@ function(catkin_generate_virtualenv)
   add_custom_target(venv_freeze
     COMMENT "Manually invoked target to write out ${ARG_LOCK_FILE}"
     COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv venv_freeze ${venv_devel_dir}
-      --package-name ${PROJECT_NAME} --output-requirements ${CMAKE_SOURCE_DIR}/${ARG_LOCK_FILE} ${freeze_args}
+      --package-name ${PROJECT_NAME} --output-requirements ${ARG_LOCK_FILE} ${freeze_args}
       --extra-pip-args ${processed_pip_args}
     DEPENDS ${venv_devel_dir}
   )
@@ -123,7 +125,7 @@ function(catkin_generate_virtualenv)
     DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
     USE_SOURCE_PERMISSIONS)
 
-  install(FILES ${CMAKE_SOURCE_DIR}/${ARG_LOCK_FILE}
+  install(FILES ${ARG_LOCK_FILE}
     DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
   # (pbovbel): NOSETESTS originally set by catkin here:
