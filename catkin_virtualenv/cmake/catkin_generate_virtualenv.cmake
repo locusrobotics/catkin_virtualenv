@@ -102,11 +102,11 @@ function(catkin_generate_virtualenv)
   )
 
   # Prepare relocated versions for develspace and installspace
-  add_custom_command(OUTPUT ${venv_devel_dir} ${venv_dir}_install
+  add_custom_command(OUTPUT ${venv_devel_dir} install/${venv_dir}
     COMMAND ${CMAKE_COMMAND} -E copy_directory ${venv_dir} ${venv_devel_dir}
     COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv venv_relocate ${venv_devel_dir} --target-dir ${venv_devel_dir}
-    COMMAND ${CMAKE_COMMAND} -E copy_directory ${venv_dir} ${venv_dir}_install
-    COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv venv_relocate ${venv_dir}_install --target-dir ${venv_install_dir}
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${venv_dir} install/${venv_dir}
+    COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv venv_relocate install/${venv_dir} --target-dir ${venv_install_dir}
     DEPENDS ${CMAKE_BINARY_DIR}/${venv_dir}/bin/activate
   )
 
@@ -114,7 +114,7 @@ function(catkin_generate_virtualenv)
   add_custom_target(${PROJECT_NAME}_generate_virtualenv ALL
     DEPENDS
       ${venv_devel_dir}
-      ${venv_dir}_install
+      install/${venv_dir}
   )
 
   # Manually-invoked target to write out ARG_LOCK_FILE
@@ -125,7 +125,7 @@ function(catkin_generate_virtualenv)
     DEPENDS ${venv_devel_dir}
   )
 
-  install(DIRECTORY ${venv_dir}_install
+  install(DIRECTORY ${CMAKE_BINARY_DIR}/install/${venv_dir}
     DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
     USE_SOURCE_PERMISSIONS)
 

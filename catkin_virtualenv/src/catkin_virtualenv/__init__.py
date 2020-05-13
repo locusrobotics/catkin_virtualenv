@@ -27,8 +27,11 @@ logger = logging.getLogger(__name__)
 
 
 def configure_logging():
-    with open(os.environ['ROS_PYTHON_LOG_CONFIG_FILE']) as config:
-        logging.config.dictConfig(yaml.safe_load(config))
+    try:
+        with open(os.environ['ROS_PYTHON_LOG_CONFIG_FILE']) as config:
+            logging.config.dictConfig(yaml.safe_load(config))
+    except KeyError:
+        logging.basicConfig()
 
 
 def check_call(cmd, *args, **kwargs):

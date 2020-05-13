@@ -18,8 +18,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 from __future__ import print_function
-from Queue import Queue
 
+from Queue import Queue
 from catkin.find_in_workspaces import find_in_workspaces
 from catkin_pkg.package import parse_package
 
@@ -39,8 +39,8 @@ def parse_exported_requirements(package):
                     first_match_only=True,
                 )[0]
             except:
-                print("Package {package} declares <{tagname}> {file}, which cannot be found in the package".format(
-                    package=package.name, tagname=CATKIN_VIRTUALENV_TAGNAME, file=export.content), file=sys.stderr)
+                raise RuntimeError("Canoot find <{tagname}>{file}</{tagname}> from package {package}".format(
+                    package=package.name, tagname=CATKIN_VIRTUALENV_TAGNAME, file=export.content))
             else:
                 requirements_list.append(requirements_path)
     return requirements_list

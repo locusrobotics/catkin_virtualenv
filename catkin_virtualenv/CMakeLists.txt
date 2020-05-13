@@ -22,6 +22,9 @@ set(python_scripts
 catkin_install_python(PROGRAMS ${python_scripts}
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
+install(FILES requirements.in
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+
 if(CATKIN_ENABLE_TESTING)
   find_package(roslint REQUIRED)
   roslint_python()
