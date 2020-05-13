@@ -30,13 +30,15 @@ _PYTHON_INTERPRETERS_REGEX = r'\(' + r'\|'.join(PYTHON_INTERPRETERS) + r'\)'
 
 def find_script_files(venv_dir):
     """Find list of files containing python shebangs in the bin directory. """
-    command = ['grep', '-l', '-r',
-                '-e', r'^#!.*bin/\(env \)\?{0}'.format(_PYTHON_INTERPRETERS_REGEX),
-                '-e', r"^'''exec.*bin/{0}".format(_PYTHON_INTERPRETERS_REGEX),
-                os.path.join(venv_dir, 'bin')]
+    command = [
+        'grep', '-l', '-r',
+        '-e', r'^#!.*bin/\(env \)\?{0}'.format(_PYTHON_INTERPRETERS_REGEX),
+        '-e', r"^'''exec.*bin/{0}".format(_PYTHON_INTERPRETERS_REGEX),
+        os.path.join(venv_dir, 'bin')]
     grep_proc = subprocess.Popen(command, stdout=subprocess.PIPE)
     files, _ = grep_proc.communicate()
     return set(f for f in files.decode('utf-8').strip().split('\n') if f)
+
 
 def fix_shebangs(venv_dir, target_dir):
     """Translate /usr/bin/python and /usr/bin/env python shebang
@@ -49,6 +51,7 @@ def fix_shebangs(venv_dir, target_dir):
             r"s-^'''exec'.*bin/{names}-'''exec' {pythonpath}-"
         ).format(names=_PYTHON_INTERPRETERS_REGEX, pythonpath=re.escape(pythonpath))
         check_call(['sed', '-i', regex, f])
+
 
 def fix_activate_path(venv_dir, target_dir):
     """Replace the `VIRTUAL_ENV` path in bin/activate to reflect the
@@ -82,6 +85,7 @@ def fix_activate_path(venv_dir, target_dir):
             fh.seek(0)
             fh.truncate()
             fh.write(content)
+
 
 def fix_local_symlinks(venv_dir):
     # The virtualenv might end up with a local folder that points outside the package
