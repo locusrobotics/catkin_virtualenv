@@ -48,8 +48,7 @@ function(catkin_generate_virtualenv)
   endif()
 
   if (NOT DEFINED ARG_EXTRA_PIP_ARGS)
-    # set(ARG_EXTRA_PIP_ARGS "-qq" "--retries 10" "--timeout 30")
-    set(ARG_EXTRA_PIP_ARGS "-qq")
+    set(ARG_EXTRA_PIP_ARGS "-qq" "--retries 10" "--timeout 30")
   endif()
 
   # Convert CMake list to ' '-separated list

@@ -96,7 +96,7 @@ class Virtualenv:
         command = [pip_sync, requirements]
 
         if extra_pip_args:
-            command += ['--pip-args', "\'" + ' '.join(extra_pip_args) + "\'"]
+            command += ['--pip-args', ' '.join(extra_pip_args)]
 
         check_call(command)
 
@@ -118,7 +118,7 @@ class Virtualenv:
             )
 
         if extra_pip_args:
-            command += ['--pip-args', "\'" + ' '.join(extra_pip_args) + "\'"]
+            command += ['--pip-args', ' '.join(extra_pip_args)]
 
         command += ['-o', output_requirements]
 
