@@ -24,15 +24,13 @@ import logging
 import re
 import shutil
 import subprocess
+
 from distutils.spawn import find_executable
 
-from . import check_call
+from . import check_call, relocate
 from .collect_requirements import collect_requirements
 
 _BYTECODE_REGEX = re.compile('.*.py[co]')
-
-PYTHON_INTERPRETERS = ['python', 'pypy', 'ipy', 'jython']
-_PYTHON_INTERPRETERS_REGEX = r'\(' + r'\|'.join(PYTHON_INTERPRETERS) + r'\)'
 
 logger = logging.getLogger(__name__)
 
@@ -130,11 +128,11 @@ class Virtualenv:
     def relocate(self, target_dir):
         """ Relocate a virtualenv to another directory. """
         self._delete_bytecode()
-        self._fix_shebangs(target_dir)
-        self._fix_activate_path(target_dir)
+        relocate.fix_shebangs(self.path, target_dir)
+        relocate.fix_activate_path(self.path, target_dir)
 
         # This workaround has been flaky - let's just delete the 'local' folder entirely
-        # self._fix_local_symlinks()
+        # relocate.fix_local_symlinks(self.path)
         local_dir = os.path.join(self.path, 'local')
         if os.path.exists(local_dir):
             shutil.rmtree(local_dir)
@@ -157,87 +155,3 @@ class Virtualenv:
             for f in files:
                 if _BYTECODE_REGEX.match(f):
                     os.remove(os.path.join(root, f))
-
-    def _find_script_files(self):
-        """Find list of files containing python shebangs in the bin directory. """
-        command = ['grep', '-l', '-r',
-                   '-e', r'^#!.*bin/\(env \)\?{0}'.format(_PYTHON_INTERPRETERS_REGEX),
-                   '-e', r"^'''exec.*bin/{0}".format(_PYTHON_INTERPRETERS_REGEX),
-                   os.path.join(self.path, 'bin')]
-        grep_proc = subprocess.Popen(command, stdout=subprocess.PIPE)
-        files, _ = grep_proc.communicate()
-        return set(f for f in files.decode('utf-8').strip().split('\n') if f)
-
-    def _fix_shebangs(self, target_dir):
-        """Translate /usr/bin/python and /usr/bin/env python shebang
-        lines to point to our virtualenv python.
-        """
-        pythonpath = os.path.join(target_dir, 'bin/python')
-        for f in self._find_script_files():
-            regex = (
-                r's-^#!.*bin/\(env \)\?{names}\"\?-#!{pythonpath}-;'
-                r"s-^'''exec'.*bin/{names}-'''exec' {pythonpath}-"
-            ).format(names=_PYTHON_INTERPRETERS_REGEX, pythonpath=re.escape(pythonpath))
-            check_call(['sed', '-i', regex, f])
-
-    def _fix_activate_path(self, target_dir):
-        """Replace the `VIRTUAL_ENV` path in bin/activate to reflect the
-        post-install path of the virtualenv.
-        """
-        activate_settings = [
-            [
-                'VIRTUAL_ENV="{0}"'.format(target_dir),
-                r'^VIRTUAL_ENV=.*$',
-                "activate"
-            ],
-            [
-                'setenv VIRTUAL_ENV "{0}"'.format(target_dir),
-                r'^setenv VIRTUAL_ENV.*$',
-                "activate.csh"
-            ],
-            [
-                'set -gx VIRTUAL_ENV "{0}"'.format(target_dir),
-                r'^set -gx VIRTUAL_ENV.*$',
-                "activate.fish"
-            ],
-        ]
-
-        for activate_args in activate_settings:
-            virtualenv_path = activate_args[0]
-            pattern = re.compile(activate_args[1], flags=re.M)
-            activate_file = activate_args[2]
-
-            with open(self._venv_bin(activate_file), 'r+') as fh:
-                content = pattern.sub(virtualenv_path, fh.read())
-                fh.seek(0)
-                fh.truncate()
-                fh.write(content)
-
-    def _fix_local_symlinks(self):
-        # The virtualenv might end up with a local folder that points outside the package
-        # Specifically it might point at the build environment that created it!
-        # Make those links relative
-        # See https://github.com/pypa/virtualenv/commit/5cb7cd652953441a6696c15bdac3c4f9746dfaa1
-        local_dir = os.path.join(self.path, "local")
-        if not os.path.isdir(local_dir):
-            return
-        elif os.path.samefile(self.path, local_dir):
-            # "local" points directly to its containing directory
-            os.unlink(local_dir)
-            os.symlink(".", local_dir)
-            return
-
-        for d in os.listdir(local_dir):
-            path = os.path.join(local_dir, d)
-            if not os.path.islink(path):
-                continue
-
-            existing_target = os.readlink(path)
-            if not os.path.isabs(existing_target):
-                # If the symlink is already relative, we don't
-                # want to touch it.
-                continue
-
-            new_target = os.path.relpath(existing_target, local_dir)
-            os.unlink(path)
-            os.symlink(new_target, path)
