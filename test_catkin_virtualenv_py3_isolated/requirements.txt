@@ -11,10 +11,11 @@ distro==1.5.0             # via rospkg
 docutils==0.16            # via catkin-pkg
 idna==2.9                 # via requests
 nose==1.3.7               # via -r /home/pbovbel/locus_dev/src/catkin_virtualenv/catkin_virtualenv/requirements.in
-pyparsing==2.4.7          # via catkin-pkg
+packaging==20.3           # via -r /home/pbovbel/locus_dev/src/catkin_virtualenv/test_catkin_virtualenv_py3_isolated/requirements.in
+pyparsing==2.4.7          # via catkin-pkg, packaging
 python-dateutil==2.8.1    # via catkin-pkg
 pyyaml==5.3.1             # via rospkg
 requests==2.23.0          # via -r /home/pbovbel/locus_dev/src/catkin_virtualenv/test_catkin_virtualenv_py3_isolated/requirements.in
 rospkg==1.2.6             # via -r /home/pbovbel/locus_dev/src/catkin_virtualenv/catkin_virtualenv/requirements.in
-six==1.14.0               # via python-dateutil
+six==1.14.0               # via packaging, python-dateutil
 urllib3==1.25.9           # via requests
