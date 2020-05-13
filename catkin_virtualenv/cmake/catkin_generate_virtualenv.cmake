@@ -85,9 +85,9 @@ function(catkin_generate_virtualenv)
   )
 
   # Freeze requirements
-  add_custom_command(OUTPUT ${ARG_LOCK_FILE}
+  add_custom_command(OUTPUT ${CMAKE_SOURCE_DIR}/${ARG_LOCK_FILE}
     COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv venv_freeze ${venv_dir}
-      --package-name ${PROJECT_NAME} --output-requirements ${ARG_LOCK_FILE} ${freeze_args}
+      --package-name ${PROJECT_NAME} --output-requirements ${CMAKE_SOURCE_DIR}/${ARG_LOCK_FILE} ${freeze_args}
       --no-overwrite --extra-pip-args ${processed_pip_args}
     DEPENDS ${CMAKE_BINARY_DIR}/${venv_dir}/bin/python
   )
@@ -95,10 +95,10 @@ function(catkin_generate_virtualenv)
   # Sync requirements
   add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/${venv_dir}/bin/activate
     COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv venv_sync ${venv_dir}
-      --requirements ${ARG_LOCK_FILE} --extra-pip-args ${processed_pip_args} --no-overwrite
+      --requirements ${CMAKE_SOURCE_DIR}/${ARG_LOCK_FILE} --extra-pip-args ${processed_pip_args} --no-overwrite
     DEPENDS
       ${CMAKE_BINARY_DIR}/${venv_dir}/bin/python
-      ${ARG_LOCK_FILE}
+      ${CMAKE_SOURCE_DIR}/${ARG_LOCK_FILE}
   )
 
   # Prepare relocated versions for develspace and installspace
@@ -118,9 +118,9 @@ function(catkin_generate_virtualenv)
   )
 
   # Manually-invoked target to write out ARG_LOCK_FILE
-  add_custom_target(${PROJECT_NAME}_freeze
+  add_custom_target(venv_freeze
     COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv venv_freeze ${venv_devel_dir}
-      --package-name ${PROJECT_NAME} --output-requirements ${ARG_LOCK_FILE} ${freeze_args}
+      --package-name ${PROJECT_NAME} --output-requirements ${CMAKE_SOURCE_DIR}/${ARG_LOCK_FILE} ${freeze_args}
       --extra-pip-args ${processed_pip_args}
     DEPENDS ${venv_devel_dir}
   )
@@ -129,7 +129,7 @@ function(catkin_generate_virtualenv)
     DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
     USE_SOURCE_PERMISSIONS)
 
-  install(FILES ${ARG_LOCK_FILE}
+  install(FILES ${CMAKE_SOURCE_DIR}/${ARG_LOCK_FILE}
     DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
   # (pbovbel): NOSETESTS originally set by catkin here:

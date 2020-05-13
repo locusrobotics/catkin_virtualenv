@@ -6,8 +6,9 @@ find_package(catkin REQUIRED COMPONENTS catkin_virtualenv)
 catkin_package()
 
 catkin_generate_virtualenv(
-  PYTHON_VERSION 3
   USE_SYSTEM_PACKAGES TRUE
+  PYTHON_INTERPRETER python3
+  LOCK_FILE requirements.txt
 )
 
 install(FILES requirements.txt

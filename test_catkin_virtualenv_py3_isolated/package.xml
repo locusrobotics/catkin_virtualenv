@@ -37,7 +37,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   <test_depend>rostest</test_depend>
 
   <export>
-    <pip_requirements>requirements.txt</pip_requirements>
+    <pip_requirements>requirements.in</pip_requirements>
   </export>
 
 </package>
