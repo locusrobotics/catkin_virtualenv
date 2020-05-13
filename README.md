@@ -8,7 +8,9 @@ This package provides a mechanism to:
 
 - export python library requirements in `requirements.txt` format via `package.xml`.
 - bundle a virtualenv within a catkin package, inheriting requirements from any dependencies.
+- lock all requirements to prevent depedency drift
 - wrap python scripts and tests in a catkin package with a virtualenv loader.
+- change which interpreter is used for executing scripts and tests (i.e. python2, python3, pypy, etc.)
 
 At build time, CMake macros provided by this package will create a virtualenv inside the devel space, and create
 wrapper scripts for any Python scripts in the package. Both will be included in any associated bloom artifacts.
@@ -19,30 +21,30 @@ For general help, please check the [FAQ](http://answers.ros.org/questions/tags:c
 
 ## Exporting python requirements
 
-The package containing python modules with external library dependencies should define a `requirements.txt`:
+The package containing python modules with external library dependencies should define a `requirements.in`:
 
 ```python
-GitPython>=2.1.5
-psutil>=5.2.2
-wrapt>=1.10.10
+GitPython>=2.1
+psutil==5.2.2
+transitions
 ```
 
 Add an export to `package.xml`:
 
 ```xml
 <export>
-  <pip_requirements>requirements.txt</pip_requirements>
+  <pip_requirements>requirements.in</pip_requirements>
 </export>
 ```
 
 Make sure to install the requirements file in `CMakeLists.txt`:
 
 ```cmake
-install(FILES requirements.txt
+install(FILES requirements.in
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 ```
 
-If a catkin package exports dependencies in a `requirements.txt` file, any dependent catkin package that bundles a virtualenv (see below) will inherit those dependencies.
+If a catkin package exports dependencies in a `requirements.in` file, any dependent catkin package that bundles a virtualenv (see below) will inherit those dependencies.
 
 ## Bundling virtualenv
 
@@ -58,8 +60,8 @@ Add an build dependency on catkin_virtualenv to `package.xml`, as well as on any
 ```xml
 <build_depend>catkin_virtualenv</build_depend>
 
-<!-- In a catkin/python world, this would normally be an exec_depend. However, if `some_python_library` exports 
-requirements.txt, it needs to be pulled in at build time as well -->
+<!-- In a catkin/python world, this would normally be an exec_depend. However, if `some_python_library` exports
+requirements.in, it needs to be pulled in at build time as well -->
 <depend>some_python_library</depend>
 ```
 
@@ -72,8 +74,11 @@ find_package(catkin REQUIRED ... catkin_virtualenv ...)
 # Must be called before catkin_generate_virtualenv
 catkin_package()
 
-# Generate the virtualenv:
-catkin_generate_virtualenv()
+# Generate the virtualenv
+catkin_generate_virtualenv(
+  # This file will be generated during build and lock the build dependencies. Please check it in with your sources.
+  LOCK_FILE requirements.txt
+)
 
 # Make sure your python executables are installed using `catkin_install_python`:
 catkin_install_python(
@@ -109,14 +114,27 @@ if(CATKIN_ENABLE_TESTING)
 )
 ```
 
+### Locking depedencies
+
+This project leverages the `pip-tools` project to lock all python dependency versions - this will prevent your project
+from spontaneously combusting in the future! The file specified as `LOCK_FILE` will be used to store exact versions,
+and should be checked in with your sources.
+
+To regenerate this file, either delete it and rebuild the project, or run from your project directory:
+
+`catkin build --this --no-deps --catkin-make-args venv_freeze`
+
 ### Additional CMake Options
 
 The following options are supported by `catkin_generate_virtualenv()`:
 
 ```cmake
 catkin_generate_virtualenv(
-  # Select an alternative version of the python interpreter - it must be installed on the system. Minor version is optional.
-  PYTHON_VERSION 3.7  # Default 2
+  # Specify which file should be used to lock requirement versions
+  LOCK_FILE requirements.txt
+
+  # Select an alternative python interpreter - it must be installed on the system.
+  PYTHON_INTERPRETER python3.7  # Default python2
 
   # Choose not to use underlying system packages. This excludes any python packages installed by apt or system-pip from the environment.
   USE_SYSTEM_PACKAGES FALSE  # Default TRUE
