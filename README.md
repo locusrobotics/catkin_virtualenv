@@ -124,6 +124,14 @@ To regenerate this file, either delete it and rebuild the project, or run from y
 
 `catkin build --this --no-deps --catkin-make-args venv_freeze`
 
+To migrate a package from catkin_virtualenv <=0.5 to lock files:
+- rename requirements.txt to requirements.in
+- loosen the version specs in requirements.in as much as possible
+- add LOCK_FILE requirements.txt to catkin_generate_virtualenv() in CMakeLists.txt
+- build and test the package
+- commit and push changes
+
+
 ### Additional CMake Options
 
 The following options are supported by `catkin_generate_virtualenv()`:
