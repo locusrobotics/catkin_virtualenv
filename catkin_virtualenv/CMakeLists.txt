@@ -13,16 +13,17 @@ install(DIRECTORY cmake
 )
 
 set(python_scripts
+  scripts/collect_requirements
   scripts/venv_init
-  scripts/venv_freeze
-  scripts/venv_sync
+  scripts/venv_lock
+  scripts/venv_install
   scripts/venv_relocate
 )
 
 catkin_install_python(PROGRAMS ${python_scripts}
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
-install(FILES requirements.in
+install(FILES requirements.txt
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
 if(CATKIN_ENABLE_TESTING)

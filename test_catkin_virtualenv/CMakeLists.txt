@@ -6,10 +6,10 @@ find_package(catkin REQUIRED COMPONENTS catkin_virtualenv)
 catkin_package()
 
 catkin_generate_virtualenv(
-  LOCK_FILE requirements.txt
+  INPUT_REQUIREMENTS requirements.in
 )
 
-install(FILES requirements.in
+install(FILES requirements.txt
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
 if(CATKIN_ENABLE_TESTING)

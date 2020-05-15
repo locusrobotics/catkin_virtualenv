@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 function(catkin_generate_virtualenv)
-  set(oneValueArgs PYTHON_VERSION PYTHON_INTERPRETER USE_SYSTEM_PACKAGES ISOLATE_REQUIREMENTS LOCK_FILE)
+  set(oneValueArgs PYTHON_VERSION PYTHON_INTERPRETER USE_SYSTEM_PACKAGES ISOLATE_REQUIREMENTS INPUT_REQUIREMENTS)
   set(multiValueArgs EXTRA_PIP_ARGS)
   cmake_parse_arguments(ARG "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
 
@@ -39,14 +39,11 @@ function(catkin_generate_virtualenv)
 
   if(ARG_ISOLATE_REQUIREMENTS)
     message(STATUS "Only using requirements from this catkin package")
-    set(freeze_args "${freeze_args} --no-deps")
+    set(lock_args "${lock_args} --no-deps")
   endif()
 
-  if(NOT DEFINED ARG_LOCK_FILE)
-    set(ARG_LOCK_FILE "${CMAKE_BINARY_DIR}/requirements.txt")
-    message(WARNING "Please define a LOCK_FILE relative to your sources, and commit together to prevent dependency drift.")
-  else()
-    set(ARG_LOCK_FILE "${CMAKE_SOURCE_DIR}/${ARG_LOCK_FILE}")
+  if(NOT DEFINED ARG_INPUT_REQUIREMENTS)
+    message(WARNING "Please define an INPUT_REQUIREMENTS and generate a lock file - see https://github.com/locusrobotics/catkin_virtualenv/blob/master/README.md#locking-dependencies")
   endif()
 
   if (NOT DEFINED ARG_EXTRA_PIP_ARGS)
@@ -74,27 +71,47 @@ function(catkin_generate_virtualenv)
   set(${PROJECT_NAME}_VENV_DEVEL_DIR ${venv_devel_dir} PARENT_SCOPE)
   set(${PROJECT_NAME}_VENV_INSTALL_DIR ${venv_install_dir} PARENT_SCOPE)
 
+  # Collect requirements from each catkin package in the dependency chain
+  execute_process(
+    COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv collect_requirements
+      --package-name ${PROJECT_NAME} ${lock_args}
+    OUTPUT_VARIABLE requirements_list
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+  )
+
+  execute_process(
+    COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv collect_requirements --no-deps
+      --package-name ${PROJECT_NAME} ${lock_args}
+    OUTPUT_VARIABLE package_requirements
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+  )
+
   add_custom_command(COMMENT "Generate virtualenv in ${CMAKE_BINARY_DIR}/${venv_dir}"
     OUTPUT ${CMAKE_BINARY_DIR}/${venv_dir}/bin/python
     COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv venv_init ${venv_dir}
       --python ${ARG_PYTHON_INTERPRETER} ${venv_args} --extra-pip-args ${processed_pip_args}
   )
 
-  add_custom_command(COMMENT "Create lock file if it doesn't exist ${ARG_LOCK_FILE}"
-    OUTPUT ${ARG_LOCK_FILE}
-    COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv venv_freeze ${venv_dir}
-      --package-name ${PROJECT_NAME} --output-requirements ${ARG_LOCK_FILE} ${freeze_args}
-      --no-overwrite --extra-pip-args ${processed_pip_args}
-    DEPENDS ${CMAKE_BINARY_DIR}/${venv_dir}/bin/python
-  )
+  if(DEFINED ARG_INPUT_REQUIREMENTS AND NOT package_requirements STREQUAL "")
+    add_custom_command(COMMENT "Lock input requirements if they don't exist"
+      OUTPUT ${package_requirements}
+      COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv venv_lock ${venv_dir}
+        --package-name ${PROJECT_NAME} --input-requirements ${CMAKE_SOURCE_DIR}/${ARG_INPUT_REQUIREMENTS}
+        --no-overwrite --extra-pip-args ${processed_pip_args}
+      DEPENDS
+        ${CMAKE_BINARY_DIR}/${venv_dir}/bin/python
+        ${CMAKE_SOURCE_DIR}/${ARG_INPUT_REQUIREMENTS}
+    )
+  endif()
 
-  add_custom_command(COMMENT "Sync locked requirements to ${CMAKE_BINARY_DIR}/${venv_dir}"
+  add_custom_command(COMMENT "Install requirements to ${CMAKE_BINARY_DIR}/${venv_dir}"
     OUTPUT ${CMAKE_BINARY_DIR}/${venv_dir}/bin/activate
-    COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv venv_sync ${venv_dir}
-      --requirements ${ARG_LOCK_FILE} --extra-pip-args ${processed_pip_args} --no-overwrite
+    COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv venv_install ${venv_dir}
+      --requirements ${requirements_list} --extra-pip-args ${processed_pip_args}
     DEPENDS
       ${CMAKE_BINARY_DIR}/${venv_dir}/bin/python
-      ${ARG_LOCK_FILE}
+      ${package_requirements}
+      ${requirements_list}
   )
 
   add_custom_command(COMMENT "Prepare relocated virtualenvs for develspace and installspace"
@@ -113,12 +130,14 @@ function(catkin_generate_virtualenv)
       install/${venv_dir}
   )
 
-  add_custom_target(venv_freeze
+  add_custom_target(venv_lock
     COMMENT "Manually invoked target to write out ${ARG_LOCK_FILE}"
-    COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv venv_freeze ${venv_devel_dir}
-      --package-name ${PROJECT_NAME} --output-requirements ${ARG_LOCK_FILE} ${freeze_args}
+    COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv venv_lock ${venv_dir}
+      --package-name ${PROJECT_NAME} --input-requirements ${CMAKE_SOURCE_DIR}/${ARG_INPUT_REQUIREMENTS}
       --extra-pip-args ${processed_pip_args}
-    DEPENDS ${venv_devel_dir}
+    DEPENDS
+      ${venv_devel_dir}
+      ${CMAKE_SOURCE_DIR}/${ARG_INPUT_REQUIREMENTS}
   )
 
   install(DIRECTORY ${CMAKE_BINARY_DIR}/install/${venv_dir}

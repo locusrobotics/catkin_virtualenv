@@ -7,7 +7,7 @@ catkin_package()
 
 catkin_generate_virtualenv(
   PYTHON_INTERPRETER python3
-  LOCK_FILE requirements.txt
+  INPUT_REQUIREMENTS requirements.in
 )
 
 install(FILES requirements.txt

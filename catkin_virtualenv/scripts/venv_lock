@@ -27,17 +27,15 @@ from catkin_virtualenv.venv import Virtualenv
 if __name__ == '__main__':
     configure_logging()
 
-    parser = argparse.ArgumentParser(description=Virtualenv.freeze.__doc__)
+    parser = argparse.ArgumentParser(description=Virtualenv.lock.__doc__)
     parser.add_argument(
         'venv', help="Path of virtualenv to manage")
     parser.add_argument(
         '--package-name', required=True, help="Package name that virtualenv belongs to.")
     parser.add_argument(
-        '--output-requirements', required=True, help="Where to write frozen requirements.")
+        '--input-requirements', required=True, help="Where to write read requirement specs.")
     parser.add_argument(
-        '--no-deps', action="store_true", help="Only lock requirements from the top-level package.")
-    parser.add_argument(
-        '--no-overwrite', action="store_true", help="Don't overwrite frozen file if it exists.")
+        '--no-overwrite', action="store_true", help="Don't overwrite lock file if it exists.")
     parser.add_argument(
         '--extra-pip-args', default="\"\"", type=str, help="Extra pip args for install.")
 
@@ -46,10 +44,9 @@ if __name__ == '__main__':
     extra_pip_args = args.extra_pip_args[1:-1]
 
     venv = Virtualenv(args.venv)
-    venv.freeze(
+    venv.lock(
         package_name=args.package_name,
-        output_requirements=args.output_requirements,
-        no_deps=args.no_deps,
+        input_requirements=args.input_requirements,
         no_overwrite=args.no_overwrite,
         extra_pip_args=extra_pip_args.split(' ') if extra_pip_args else [],
     )

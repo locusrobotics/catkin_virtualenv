@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # Software License Agreement (GPL)
 #
-# \file      venv_sync
+# \file      collect_requirements
 # \authors   Paul Bovbel <pbovbel@locusrobotics.com>
 # \copyright Copyright (c) (2017,), Locus Robotics, All rights reserved.
 #
@@ -20,27 +20,23 @@
 
 import argparse
 
-from catkin_virtualenv import configure_logging
-from catkin_virtualenv.venv import Virtualenv
+from catkin_virtualenv import configure_logging, collect_requirements
 
 
 if __name__ == '__main__':
     configure_logging()
 
-    parser = argparse.ArgumentParser(description=Virtualenv.sync.__doc__)
+    parser = argparse.ArgumentParser(description=collect_requirements.collect_requirements.__doc__)
     parser.add_argument(
-        'venv', help="Path of virtualenv to manage")
+        'package_name', help="Package name that virtualenv belongs to.")
     parser.add_argument(
-        '--requirements', required=True, help="Requirements to sync to virtualenv.")
-    parser.add_argument(
-        '--extra-pip-args', default="\"\"", type=str, help="Extra pip args for install.")
+        '--no-deps', action="store_true", help="Only collect requirements for top-level package.")
 
     args, unknown = parser.parse_known_args()
 
-    extra_pip_args = args.extra_pip_args[1:-1]
-
-    venv = Virtualenv(args.venv)
-    venv.sync(
-        requirements=args.requirements,
-        extra_pip_args=extra_pip_args.split(' ') if extra_pip_args else [],
+    requirements = collect_requirements.collect_requirements(
+        package_name=args.package_name,
+        no_deps=args.no_deps,
     )
+
+    print(';'.join(requirements))

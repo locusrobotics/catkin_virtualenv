@@ -78,41 +78,30 @@ class Virtualenv:
         virtualenv.append(self.path)
         check_call(virtualenv)
 
-        venv_python = self._venv_bin('python')
+        check_call([self._venv_bin('python'), '-m', 'pip', 'install'] + extra_pip_args + preinstall)
 
-        builtin_pip = self._check_module(venv_python, 'pip')
-        if builtin_pip:
-            pip_tool = [venv_python, '-m', 'pip']
-        else:
-            pip_tool = [self._venv_bin('pip')]
-
-        pip_args = ['install'] + extra_pip_args
-
-        check_call(pip_tool + pip_args + preinstall)
-
-    def sync(self, requirements, extra_pip_args):
+    def install(self, requirements, extra_pip_args):
         """ Sync a virtualenv with the specified requirements. """
-        pip_sync = self._venv_bin('pip-sync')
-        command = [pip_sync, requirements]
+        command = [self._venv_bin('python'), '-m', 'pip', 'install'] + extra_pip_args
+        for req in requirements:
+            check_call(command + ['-r', req])
 
-        if extra_pip_args:
-            command += ['--pip-args', ' '.join(extra_pip_args)]
-
-        check_call(command)
-
-    def freeze(self, package_name, output_requirements, no_deps, no_overwrite, extra_pip_args):
+    def lock(self, package_name, input_requirements, no_overwrite, extra_pip_args):
         """ Create a frozen requirement set from a set of input specifications. """
+        try:
+            output_requirements = collect_requirements(package_name, no_deps=True)[0]
+        except IndexError:
+            logger.info("Package doesn't export any requirements, step can be skipped")
+            return
+
         if no_overwrite and os.path.exists(output_requirements):
             logger.info("Lock file already exists, not overwriting")
             return
 
         pip_compile = self._venv_bin('pip-compile')
-        command = [pip_compile, '--no-header']
+        command = [pip_compile, '--no-header', input_requirements]
 
-        input_requirements = collect_requirements(package_name, no_deps)
-        command += input_requirements
-
-        if os.path.normpath(output_requirements) in input_requirements:
+        if os.path.normpath(input_requirements) == os.path.normpath(output_requirements):
             raise RuntimeError("Trying to write locked requirements {} into a path specified as input: {}".format(
                 output_requirements, input_requirements)
             )
@@ -140,7 +129,7 @@ class Virtualenv:
     def _venv_bin(self, binary_name):
         return os.path.abspath(os.path.join(self.path, 'bin', binary_name))
 
-    def _check_module(self,  python_executable, module):
+    def _check_module(self, python_executable, module):
         try:
             with open(os.devnull, 'w') as devnull:
                 # "-c 'import venv'" does not work with the subprocess module, but '-cimport venv' does

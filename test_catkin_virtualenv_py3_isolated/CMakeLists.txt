@@ -6,13 +6,9 @@ find_package(catkin REQUIRED COMPONENTS catkin_virtualenv)
 catkin_package()
 
 catkin_generate_virtualenv(
-  USE_SYSTEM_PACKAGES TRUE
   PYTHON_INTERPRETER python3
-  LOCK_FILE requirements.txt
+  USE_SYSTEM_PACKAGES FALSE
 )
-
-install(FILES requirements.txt
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
 if(CATKIN_ENABLE_TESTING)
   find_package(rostest REQUIRED)
