@@ -23,7 +23,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 <package format="2">
   <name>test_catkin_virtualenv_py3_isolated</name>
   <version>0.5.0</version>
-  <description>Package to test catkin_virtualenv in Python 3.</description>
+  <description>Test to make sure a system package (python3-requests) isn't visible inside an isolated virtualenv.</description>
 
   <maintainer email="pbovbel@locusrobotics.com">Paul Bovbel</maintainer>
   <license>GPL</license>
@@ -33,11 +33,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
   <build_depend>catkin_virtualenv</build_depend>
 
-  <test_depend>python3-nose</test_depend>
+  <test_depend>python3-requests</test_depend>
   <test_depend>rostest</test_depend>
-
-  <export>
-    <pip_requirements>requirements.txt</pip_requirements>
-  </export>
 
 </package>

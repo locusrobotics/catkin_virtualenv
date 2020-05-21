@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # Software License Agreement (GPL)
 #
-# \file      test_virtualenv_script
+# \file      collect_requirements
 # \authors   Paul Bovbel <pbovbel@locusrobotics.com>
 # \copyright Copyright (c) (2017,), Locus Robotics, All rights reserved.
 #
@@ -17,20 +17,26 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
-import importlib
-import rostest
-import sys
-import unittest
 
-from packaging import version
+import argparse
 
-
-class TestVirtualenv(unittest.TestCase):
-
-    def test_import(self):
-        requests = importlib.import_module("requests")
-        self.assertGreaterEqual(version.parse(requests.__version__), version.parse("2"))
+from catkin_virtualenv import configure_logging, collect_requirements
 
 
 if __name__ == '__main__':
-    rostest.rosrun('test_catkin_virtualenv', 'test_virtualenv_script', TestVirtualenv, sys.argv)
+    configure_logging()
+
+    parser = argparse.ArgumentParser(description=collect_requirements.collect_requirements.__doc__)
+    parser.add_argument(
+        'package_name', help="Package name that virtualenv belongs to.")
+    parser.add_argument(
+        '--no-deps', action="store_true", help="Only collect requirements for top-level package.")
+
+    args, unknown = parser.parse_known_args()
+
+    requirements = collect_requirements.collect_requirements(
+        package_name=args.package_name,
+        no_deps=args.no_deps,
+    )
+
+    print(';'.join(requirements))

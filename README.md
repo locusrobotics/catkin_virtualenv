@@ -6,9 +6,10 @@
 
 This package provides a mechanism to:
 
-- export python library requirements in `requirements.txt` format via `package.xml`.
+- export python `pip` requirements via `package.xml`.
 - bundle a virtualenv within a catkin package, inheriting requirements from any dependencies.
 - wrap python scripts and tests in a catkin package with a virtualenv loader.
+- change which interpreter is used for executing scripts and tests (i.e. python2, python3, pypy, etc.)
 
 At build time, CMake macros provided by this package will create a virtualenv inside the devel space, and create
 wrapper scripts for any Python scripts in the package. Both will be included in any associated bloom artifacts.
@@ -19,12 +20,11 @@ For general help, please check the [FAQ](http://answers.ros.org/questions/tags:c
 
 ## Exporting python requirements
 
-The package containing python modules with external library dependencies should define a `requirements.txt`:
+A package containing python modules with external `pip` dependencies should define a `requirements.txt`:
 
 ```python
-GitPython>=2.1.5
-psutil>=5.2.2
-wrapt>=1.10.10
+GitPython==2.1
+psutil==5.2.2
 ```
 
 Add an export to `package.xml`:
@@ -44,22 +44,21 @@ install(FILES requirements.txt
 
 If a catkin package exports dependencies in a `requirements.txt` file, any dependent catkin package that bundles a virtualenv (see below) will inherit those dependencies.
 
+
+
 ## Bundling virtualenv
 
 It's possible to bundle all of a catkin package's python requirements, as well as those of its catkin dependencies,
 into a virtualenv. This process will also override the standard `catkin_install_python` macro to wrap a virtualenv
 loader around the specified python scripts.
 
-This operation does not do any dependency resolution - similar to how `pip` operates, the topmost dependency declaration
-'wins' (https://github.com/pypa/pip/issues/988).
-
 Add an build dependency on catkin_virtualenv to `package.xml`, as well as on any library packages you may want. Traditionally
 
 ```xml
 <build_depend>catkin_virtualenv</build_depend>
 
-<!-- In a catkin/python world, this would normally be an exec_depend. However, if `some_python_library` exports 
-requirements.txt, it needs to be pulled in at build time as well -->
+<!-- In a catkin/python world, this would normally be an exec_depend. However, if `some_python_library` exports
+requirements.in, it needs to be pulled in at build time as well -->
 <depend>some_python_library</depend>
 ```
 
@@ -72,7 +71,7 @@ find_package(catkin REQUIRED ... catkin_virtualenv ...)
 # Must be called before catkin_generate_virtualenv
 catkin_package()
 
-# Generate the virtualenv:
+# Generate the virtualenv
 catkin_generate_virtualenv()
 
 # Make sure your python executables are installed using `catkin_install_python`:
@@ -115,8 +114,11 @@ The following options are supported by `catkin_generate_virtualenv()`:
 
 ```cmake
 catkin_generate_virtualenv(
-  # Select an alternative version of the python interpreter - it must be installed on the system. Minor version is optional.
-  PYTHON_VERSION 3.7  # Default 2
+  # Specify the package's set of input requirements to automatically lock
+  INPUT_REQUIREMENTS requirements.in
+
+  # Select an alternative python interpreter - it must be installed on the system.
+  PYTHON_INTERPRETER python3.7  # Default python2
 
   # Choose not to use underlying system packages. This excludes any python packages installed by apt or system-pip from the environment.
   USE_SYSTEM_PACKAGES FALSE  # Default TRUE
@@ -129,3 +131,33 @@ catkin_generate_virtualenv(
     --no-binary=:all:
     -vvv
 )
+```
+
+### Locking dependencies
+
+This project allows you to lock dependencies by leveraging `pip-compile`. This is optional, but will prevent your
+python projects from spontaneously combusting in the future!
+
+Instead of specifying `requirements.txt` directly, create a `requirements.in` file with some loose specifications:
+
+```python
+GitPython>=2
+psutil
+```
+
+The file specified in CMake options as `INPUT_REQUIREMENTS` will be used to generate a locked `requirements.txt`
+at build time. You should check both `requirements.in` and `requirements.txt` in with your sources!
+
+To regenerate this file, either delete it and rebuild the project, or run from your project directory:
+
+`catkin build --this --no-deps --catkin-make-args venv_lock`
+
+To migrate a package from catkin_virtualenv <=0.5 to use lock files:
+
+- Rename `requirements.txt` to `requirements.in`,
+- Loosen the version specs in `requirements.in` as much as possible,
+- Add `INPUT_REQUIREMENTS requirements.in` to catkin_generate_virtualenv() in CMakeLists.txt.
+- Build and test the package.
+- Commit and push changes.
+
+See example: https://github.com/locusrobotics/aiorospy/pull/30/commits/839b17adbe0c672f5e0d9cca702d12e16b117bca

@@ -5,7 +5,9 @@ find_package(catkin REQUIRED COMPONENTS catkin_virtualenv)
 
 catkin_package()
 
-catkin_generate_virtualenv()
+catkin_generate_virtualenv(
+  INPUT_REQUIREMENTS requirements.in
+)
 
 install(FILES requirements.txt
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})

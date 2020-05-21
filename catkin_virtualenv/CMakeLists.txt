@@ -12,18 +12,23 @@ install(DIRECTORY cmake
   PATTERN ${PROJECT_NAME}-extras.cmake* EXCLUDE
 )
 
-catkin_install_python(
-  PROGRAMS
-    scripts/build_venv
-    scripts/combine_requirements
-    scripts/glob_requirements
-  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+set(python_scripts
+  scripts/collect_requirements
+  scripts/venv_init
+  scripts/venv_lock
+  scripts/venv_install
+  scripts/venv_relocate
 )
+
+catkin_install_python(PROGRAMS ${python_scripts}
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+
+install(FILES requirements.txt
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
 if(CATKIN_ENABLE_TESTING)
   find_package(roslint REQUIRED)
   roslint_python()
+  roslint_python(${python_scripts})
   roslint_add_test()
-
-  catkin_add_nosetests(test)
 endif()

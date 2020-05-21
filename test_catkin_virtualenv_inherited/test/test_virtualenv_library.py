@@ -19,9 +19,13 @@
 import importlib
 import unittest
 
+from packaging import version
+
 
 class TestVirtualenv(unittest.TestCase):
 
     def test_import(self):
         requests = importlib.import_module("requests")
-        self.assertEquals(requests.__version__, "2.19.1")
+        self.assertLessEqual(version.parse(requests.__version__), version.parse("2.21"))
+
+        _ = importlib.import_module("packaging")

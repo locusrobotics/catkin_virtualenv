@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # Software License Agreement (GPL)
 #
-# \file      glob_requirements
+# \file      collect_requirements.py
 # \authors   Paul Bovbel <pbovbel@locusrobotics.com>
 # \copyright Copyright (c) (2017,), Locus Robotics, All rights reserved.
 #
@@ -19,10 +19,9 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 from __future__ import print_function
 
-import argparse
-import sys
-from Queue import Queue
+import os
 
+from Queue import Queue
 from catkin.find_in_workspaces import find_in_workspaces
 from catkin_pkg.package import parse_package
 
@@ -30,22 +29,12 @@ from catkin_pkg.package import parse_package
 CATKIN_VIRTUALENV_TAGNAME = "pip_requirements"
 
 
-def parse_exported_requirements(package):
+def parse_exported_requirements(package, package_dir):
     # type: (catkin_pkg.package.Package) -> List[str]
     requirements_list = []
     for export in package.exports:
         if export.tagname == CATKIN_VIRTUALENV_TAGNAME:
-            try:
-                requirements_path = find_in_workspaces(
-                    project=package.name,
-                    path=export.content,
-                    first_match_only=True,
-                )[0]
-            except:
-                print("Package {package} declares <{tagname}> {file}, which cannot be found in the package".format(
-                    package=package.name, tagname=CATKIN_VIRTUALENV_TAGNAME, file=export.content), file=sys.stderr)
-            else:
-                requirements_list.append(requirements_path)
+            requirements_list.append(os.path.join(package_dir, export.content))
     return requirements_list
 
 
@@ -66,11 +55,12 @@ def process_package(package_name, soft_fail=True):
     else:
         package = parse_package(package_path)
         dependencies = package.build_depends + package.test_depends
-        return parse_exported_requirements(package), dependencies
+        return parse_exported_requirements(package, os.path.dirname(package_path)), dependencies
 
 
-def glob_requirements(package_name, no_deps):
-    # type: (str) -> int
+def collect_requirements(package_name, no_deps=False):
+    # type: (str, bool) -> List[str]
+    """ Collect requirements inherited by a package. """
     package_queue = Queue()
     package_queue.put(package_name)
     processed_packages = set()
@@ -83,20 +73,10 @@ def glob_requirements(package_name, no_deps):
             processed_packages.add(queued_package)
             requirements, dependencies = process_package(
                 package_name=queued_package, soft_fail=(queued_package != package_name))
-            requirements_list = requirements_list + requirements
+            requirements_list = requirements + requirements_list
 
             if not no_deps:
                 for dependency in dependencies:
                     package_queue.put(dependency.name)
 
-    print(';'.join(requirements_list))
-    return 0
-
-
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--package-name', type=str, required=True)
-    parser.add_argument('--no-deps', action="store_true")
-    args, unknown = parser.parse_known_args()
-
-    sys.exit(glob_requirements(**vars(args)))
+    return requirements_list

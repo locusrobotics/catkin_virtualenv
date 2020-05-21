@@ -23,7 +23,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 <package format="2">
   <name>test_catkin_virtualenv_inherited</name>
   <version>0.5.0</version>
-  <description>Package to test inherited requirements.</description>
+  <description>Test to make sure a package inherits it's dependency's dependencies, but is able to override the version.</description>
 
   <maintainer email="pbovbel@locusrobotics.com">Paul Bovbel</maintainer>
   <license>GPL</license>
@@ -32,7 +32,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   <buildtool_depend>catkin</buildtool_depend>
 
   <build_depend>catkin_virtualenv</build_depend>
-  
+
   <depend>test_catkin_virtualenv</depend>
 
   <test_depend>rostest</test_depend>
