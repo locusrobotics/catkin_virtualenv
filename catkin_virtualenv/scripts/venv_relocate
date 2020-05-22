@@ -33,7 +33,7 @@ if __name__ == '__main__':
     parser.add_argument(
         '--target-dir', required=True, help="Path where virtualenv will live.")
 
-    args, unknown = parser.parse_known_args()
+    args = parser.parse_args()
 
     venv = Virtualenv(args.venv)
     venv.relocate(

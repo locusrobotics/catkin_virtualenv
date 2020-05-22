@@ -34,7 +34,7 @@ function(catkin_generate_virtualenv)
 
   if(NOT DEFINED ARG_USE_SYSTEM_PACKAGES OR ARG_USE_SYSTEM_PACKAGES)
     message(STATUS "Using system site packages")
-    set(venv_args "${venv_args} --use-system-packages")
+    set(venv_args "--use-system-packages")
   endif()
 
   if(ARG_ISOLATE_REQUIREMENTS)

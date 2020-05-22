@@ -37,10 +37,11 @@ if __name__ == '__main__':
     parser.add_argument(
         '--extra-pip-args', default="\"\"", type=str, help="Extra pip args for install.")
 
-    args, unknown = parser.parse_known_args()
+    args = parser.parse_args()
 
     extra_pip_args = args.extra_pip_args[1:-1]
 
+    print(args.use_system_packages)
     venv = Virtualenv(args.venv)
     venv.initialize(
         python=args.python,
