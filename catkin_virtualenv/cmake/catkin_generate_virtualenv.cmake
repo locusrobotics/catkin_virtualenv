@@ -100,7 +100,7 @@ function(catkin_generate_virtualenv)
     )
 
   elseif(NOT DEFINED ARG_INPUT_REQUIREMENTS AND NOT package_requirements STREQUAL "")
-    message(WARNING "Please define an INPUT_REQUIREMENTS and generate a lock file - see https://github.com/locusrobotics/catkin_virtualenv/blob/master/README.md#locking-dependencies")
+    message(WARNING "Please define an INPUT_REQUIREMENTS block and generate a lock file - see https://github.com/locusrobotics/catkin_virtualenv/blob/master/README.md#locking-dependencies")
 
   endif()
 
