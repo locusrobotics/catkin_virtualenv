@@ -147,6 +147,12 @@ class Virtualenv:
         command += ['-o', output_requirements]
 
         run_command(command, check=True)
+
+        # Remove user-specific paths
+        contents = open(output_requirements, 'r').read().replace(os.path.dirname(output_requirements), '.')
+        with open(output_requirements, 'w') as f:
+            f.write(contents)
+
         logger.info("Wrote new lock file to {}".format(output_requirements))
 
     def relocate(self, target_dir):
