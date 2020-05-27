@@ -138,11 +138,12 @@ catkin_generate_virtualenv(
 This project allows you to lock dependencies by leveraging `pip-compile`. This is optional, but will prevent your
 python projects from spontaneously combusting in the future!
 
-Instead of specifying `requirements.txt` directly, create a `requirements.in` file with some loose specifications:
+Instead of specifying `requirements.txt` directly, create a `requirements.in` that defines your dependencies:
 
 ```python
-GitPython>=2
-psutil
+GitPython>=2     # I need a feature only available in GitPython 2+
+psutil           # I don't care what version of psutil I use
+requests==2.2.0  # I need a very specific version of requests
 ```
 
 Add `INPUT_REQUIREMENTS requirements.in` to your `catkin_generate_virtualenv()` invocation, and it will be used to 
