@@ -116,9 +116,13 @@ function(catkin_generate_virtualenv)
 
   add_custom_command(COMMENT "Prepare relocated virtualenvs for develspace and installspace"
     OUTPUT ${venv_devel_dir} install/${venv_dir}
-    COMMAND ${CMAKE_COMMAND} -E copy_directory ${venv_dir} ${venv_devel_dir}
+    # CMake copy_directory doesn't preserve symlinks https://gitlab.kitware.com/cmake/cmake/issues/14609
+    # COMMAND ${CMAKE_COMMAND} -E copy_directory ${venv_dir} ${venv_devel_dir}
+    # COMMAND ${CMAKE_COMMAND} -E copy_directory ${venv_dir} install/${venv_dir}
+    COMMAND mkdir -p ${venv_devel_dir} && cp -r ${venv_dir}/* ${venv_devel_dir}
+    COMMAND mkdir -p install/${venv_dir} && cp -r ${venv_dir}/* install/${venv_dir}
+
     COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv venv_relocate ${venv_devel_dir} --target-dir ${venv_devel_dir}
-    COMMAND ${CMAKE_COMMAND} -E copy_directory ${venv_dir} install/${venv_dir}
     COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv venv_relocate install/${venv_dir} --target-dir ${venv_install_dir}
     DEPENDS ${CMAKE_BINARY_DIR}/${venv_dir}/bin/activate
   )
