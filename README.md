@@ -138,7 +138,7 @@ catkin_generate_virtualenv(
 This project allows you to lock dependencies by leveraging `pip-compile`. This is optional, but will prevent your
 python projects from spontaneously combusting in the future!
 
-Instead of managing a `requirements.txt file`, you will manage a `requirements.in` file, and catkin_virtualenv will generate the `requirements.txt` file for you upon build.
+Instead of managing a `requirements.txt` file, you will manage a `requirements.in` file, and catkin_virtualenv will generate the `requirements.txt` file for you upon build.
 
 Create a `requirements.in` file and populate it manually with your package's requirements. For example:
 
