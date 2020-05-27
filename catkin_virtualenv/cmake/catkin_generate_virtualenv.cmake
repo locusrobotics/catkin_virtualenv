@@ -132,7 +132,7 @@ function(catkin_generate_virtualenv)
   )
 
   add_custom_target(venv_lock
-    COMMENT "Manually invoked target to write out ${ARG_LOCK_FILE}"
+    COMMENT "Manually invoked target to generate the lock file on demand"
     COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv venv_lock ${venv_dir}
       --package-name ${PROJECT_NAME} --input-requirements ${CMAKE_SOURCE_DIR}/${ARG_INPUT_REQUIREMENTS}
       --extra-pip-args ${processed_pip_args}
@@ -155,9 +155,6 @@ function(catkin_generate_virtualenv)
   install(DIRECTORY ${CMAKE_BINARY_DIR}/install/${venv_dir}
     DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
     USE_SOURCE_PERMISSIONS)
-
-  install(FILES ${ARG_LOCK_FILE}
-    DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
   # (pbovbel): NOSETESTS originally set by catkin here:
   # <https://github.com/ros/catkin/blob/kinetic-devel/cmake/test/nosetests.cmake#L86>
