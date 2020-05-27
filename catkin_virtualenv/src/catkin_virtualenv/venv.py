@@ -19,18 +19,22 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 from __future__ import print_function
 
+import difflib
 import os
 import logging
 import re
 import shutil
 import subprocess
+import tempfile
+import re
 
 from distutils.spawn import find_executable
 
-from . import check_call, relocate
+from . import run_command, relocate
 from .collect_requirements import collect_requirements
 
 _BYTECODE_REGEX = re.compile('.*.py[co]')
+_COMMENT_REGEX = re.compile('(^|\s+)#.*$', flags=re.MULTILINE)
 
 logger = logging.getLogger(__name__)
 
@@ -79,15 +83,44 @@ class Virtualenv:
             virtualenv.append('--system-site-packages')
 
         virtualenv.append(self.path)
-        check_call(virtualenv)
+        run_command(virtualenv, check=True)
 
-        check_call([self._venv_bin('python'), '-m', 'pip', 'install'] + extra_pip_args + preinstall)
+        run_command([self._venv_bin('python'), '-m', 'pip', 'install'] + extra_pip_args + preinstall, check=True)
 
     def install(self, requirements, extra_pip_args):
         """ Sync a virtualenv with the specified requirements. """
         command = [self._venv_bin('python'), '-m', 'pip', 'install'] + extra_pip_args
         for req in requirements:
-            check_call(command + ['-r', req])
+            run_command(command + ['-r', req], check=True)
+
+    def check(self, requirements, extra_pip_args):
+        """ Check if a set of requirements is completely locked. """
+        with open(requirements, 'r') as f:
+            existing_requirements = f.read()
+
+        # Re-lock the requirements
+        command = [self._venv_bin('pip-compile'), '--no-header', requirements, '-o', '-']
+        if extra_pip_args:
+            command += ['--pip-args', ' '.join(extra_pip_args)]
+
+        generated_requirements = run_command(command, check=True, capture_output=True).stdout.decode()
+
+        def _format(content):
+            # Remove comments
+            content = _COMMENT_REGEX.sub('', content)
+            # Remove case sensitivity
+            content = content.lower()
+            # Split into lines for diff
+            content = content.splitlines()
+            return content
+
+        # Compare against existing requirements
+        diff = list(difflib.unified_diff(
+            _format(existing_requirements),
+            _format(generated_requirements)
+        ))
+
+        return diff
 
     def lock(self, package_name, input_requirements, no_overwrite, extra_pip_args):
         """ Create a frozen requirement set from a set of input specifications. """
@@ -114,7 +147,7 @@ class Virtualenv:
 
         command += ['-o', output_requirements]
 
-        check_call(command)
+        run_command(command, check=True)
         logger.info("Wrote new lock file to {}".format(output_requirements))
 
     def relocate(self, target_dir):
@@ -136,7 +169,7 @@ class Virtualenv:
         try:
             with open(os.devnull, 'w') as devnull:
                 # "-c 'import venv'" does not work with the subprocess module, but '-cimport venv' does
-                check_call([python_executable, '-cimport {}'.format(module)], stderr=devnull)
+                run_command([python_executable, '-cimport {}'.format(module)], stderr=devnull, check=True)
             return True
         except subprocess.CalledProcessError:
             return False
