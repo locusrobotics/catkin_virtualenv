@@ -145,8 +145,9 @@ GitPython>=2
 psutil
 ```
 
-The file specified in CMake options as `INPUT_REQUIREMENTS` will be used to generate a locked `requirements.txt`
-at build time. You should check both `requirements.in` and `requirements.txt` in with your sources!
+Add `INPUT_REQUIREMENTS requirements.in` to your `catkin_generate_virtualenv()` invocation, and it will be used to 
+generate a locked `requirements.txt` at build time. You should check both `requirements.in` and `requirements.txt`
+in with your sources!
 
 To regenerate `requirements.txt`, either delete it and rebuild the project, or run this command from your project directory:
 
