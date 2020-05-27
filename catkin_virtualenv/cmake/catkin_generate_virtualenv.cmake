@@ -42,10 +42,6 @@ function(catkin_generate_virtualenv)
     set(lock_args "${lock_args} --no-deps")
   endif()
 
-  if(NOT DEFINED ARG_INPUT_REQUIREMENTS)
-    message(WARNING "Please define an INPUT_REQUIREMENTS and generate a lock file - see https://github.com/locusrobotics/catkin_virtualenv/blob/master/README.md#locking-dependencies")
-  endif()
-
   if (NOT DEFINED ARG_EXTRA_PIP_ARGS)
     set(ARG_EXTRA_PIP_ARGS "-qq" "--retries 10" "--timeout 30")
   endif()
@@ -102,6 +98,10 @@ function(catkin_generate_virtualenv)
         ${CMAKE_BINARY_DIR}/${venv_dir}/bin/python
         ${CMAKE_SOURCE_DIR}/${ARG_INPUT_REQUIREMENTS}
     )
+
+  elseif(NOT DEFINED ARG_INPUT_REQUIREMENTS AND NOT package_requirements STREQUAL "")
+    message(WARNING "Please define an INPUT_REQUIREMENTS block and generate a lock file - see https://github.com/locusrobotics/catkin_virtualenv/blob/master/README.md#locking-dependencies")
+
   endif()
 
   add_custom_command(COMMENT "Install requirements to ${CMAKE_BINARY_DIR}/${venv_dir}"
