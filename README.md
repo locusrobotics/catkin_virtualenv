@@ -138,7 +138,9 @@ catkin_generate_virtualenv(
 This project allows you to lock dependencies by leveraging `pip-compile`. This is optional, but will prevent your
 python projects from spontaneously combusting in the future!
 
-Instead of specifying `requirements.txt` directly, create a `requirements.in` file with some loose specifications:
+Instead of managing a `requirements.txt` file, you will manage a `requirements.in` file, and catkin_virtualenv will generate the `requirements.txt` file for you upon build.
+
+Create a `requirements.in` file and populate it manually with your package's requirements. For example:
 
 ```python
 GitPython>=2
@@ -148,16 +150,16 @@ psutil
 The file specified in CMake options as `INPUT_REQUIREMENTS` will be used to generate a locked `requirements.txt`
 at build time. You should check both `requirements.in` and `requirements.txt` in with your sources!
 
-To regenerate this file, either delete it and rebuild the project, or run from your project directory:
+To regenerate the `requirements.txt` file, either delete it and rebuild the project, or run this command from your project directory:
 
 `catkin build --this --no-deps --catkin-make-args venv_lock`
 
 To migrate a package from catkin_virtualenv <=0.5 to use lock files:
 
-- Rename `requirements.txt` to `requirements.in`,
-- Loosen the version specs in `requirements.in` as much as possible,
-- Add `INPUT_REQUIREMENTS requirements.in` to catkin_generate_virtualenv() in CMakeLists.txt.
-- Build and test the package.
-- Commit and push changes.
+- Rename `requirements.txt` to `requirements.in`
+- Relax the version requirements in `requirements.in` as much as sensibly possible. eg. requests>=2  vs. requests=2.23.0
+- Add `INPUT_REQUIREMENTS requirements.in` to catkin_generate_virtualenv() in CMakeLists.txt
+- Build and test that the package given the installed dependency versions might have changed slightly
+- Commit and push changes
 
 See example: https://github.com/locusrobotics/aiorospy/pull/30/commits/839b17adbe0c672f5e0d9cca702d12e16b117bca
