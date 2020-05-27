@@ -67,18 +67,19 @@ function(catkin_generate_virtualenv)
   set(${PROJECT_NAME}_VENV_DEVEL_DIR ${venv_devel_dir} PARENT_SCOPE)
   set(${PROJECT_NAME}_VENV_INSTALL_DIR ${venv_install_dir} PARENT_SCOPE)
 
-  # Collect requirements from each catkin package in the dependency chain
-  execute_process(
-    COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv collect_requirements
-      --package-name ${PROJECT_NAME} ${lock_args}
-    OUTPUT_VARIABLE requirements_list
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-  )
-
+  # Store just _this_ project's requirements file in ${package_requirements}
   execute_process(
     COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv collect_requirements --no-deps
       --package-name ${PROJECT_NAME} ${lock_args}
     OUTPUT_VARIABLE package_requirements
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+  )
+
+  # Collect all of this project's inherited requirements into ${requirements_list}
+  execute_process(
+    COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv collect_requirements
+      --package-name ${PROJECT_NAME} ${lock_args}
+    OUTPUT_VARIABLE requirements_list
     OUTPUT_STRIP_TRAILING_WHITESPACE
   )
 
