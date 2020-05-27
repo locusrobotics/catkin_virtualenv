@@ -52,7 +52,10 @@ class Virtualenv:
         system_python = find_executable(python)
 
         if not system_python:
-            raise RuntimeError("Unable to find a system-installed {}".format(python))
+            error_msg = "Unable to find a system-installed {}.".format(python)
+            if python and python[0].isdigit():
+                error_msg += ' Perhaps you meant python{}'.format(python)
+            raise RuntimeError(error_msg)
 
         preinstall = [
             "pip==20.1",

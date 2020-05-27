@@ -160,6 +160,6 @@ To migrate a package from catkin_virtualenv <=0.5 to use lock files:
 - Relax the version requirements in `requirements.in` as much as sensibly possible. eg. requests>=2  vs. requests=2.23.0
 - Add `INPUT_REQUIREMENTS requirements.in` to catkin_generate_virtualenv() in CMakeLists.txt
 - Build and test that the package given the installed dependency versions might have changed slightly
-- Commit and push changes
+- Commit the new `requirements.in`, your updated `CMakeLists.txt` and the new version of `requirements.txt` and push changes
 
 See example: https://github.com/locusrobotics/aiorospy/pull/30/commits/839b17adbe0c672f5e0d9cca702d12e16b117bca
