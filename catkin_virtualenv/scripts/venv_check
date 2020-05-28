@@ -33,7 +33,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description=Virtualenv.install.__doc__)
     parser.add_argument(
-        'venv', help="Path of virtualenv to manage")
+        'venv', help="Path of virtualenv to manage.")
     parser.add_argument(
         '--requirements', required=True, help="Requirements to check.")
     parser.add_argument(

@@ -29,7 +29,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description=Virtualenv.lock.__doc__)
     parser.add_argument(
-        'venv', help="Path of virtualenv to manage")
+        'venv', help="Path of virtualenv to manage.")
     parser.add_argument(
         '--package-name', required=True, help="Package name that virtualenv belongs to.")
     parser.add_argument(
