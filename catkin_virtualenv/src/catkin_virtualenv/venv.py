@@ -20,13 +20,12 @@
 from __future__ import print_function
 
 import difflib
-import os
 import logging
+import os
 import re
 import shutil
 import subprocess
 import tempfile
-import re
 
 from distutils.spawn import find_executable
 

@@ -48,7 +48,7 @@ if __name__ == '__main__':
     venv = Virtualenv(args.venv)
     diff = venv.check(
         requirements=args.requirements,
-        extra_pip_args=extra_pip_args.split(' ') if extra_pip_args else [],
+        extra_pip_args=[arg for arg in extra_pip_args.split(" ") if arg != ""],
     )
 
     if args.xunit_output:
