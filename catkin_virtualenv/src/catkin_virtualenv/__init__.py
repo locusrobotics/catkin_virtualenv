@@ -33,7 +33,12 @@ def configure_logging():
     except KeyError:
         logging.basicConfig()
 
+    return logging.getLogger()
 
-def check_call(cmd, *args, **kwargs):
+
+def run_command(cmd, *args, **kwargs):
     logger.info(' '.join(cmd))
-    return subprocess.check_call(cmd, *args, **kwargs)
+    if kwargs.pop('capture_output', False):
+        kwargs['stdout'] = subprocess.PIPE
+        kwargs['stderr'] = subprocess.PIPE
+    return subprocess.run(cmd, *args, **kwargs)

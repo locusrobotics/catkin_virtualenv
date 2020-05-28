@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 function(catkin_generate_virtualenv)
-  set(oneValueArgs PYTHON_VERSION PYTHON_INTERPRETER USE_SYSTEM_PACKAGES ISOLATE_REQUIREMENTS INPUT_REQUIREMENTS)
+  set(oneValueArgs PYTHON_VERSION PYTHON_INTERPRETER USE_SYSTEM_PACKAGES ISOLATE_REQUIREMENTS INPUT_REQUIREMENTS CHECK_VENV)
   set(multiValueArgs EXTRA_PIP_ARGS)
   cmake_parse_arguments(ARG "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
 
@@ -67,7 +67,15 @@ function(catkin_generate_virtualenv)
   set(${PROJECT_NAME}_VENV_DEVEL_DIR ${venv_devel_dir} PARENT_SCOPE)
   set(${PROJECT_NAME}_VENV_INSTALL_DIR ${venv_install_dir} PARENT_SCOPE)
 
-  # Collect requirements from each catkin package in the dependency chain
+  # Store just _this_ project's requirements file in ${package_requirements}
+  execute_process(
+    COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv collect_requirements --no-deps
+      --package-name ${PROJECT_NAME} ${lock_args}
+    OUTPUT_VARIABLE package_requirements
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+  )
+
+  # Collect all of this project's inherited requirements into ${requirements_list}
   execute_process(
     COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv collect_requirements
       --package-name ${PROJECT_NAME} ${lock_args}
@@ -75,12 +83,12 @@ function(catkin_generate_virtualenv)
     OUTPUT_STRIP_TRAILING_WHITESPACE
   )
 
-  execute_process(
-    COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv collect_requirements --no-deps
-      --package-name ${PROJECT_NAME} ${lock_args}
-    OUTPUT_VARIABLE package_requirements
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-  )
+  # Trigger rebuild if any of the requirements files change
+  foreach(requirements_file ${requirements_list})
+    if(EXISTS ${requirements_file})
+      stamp(${requirements_file})
+    endif()
+  endforeach()
 
   add_custom_command(COMMENT "Generate virtualenv in ${CMAKE_BINARY_DIR}/${venv_dir}"
     OUTPUT ${CMAKE_BINARY_DIR}/${venv_dir}/bin/python
@@ -98,10 +106,6 @@ function(catkin_generate_virtualenv)
         ${CMAKE_BINARY_DIR}/${venv_dir}/bin/python
         ${CMAKE_SOURCE_DIR}/${ARG_INPUT_REQUIREMENTS}
     )
-
-  elseif(NOT DEFINED ARG_INPUT_REQUIREMENTS AND NOT package_requirements STREQUAL "")
-    message(WARNING "Please define an INPUT_REQUIREMENTS block and generate a lock file - see https://github.com/locusrobotics/catkin_virtualenv/blob/master/README.md#locking-dependencies")
-
   endif()
 
   add_custom_command(COMMENT "Install requirements to ${CMAKE_BINARY_DIR}/${venv_dir}"
@@ -135,7 +139,7 @@ function(catkin_generate_virtualenv)
   )
 
   add_custom_target(venv_lock
-    COMMENT "Manually invoked target to write out ${ARG_LOCK_FILE}"
+    COMMENT "Manually invoked target to generate the lock file on demand"
     COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv venv_lock ${venv_dir}
       --package-name ${PROJECT_NAME} --input-requirements ${CMAKE_SOURCE_DIR}/${ARG_INPUT_REQUIREMENTS}
       --extra-pip-args ${processed_pip_args}
@@ -144,12 +148,20 @@ function(catkin_generate_virtualenv)
       ${CMAKE_SOURCE_DIR}/${ARG_INPUT_REQUIREMENTS}
   )
 
+  if(NOT package_requirements STREQUAL "" AND (NOT DEFINED ARG_CHECK_VENV OR ARG_CHECK_VENV))
+    file(MAKE_DIRECTORY ${CATKIN_TEST_RESULTS_DIR}/${PROJECT_NAME})
+    catkin_run_tests_target("venv_check" "${PROJECT_NAME}-requirements" "venv_check-${PROJECT_NAME}-requirements.xml"
+      COMMAND "${CATKIN_ENV} rosrun catkin_virtualenv venv_check ${venv_dir} --requirements ${package_requirements} \
+        --extra-pip-args \"${processed_pip_args}\" \
+        --xunit-output ${CATKIN_TEST_RESULTS_DIR}/${PROJECT_NAME}/venv_check-${PROJECT_NAME}-requirements.xml"
+      DEPENDENCIES ${PROJECT_NAME}_generate_virtualenv
+      WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    )
+  endif()
+
   install(DIRECTORY ${CMAKE_BINARY_DIR}/install/${venv_dir}
     DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
     USE_SOURCE_PERMISSIONS)
-
-  install(FILES ${ARG_LOCK_FILE}
-    DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
   # (pbovbel): NOSETESTS originally set by catkin here:
   # <https://github.com/ros/catkin/blob/kinetic-devel/cmake/test/nosetests.cmake#L86>

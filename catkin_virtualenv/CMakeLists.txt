@@ -15,6 +15,7 @@ install(DIRECTORY cmake
 set(python_scripts
   scripts/collect_requirements
   scripts/venv_init
+  scripts/venv_check
   scripts/venv_lock
   scripts/venv_install
   scripts/venv_relocate

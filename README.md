@@ -114,7 +114,7 @@ The following options are supported by `catkin_generate_virtualenv()`:
 
 ```cmake
 catkin_generate_virtualenv(
-  # Specify the package's set of input requirements to automatically lock
+  # Specify the input requirements for this package that catkin_virtualenv will automatically lock.
   INPUT_REQUIREMENTS requirements.in
 
   # Select an alternative python interpreter - it must be installed on the system.
@@ -125,6 +125,9 @@ catkin_generate_virtualenv(
 
   # Disable including pip requirements from catkin dependencies of this package.
   ISOLATE_REQUIREMENTS TRUE  # Default FALSE
+
+  # Disable creating a unit test to verify that package requirements are locked.
+  CHECK_VENV FALSE  # Default TRUE
 
   # Provide extra arguments to the underlying pip invocation
   EXTRA_PIP_ARGS

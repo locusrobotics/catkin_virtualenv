@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # Software License Agreement (GPL)
 #
 # \file      venv_init
@@ -35,7 +35,7 @@ if __name__ == '__main__':
     parser.add_argument(
         '--use-system-packages', action="store_true", help="Use system site packages.")
     parser.add_argument(
-        '--extra-pip-args', default="\"\"", type=str, help="Extra pip args for install.")
+        '--extra-pip-args', default='""', type=str, help="Extra pip args for install.")
 
     args = parser.parse_args()
 
@@ -46,5 +46,5 @@ if __name__ == '__main__':
     venv.initialize(
         python=args.python,
         use_system_packages=args.use_system_packages,
-        extra_pip_args=extra_pip_args.split(' ') if extra_pip_args else [],
+        extra_pip_args=[arg for arg in extra_pip_args.split(" ") if arg != ""],
     )

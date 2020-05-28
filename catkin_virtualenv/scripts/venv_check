@@ -1,0 +1,76 @@
+#!/usr/bin/env python3
+# Software License Agreement (GPL)
+#
+# \file      venv_install
+# \authors   Paul Bovbel <pbovbel@locusrobotics.com>
+# \copyright Copyright (c) (2017,), Locus Robotics, All rights reserved.
+#
+# This program is free software: you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation, either version 2 of the
+# License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+import argparse
+import inspect
+import sys
+
+import xml.etree.ElementTree as ET
+
+from catkin_virtualenv import configure_logging
+from catkin_virtualenv.venv import Virtualenv
+
+
+if __name__ == '__main__':
+    logger = configure_logging()
+
+    parser = argparse.ArgumentParser(description=Virtualenv.install.__doc__)
+    parser.add_argument(
+        'venv', help="Path of virtualenv to manage.")
+    parser.add_argument(
+        '--requirements', required=True, help="Requirements to check.")
+    parser.add_argument(
+        '--extra-pip-args', default='""', type=str, help="Extra pip args for install.")
+    parser.add_argument(
+        '--xunit-output', help="Destination where to write xunit output.")
+
+    args = parser.parse_args()
+
+    extra_pip_args = args.extra_pip_args[1:-1]
+
+    venv = Virtualenv(args.venv)
+    diff = venv.check(
+        requirements=args.requirements,
+        extra_pip_args=[arg for arg in extra_pip_args.split(" ") if arg != ""],
+    )
+
+    if args.xunit_output:
+        testsuite = ET.Element('testsuite', name="venv_check", tests="1", failures="1" if diff else "0", errors="0")
+        testcase = ET.SubElement(testsuite, 'testcase', name="check_locked", classname="catkin_virtualenv.Venv")
+        if diff:
+            failure = ET.SubElement(testcase, 'failure', message="{} is not fully locked".format(args.requirements))
+            message = inspect.cleandoc("""
+            Consider defining INPUT_REQUIREMENTS to have catkin_virtualenv generate a lock file for this package.
+            See https://github.com/locusrobotics/catkin_virtualenv/blob/master/README.md#locking-dependencies.
+            The following changes would fully lock {requirements}:
+            """.format(requirements=args.requirements))
+            message += '\n' + '\n'.join(diff)
+            failure.text = message
+
+        else:
+            success = ET.SubElement(testcase, 'success', message="{} is fully locked".format(args.requirements))
+
+        tree = ET.ElementTree(testsuite)
+        tree.write(args.xunit_output, encoding='utf-8', xml_declaration=True)
+
+    else:
+        if diff:
+            logger.error("{} is not fully locked, see diff:\n{}".format(args.requirements, '\n'.join(diff)))
+            sys.exit(1)
