@@ -37,7 +37,7 @@ if __name__ == '__main__':
     parser.add_argument(
         '--requirements', required=True, help="Requirements to check.")
     parser.add_argument(
-        '--extra-pip-args', default="\"\"", type=str, help="Extra pip args for install.")
+        '--extra-pip-args', default='""', type=str, help="Extra pip args for install.")
     parser.add_argument(
         '--xunit-output', help="Destination where to write xunit output.")
 

@@ -33,7 +33,7 @@ if __name__ == '__main__':
     parser.add_argument(
         '--requirements', required=True, nargs='+', help="Requirements to sync to virtualenv.")
     parser.add_argument(
-        '--extra-pip-args', default="\"\"", type=str, help="Extra pip args for install.")
+        '--extra-pip-args', default='""', type=str, help="Extra pip args for install.")
 
     args = parser.parse_args()
 
