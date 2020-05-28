@@ -31,7 +31,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <build_export_depend>python-virtualenv</build_export_depend>
+  <build_export_depend>python3-virtualenv</build_export_depend>
   <build_export_depend>python3-dev</build_export_depend>
   <build_export_depend>python3-nose</build_export_depend>
   <build_export_depend>python3-venv</build_export_depend>
