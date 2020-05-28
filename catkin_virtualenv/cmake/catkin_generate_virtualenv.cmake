@@ -83,6 +83,13 @@ function(catkin_generate_virtualenv)
     OUTPUT_STRIP_TRAILING_WHITESPACE
   )
 
+  # Trigger rebuild if any of the requirements files change
+  foreach(requirements_file ${requirements_list})
+    if(EXISTS ${requirements_file})
+      stamp(${requirements_file})
+    endif()
+  endforeach()
+
   add_custom_command(COMMENT "Generate virtualenv in ${CMAKE_BINARY_DIR}/${venv_dir}"
     OUTPUT ${CMAKE_BINARY_DIR}/${venv_dir}/bin/python
     COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv venv_init ${venv_dir}
