@@ -21,7 +21,7 @@ from __future__ import print_function
 
 import os
 
-from Queue import Queue
+from queue import Queue
 from catkin.find_in_workspaces import find_in_workspaces
 from catkin_pkg.package import parse_package
 
