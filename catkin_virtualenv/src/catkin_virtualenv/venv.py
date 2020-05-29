@@ -147,6 +147,7 @@ class Virtualenv:
         command += ['-o', output_requirements]
 
         run_command(command, check=True)
+
         logger.info("Wrote new lock file to {}".format(output_requirements))
 
     def relocate(self, target_dir):

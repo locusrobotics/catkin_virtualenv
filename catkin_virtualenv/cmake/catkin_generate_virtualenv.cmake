@@ -99,9 +99,10 @@ function(catkin_generate_virtualenv)
   if(DEFINED ARG_INPUT_REQUIREMENTS AND NOT package_requirements STREQUAL "")
     add_custom_command(COMMENT "Lock input requirements if they don't exist"
       OUTPUT ${package_requirements}
-      COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv venv_lock ${venv_dir}
-        --package-name ${PROJECT_NAME} --input-requirements ${CMAKE_SOURCE_DIR}/${ARG_INPUT_REQUIREMENTS}
+      COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv venv_lock ${CMAKE_BINARY_DIR}/${venv_dir}
+        --package-name ${PROJECT_NAME} --input-requirements ${ARG_INPUT_REQUIREMENTS}
         --no-overwrite --extra-pip-args ${processed_pip_args}
+      WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
       DEPENDS
         ${CMAKE_BINARY_DIR}/${venv_dir}/bin/python
         ${CMAKE_SOURCE_DIR}/${ARG_INPUT_REQUIREMENTS}
@@ -140,9 +141,10 @@ function(catkin_generate_virtualenv)
 
   add_custom_target(venv_lock
     COMMENT "Manually invoked target to generate the lock file on demand"
-    COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv venv_lock ${venv_dir}
-      --package-name ${PROJECT_NAME} --input-requirements ${CMAKE_SOURCE_DIR}/${ARG_INPUT_REQUIREMENTS}
+    COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv venv_lock ${CMAKE_BINARY_DIR}/${venv_dir}
+      --package-name ${PROJECT_NAME} --input-requirements ${ARG_INPUT_REQUIREMENTS}
       --extra-pip-args ${processed_pip_args}
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     DEPENDS
       ${venv_devel_dir}
       ${CMAKE_SOURCE_DIR}/${ARG_INPUT_REQUIREMENTS}
