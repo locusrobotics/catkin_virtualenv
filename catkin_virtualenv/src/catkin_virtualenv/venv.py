@@ -32,7 +32,7 @@ from distutils.spawn import find_executable
 from . import run_command, relocate
 from .collect_requirements import collect_requirements
 
-_BYTECODE_REGEX = re.compile('.*.py[co]')
+_BYTECODE_REGEX = re.compile('.*\.py[co]')
 _COMMENT_REGEX = re.compile('(^|\s+)#.*$', flags=re.MULTILINE)
 
 logger = logging.getLogger(__name__)
