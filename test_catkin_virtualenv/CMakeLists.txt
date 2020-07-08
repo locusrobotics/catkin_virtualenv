@@ -3,11 +3,12 @@ project(test_catkin_virtualenv)
 
 find_package(catkin REQUIRED COMPONENTS catkin_virtualenv)
 
-catkin_package()
-
 catkin_generate_virtualenv(
   INPUT_REQUIREMENTS requirements.in
 )
+
+# Order with catkin_generate_virtualenv shouldn't matter
+catkin_package()
 
 install(FILES requirements.txt
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
