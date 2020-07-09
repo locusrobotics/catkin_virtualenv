@@ -58,7 +58,7 @@ function(catkin_generate_virtualenv)
   endif()
 
   # Make sure CATKIN_* paths are initialized
-  catkin_destinations()
+  catkin_destinations()  # oh the places we'll go
 
   ### Start building virtualenv
   set(venv_dir venv)
