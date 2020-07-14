@@ -2,8 +2,8 @@
 Changelog for package test_catkin_virtualenv_py3_isolated
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.6.0 (2020-07-14)
+------------------
 * RST-3172 Refactor catkin_virtualenv to allow locking dependencies (`#55 <https://github.com/locusrobotics/catkin_virtualenv/issues/55>`_)
   * Remove unused options
   * Fix regex for comments

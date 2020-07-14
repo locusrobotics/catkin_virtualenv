@@ -2,8 +2,8 @@
 Changelog for package test_catkin_virtualenv_inherited
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.6.0 (2020-07-14)
+------------------
 * Remove user specific paths (`#63 <https://github.com/locusrobotics/catkin_virtualenv/issues/63>`_)
   * Remove user specific paths
   * Change working directory of venv_lock command

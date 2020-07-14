@@ -2,8 +2,8 @@
 Changelog for package test_catkin_virtualenv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.6.0 (2020-07-14)
+------------------
 * Don't require catkin_package to be called before catkin_generate_virtualenv (`#67 <https://github.com/locusrobotics/catkin_virtualenv/issues/67>`_)
 * Remove user specific paths (`#63 <https://github.com/locusrobotics/catkin_virtualenv/issues/63>`_)
   * Remove user specific paths

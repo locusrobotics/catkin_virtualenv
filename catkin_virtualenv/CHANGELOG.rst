@@ -2,8 +2,8 @@
 Changelog for package catkin_virtualenv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.6.0 (2020-07-14)
+------------------
 * Don't require catkin_package to be called before catkin_generate_virtualenv (`#67 <https://github.com/locusrobotics/catkin_virtualenv/issues/67>`_)
 * Revert "Downgrade docutils so that boto works (`#66 <https://github.com/locusrobotics/catkin_virtualenv/issues/66>`_)"
   This reverts commit 998cd6add2e43e12036d0db15a7c4d58fe3411cf.
