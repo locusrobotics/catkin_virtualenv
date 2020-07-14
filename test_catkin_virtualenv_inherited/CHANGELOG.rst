@@ -2,6 +2,39 @@
 Changelog for package test_catkin_virtualenv_inherited
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Remove user specific paths (`#63 <https://github.com/locusrobotics/catkin_virtualenv/issues/63>`_)
+  * Remove user specific paths
+  * Change working directory of venv_lock command
+  * Lock catkin_virtualenv base requirements
+  Co-authored-by: Paul Bovbel <paul@bovbel.com>
+* RST-3172 Refactor catkin_virtualenv to allow locking dependencies (`#55 <https://github.com/locusrobotics/catkin_virtualenv/issues/55>`_)
+  * Remove unused options
+  * Fix regex for comments
+  * Migrate scripts
+  * Remove old code
+  * Move common requirements to an export file
+  * Minor cleanup
+  * Remove requirement-parsing unit tests
+  * Fix logging config
+  * Fix test builds
+  * Generate lock files
+  * Fix tests
+  * Move dh-virtualenv functions into separate file
+  * Fix roslint
+  * Update docs
+  * Update requirements
+  * CMake comments
+  * Fix pip-args
+  * README fixup
+  * Correct ARG_LOCK_FILE handling
+  * Remove headers
+  * Use set comprehension
+  * Add migration doc
+  * Respin
+* Contributors: David V. Lu!!, Paul Bovbel
+
 0.5.0 (2019-06-21)
 ------------------
 
