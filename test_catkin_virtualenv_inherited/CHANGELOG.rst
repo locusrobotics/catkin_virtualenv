@@ -2,8 +2,8 @@
 Changelog for package test_catkin_virtualenv_inherited
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.6.1 (2020-08-24)
+------------------
 * Correct dependencies and autoformat (`#72 <https://github.com/locusrobotics/catkin_virtualenv/issues/72>`_)
   * Remove python-virtualenv dep
   * Add python2-dev
