@@ -41,11 +41,7 @@ def parse_exported_requirements(package, package_dir):
 def process_package(package_name, soft_fail=True):
     # type: (str) -> List[str], List[str]
     try:
-        package_path = find_in_workspaces(
-            project=package_name,
-            path="package.xml",
-            first_match_only=True,
-        )[0]
+        package_path = find_in_workspaces(project=package_name, path="package.xml", first_match_only=True,)[0]
     except IndexError:
         if not soft_fail:
             raise RuntimeError("Unable to process package {}".format(package_name))
@@ -72,7 +68,8 @@ def collect_requirements(package_name, no_deps=False):
         if queued_package not in processed_packages:
             processed_packages.add(queued_package)
             requirements, dependencies = process_package(
-                package_name=queued_package, soft_fail=(queued_package != package_name))
+                package_name=queued_package, soft_fail=(queued_package != package_name)
+            )
             requirements_list = requirements + requirements_list
 
             if not no_deps:
