@@ -2,6 +2,18 @@
 Changelog for package catkin_virtualenv
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Correct dependencies and autoformat (`#72 <https://github.com/locusrobotics/catkin_virtualenv/issues/72>`_)
+  * Remove python-virtualenv dep
+  * Add python2-dev
+  * Lint
+* We're ok with any 44.x version of setuptools (`#71 <https://github.com/locusrobotics/catkin_virtualenv/issues/71>`_)
+  But not anything newer.
+  Older versions don't appear to work reliably with `pip==20.1`.
+  This helps when running a build of a package depending on catkin_virtualenv on OS which ship with an old version of setuptools (such as Ubuntu Xenial) when `USE_SYSTEM_PACKAGES` is not set to `FALSE`. In that situation, only specifying 'setuptools<45` will be true, as setuptools is installed (in the systems site packages), so pip will not upgrade it. Specifying a minimum version like this will force pip to always install an up-to-date version.
+* Contributors: G.A. vd. Hoorn, Paul Bovbel
+
 0.6.0 (2020-07-14)
 ------------------
 * Don't require catkin_package to be called before catkin_generate_virtualenv (`#67 <https://github.com/locusrobotics/catkin_virtualenv/issues/67>`_)

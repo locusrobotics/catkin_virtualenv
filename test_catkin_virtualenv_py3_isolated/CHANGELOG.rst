@@ -2,6 +2,14 @@
 Changelog for package test_catkin_virtualenv_py3_isolated
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Correct dependencies and autoformat (`#72 <https://github.com/locusrobotics/catkin_virtualenv/issues/72>`_)
+  * Remove python-virtualenv dep
+  * Add python2-dev
+  * Lint
+* Contributors: Paul Bovbel
+
 0.6.0 (2020-07-14)
 ------------------
 * RST-3172 Refactor catkin_virtualenv to allow locking dependencies (`#55 <https://github.com/locusrobotics/catkin_virtualenv/issues/55>`_)

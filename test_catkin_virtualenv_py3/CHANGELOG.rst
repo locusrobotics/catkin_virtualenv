@@ -2,6 +2,14 @@
 Changelog for package test_catkin_virtualenv_py3
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Correct dependencies and autoformat (`#72 <https://github.com/locusrobotics/catkin_virtualenv/issues/72>`_)
+  * Remove python-virtualenv dep
+  * Add python2-dev
+  * Lint
+* Contributors: Paul Bovbel
+
 0.6.0 (2020-07-14)
 ------------------
 * Remove user specific paths (`#63 <https://github.com/locusrobotics/catkin_virtualenv/issues/63>`_)
