@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 
 def configure_logging():
     try:
-        with open(os.environ['ROS_PYTHON_LOG_CONFIG_FILE']) as config:
+        with open(os.environ["ROS_PYTHON_LOG_CONFIG_FILE"]) as config:
             logging.config.dictConfig(yaml.safe_load(config))
     except KeyError:
         logging.basicConfig()
@@ -37,8 +37,8 @@ def configure_logging():
 
 
 def run_command(cmd, *args, **kwargs):
-    logger.info(' '.join(cmd))
-    if kwargs.pop('capture_output', False):
-        kwargs['stdout'] = subprocess.PIPE
-        kwargs['stderr'] = subprocess.PIPE
+    logger.info(" ".join(cmd))
+    if kwargs.pop("capture_output", False):
+        kwargs["stdout"] = subprocess.PIPE
+        kwargs["stderr"] = subprocess.PIPE
     return subprocess.run(cmd, *args, **kwargs)

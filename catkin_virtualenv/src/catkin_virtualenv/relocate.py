@@ -24,32 +24,36 @@ import subprocess
 
 from . import run_command
 
-PYTHON_INTERPRETERS = ['python', 'pypy', 'ipy', 'jython']
-_PYTHON_INTERPRETERS_REGEX = r'\(' + r'\|'.join(PYTHON_INTERPRETERS) + r'\)'
+PYTHON_INTERPRETERS = ["python", "pypy", "ipy", "jython"]
+_PYTHON_INTERPRETERS_REGEX = r"\(" + r"\|".join(PYTHON_INTERPRETERS) + r"\)"
 
 
 def find_script_files(venv_dir):
     """Find list of files containing python shebangs in the bin directory. """
     command = [
-        'grep', '-l', '-r',
-        '-e', r'^#!.*bin/\(env \)\?{0}'.format(_PYTHON_INTERPRETERS_REGEX),
-        '-e', r"^'''exec.*bin/{0}".format(_PYTHON_INTERPRETERS_REGEX),
-        os.path.join(venv_dir, 'bin')]
+        "grep",
+        "-l",
+        "-r",
+        "-e",
+        r"^#!.*bin/\(env \)\?{0}".format(_PYTHON_INTERPRETERS_REGEX),
+        "-e",
+        r"^'''exec.*bin/{0}".format(_PYTHON_INTERPRETERS_REGEX),
+        os.path.join(venv_dir, "bin"),
+    ]
     files = run_command(command, check=True, capture_output=True).stdout
-    return {f for f in files.decode('utf-8').strip().split('\n') if f}
+    return {f for f in files.decode("utf-8").strip().split("\n") if f}
 
 
 def fix_shebangs(venv_dir, target_dir):
     """Translate /usr/bin/python and /usr/bin/env python shebang
     lines to point to our virtualenv python.
     """
-    pythonpath = os.path.join(target_dir, 'bin/python')
+    pythonpath = os.path.join(target_dir, "bin/python")
     for f in find_script_files(venv_dir):
         regex = (
-            r's-^#!.*bin/\(env \)\?{names}\"\?-#!{pythonpath}-;'
-            r"s-^'''exec'.*bin/{names}-'''exec' {pythonpath}-"
+            r"s-^#!.*bin/\(env \)\?{names}\"\?-#!{pythonpath}-;" r"s-^'''exec'.*bin/{names}-'''exec' {pythonpath}-"
         ).format(names=_PYTHON_INTERPRETERS_REGEX, pythonpath=re.escape(pythonpath))
-        run_command(['sed', '-i', regex, f], check=True)
+        run_command(["sed", "-i", regex, f], check=True)
 
 
 def fix_activate_path(venv_dir, target_dir):
@@ -57,21 +61,9 @@ def fix_activate_path(venv_dir, target_dir):
     post-install path of the virtualenv.
     """
     activate_settings = [
-        [
-            'VIRTUAL_ENV="{0}"'.format(target_dir),
-            r'^VIRTUAL_ENV=.*$',
-            "activate"
-        ],
-        [
-            'setenv VIRTUAL_ENV "{0}"'.format(target_dir),
-            r'^setenv VIRTUAL_ENV.*$',
-            "activate.csh"
-        ],
-        [
-            'set -gx VIRTUAL_ENV "{0}"'.format(target_dir),
-            r'^set -gx VIRTUAL_ENV.*$',
-            "activate.fish"
-        ],
+        ['VIRTUAL_ENV="{0}"'.format(target_dir), r"^VIRTUAL_ENV=.*$", "activate"],
+        ['setenv VIRTUAL_ENV "{0}"'.format(target_dir), r"^setenv VIRTUAL_ENV.*$", "activate.csh"],
+        ['set -gx VIRTUAL_ENV "{0}"'.format(target_dir), r"^set -gx VIRTUAL_ENV.*$", "activate.fish"],
     ]
 
     for activate_args in activate_settings:
@@ -79,7 +71,7 @@ def fix_activate_path(venv_dir, target_dir):
         pattern = re.compile(activate_args[1], flags=re.M)
         activate_file = activate_args[2]
 
-        with open(os.path.join(venv_dir, 'bin', activate_file), 'r+') as fh:
+        with open(os.path.join(venv_dir, "bin", activate_file), "r+") as fh:
             content = pattern.sub(virtualenv_path, fh.read())
             fh.seek(0)
             fh.truncate()
