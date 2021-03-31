@@ -113,7 +113,7 @@ catkin_generate_virtualenv(
   INPUT_REQUIREMENTS requirements.in
 
   # Select an alternative python interpreter - it must be installed on the system.
-  PYTHON_INTERPRETER python3.7  # Default python2
+  PYTHON_INTERPRETER python3.7  # Default python3
 
   # Choose not to use underlying system packages. This excludes any python packages installed by apt or system-pip from the environment.
   USE_SYSTEM_PACKAGES FALSE  # Default TRUE

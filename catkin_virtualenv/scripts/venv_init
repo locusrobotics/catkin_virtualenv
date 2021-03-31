@@ -31,7 +31,7 @@ if __name__ == '__main__':
     parser.add_argument(
         'venv', help="Path where to initialize the virtualenv")
     parser.add_argument(
-        '--python', default="python2", help="Build the virtualenv with which python version.")
+        '--python', default="python3", help="Build the virtualenv with which python version.")
     parser.add_argument(
         '--use-system-packages', action="store_true", help="Use system site packages.")
     parser.add_argument(
