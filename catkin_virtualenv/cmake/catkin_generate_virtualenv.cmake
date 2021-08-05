@@ -29,7 +29,7 @@ function(catkin_generate_virtualenv)
   endif()
 
   if(NOT DEFINED ARG_PYTHON_INTERPRETER)
-    set(ARG_PYTHON_INTERPRETER "python2")
+    set(ARG_PYTHON_INTERPRETER "python3")
   endif()
 
   if(NOT DEFINED ARG_USE_SYSTEM_PACKAGES OR ARG_USE_SYSTEM_PACKAGES)
