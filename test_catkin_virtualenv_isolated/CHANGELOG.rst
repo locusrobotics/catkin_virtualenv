@@ -2,8 +2,8 @@
 Changelog for package test_catkin_virtualenv_isolated
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.8.0 (2022-02-23)
+------------------
 * Switch default interpreter to python3 (#77)
   * Switch default interpreter to python3
   * Remove python2
