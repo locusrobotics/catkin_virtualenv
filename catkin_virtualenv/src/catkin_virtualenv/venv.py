@@ -157,7 +157,11 @@ class Virtualenv:
             shutil.rmtree(local_dir)
 
     def _venv_bin(self, binary_name):
-        return os.path.abspath(os.path.join(self.path, "bin", binary_name))
+        if os.path.exists(os.path.join(self.path, "bin", binary_name)):
+            return os.path.abspath(os.path.join(self.path, "bin", binary_name))
+        elif os.path.exists(os.path.join(self.path, "local", "bin", binary_name)):
+            return os.path.abspath(os.path.join(self.path, "local", "bin", binary_name))
+        raise RuntimeError("Binary {} not found in venv".format(binary_name))
 
     def _check_module(self, python_executable, module):
         try:
