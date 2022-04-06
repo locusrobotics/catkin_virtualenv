@@ -11,5 +11,5 @@ nose==1.3.7
 pyparsing==2.4.7          # via catkin-pkg
 python-dateutil==2.8.1    # via catkin-pkg
 pyyaml==5.4.1             # via rospkg
-rospkg==1.2.10
+rospkg==1.3.0
 six==1.15.0               # via python-dateutil
