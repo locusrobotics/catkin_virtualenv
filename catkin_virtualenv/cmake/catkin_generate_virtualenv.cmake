@@ -141,16 +141,29 @@ function(catkin_generate_virtualenv)
       install/${venv_dir}
   )
 
-  add_custom_target(venv_lock
-    COMMENT "Manually invoked target to generate the lock file on demand"
-    COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv venv_lock ${CMAKE_BINARY_DIR}/${venv_dir}
-      --package-name ${PROJECT_NAME} --input-requirements ${ARG_INPUT_REQUIREMENTS}
-      --extra-pip-args ${processed_pip_args}
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-    DEPENDS
-      ${venv_devel_dir}
-      ${CMAKE_SOURCE_DIR}/${ARG_INPUT_REQUIREMENTS}
-  )
+  if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+    add_custom_target(venv_lock
+      COMMENT "Manually invoked target to generate the lock file on demand"
+      COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv venv_lock ${CMAKE_BINARY_DIR}/${venv_dir}
+        --package-name ${PROJECT_NAME} --input-requirements ${ARG_INPUT_REQUIREMENTS}
+        --extra-pip-args ${processed_pip_args}
+      WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+      DEPENDS
+        ${venv_devel_dir}
+        ${CMAKE_SOURCE_DIR}/${ARG_INPUT_REQUIREMENTS}
+    )
+  else()
+    add_custom_target(${PROJECT_NAME}_venv_lock
+      COMMENT "Manually invoked target to generate the lock file on demand"
+      COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv venv_lock ${CMAKE_BINARY_DIR}/${venv_dir}
+        --package-name ${PROJECT_NAME} --input-requirements ${ARG_INPUT_REQUIREMENTS}
+        --extra-pip-args ${processed_pip_args}
+      WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+      DEPENDS
+        ${venv_devel_dir}
+        ${CMAKE_SOURCE_DIR}/${ARG_INPUT_REQUIREMENTS}
+    )
+  endif()
 
   if(NOT package_requirements STREQUAL "" AND (NOT DEFINED ARG_CHECK_VENV OR ARG_CHECK_VENV))
     file(MAKE_DIRECTORY ${CATKIN_TEST_RESULTS_DIR}/${PROJECT_NAME})
