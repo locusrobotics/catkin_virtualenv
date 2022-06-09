@@ -150,7 +150,9 @@ at build time. You should check both `requirements.in` and `requirements.txt` in
 
 To regenerate the `requirements.txt` file, either delete it and rebuild the project, or run this command from your project directory:
 
-`catkin build --this --no-deps --catkin-make-args venv_lock`
+`catkin build --this --no-deps --catkin-make-args <PROJECT_NAME>_venv_lock` where `<PROJECT_NAME>` is the name for the project as specified in the package's CMakeLists.txt.
+
+Alternatively, you can specify the package name `catkin build <PACKAGE_NAME> --no-deps --catkin-make-args <PROJECT_NAME>_venv_lock`
 
 To migrate a package from catkin_virtualenv <=0.5 to use lock files:
 
