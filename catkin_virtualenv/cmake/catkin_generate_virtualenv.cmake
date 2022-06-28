@@ -141,7 +141,7 @@ function(catkin_generate_virtualenv)
       install/${venv_dir}
   )
 
-  add_custom_target(venv_lock
+  add_custom_target(${PROJECT_NAME}_venv_lock
     COMMENT "Manually invoked target to generate the lock file on demand"
     COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv venv_lock ${CMAKE_BINARY_DIR}/${venv_dir}
       --package-name ${PROJECT_NAME} --input-requirements ${ARG_INPUT_REQUIREMENTS}
