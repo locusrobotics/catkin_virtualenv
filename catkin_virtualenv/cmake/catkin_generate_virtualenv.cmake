@@ -104,10 +104,10 @@ function(catkin_generate_virtualenv)
       COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv venv_lock ${CMAKE_BINARY_DIR}/${venv_dir}
         --package-name ${PROJECT_NAME} --input-requirements ${ARG_INPUT_REQUIREMENTS}
         --no-overwrite --extra-pip-args ${processed_pip_args}
-      WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+      WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
       DEPENDS
         ${CMAKE_BINARY_DIR}/${venv_dir}/bin/python
-        ${CMAKE_SOURCE_DIR}/${ARG_INPUT_REQUIREMENTS}
+        ${PROJECT_SOURCE_DIR}/${ARG_INPUT_REQUIREMENTS}
     )
   endif()
 
@@ -146,10 +146,10 @@ function(catkin_generate_virtualenv)
     COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv venv_lock ${CMAKE_BINARY_DIR}/${venv_dir}
       --package-name ${PROJECT_NAME} --input-requirements ${ARG_INPUT_REQUIREMENTS}
       --extra-pip-args ${processed_pip_args}
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     DEPENDS
       ${venv_devel_dir}
-      ${CMAKE_SOURCE_DIR}/${ARG_INPUT_REQUIREMENTS}
+      ${PROJECT_SOURCE_DIR}/${ARG_INPUT_REQUIREMENTS}
   )
 
   if(NOT package_requirements STREQUAL "" AND (NOT DEFINED ARG_CHECK_VENV OR ARG_CHECK_VENV))
