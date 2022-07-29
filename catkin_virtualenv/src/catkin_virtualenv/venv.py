@@ -26,6 +26,11 @@ import re
 import shutil
 import subprocess
 import tempfile
+try:
+    from urllib.request import urlretrieve
+except:
+    # for python2
+    from urllib import urlretrieve
 
 from distutils.spawn import find_executable
 
@@ -76,8 +81,29 @@ class Virtualenv:
         if use_system_packages:
             virtualenv.append("--system-site-packages")
 
+        without_pip = self._check_module(system_python, "ensurepip") is False
+        if without_pip:
+            virtualenv.append('--without-pip')
+
         virtualenv.append(self.path)
         run_command(virtualenv, check=True)
+
+        if without_pip:
+            # install pip via get-pip.py
+            version_proc = run_command(
+                ['python', "-cimport sys; print('{}.{}'.format(*sys.version_info))"],
+                capture_output=True)
+            version = version_proc.stdout
+            if isinstance(version, bytes):
+                version = version.decode('utf-8')
+            version = version.strip()
+            # download pip from https://bootstrap.pypa.io/pip/
+            if version in ['2.6', '2.7', '3.2', '3.3', '3.4', '3.5', '3.6']:
+                get_pip_url = 'https://bootstrap.pypa.io/pip/{}/get-pip.py'.format(version)
+            else:
+                get_pip_url = 'https://bootstrap.pypa.io/pip/get-pip.py'
+            get_pip_path, _ = urlretrieve(get_pip_url)
+            run_command([self._venv_bin("python"), get_pip_path], check=True)
 
         run_command([self._venv_bin("python"), "-m", "pip", "install"] + extra_pip_args + preinstall, check=True)
 
