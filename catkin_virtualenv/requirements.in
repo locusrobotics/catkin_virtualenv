@@ -1,3 +1,4 @@
 catkin-pkg
 nose
-rospkg>=1.3.0
+rospkg
+setproctitle
