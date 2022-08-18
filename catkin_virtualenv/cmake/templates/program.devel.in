@@ -1,4 +1,6 @@
-#!${${PROJECT_NAME}_VENV_DEVEL_DIR}/bin/python
+#!/usr/bin/env bash
+
+exec ${${PROJECT_NAME}_VENV_DEVEL_DIR}/bin/python - "$@" <<EOF
 import re
 import sys
 
@@ -7,3 +9,4 @@ from setproctitle import setproctitle
 program_path = "${program_path}"
 setproctitle(' '.join([program_path] + sys.argv[1:]))
 exec(open(program_path).read())
+EOF
