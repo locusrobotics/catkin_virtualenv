@@ -1,13 +1,18 @@
 cmake_minimum_required(VERSION 3.5.1)
-project(test_catkin_virtualenv_isolated)
+project(test_catkin_virtualenv_python2)
 
 find_package(catkin REQUIRED COMPONENTS catkin_virtualenv)
 
+catkin_generate_virtualenv(
+  INPUT_REQUIREMENTS requirements.in
+  PYTHON_INTERPRETER python2
+)
+
+# Order with catkin_generate_virtualenv shouldn't matter
 catkin_package()
 
-catkin_generate_virtualenv(
-  USE_SYSTEM_PACKAGES FALSE
-)
+install(FILES requirements.txt
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
 if(CATKIN_ENABLE_TESTING)
   find_package(rostest REQUIRED)
