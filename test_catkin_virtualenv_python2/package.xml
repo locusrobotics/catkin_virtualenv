@@ -21,9 +21,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 -->
 <package format="2">
-  <name>test_catkin_virtualenv_isolated</name>
+  <name>test_catkin_virtualenv_python2</name>
   <version>0.7.0</version>
-  <description>Test to make sure a system package (python3-requests) isn't visible inside an isolated virtualenv.</description>
+  <description>Basic catkin_virtualenv test in python2</description>
 
   <maintainer email="pbovbel@locusrobotics.com">Paul Bovbel</maintainer>
   <license>GPL</license>
@@ -33,7 +33,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
   <build_depend>catkin_virtualenv</build_depend>
 
-  <test_depend>python3-requests</test_depend>
+  <depend>python-dev</depend>
+
   <test_depend>rostest</test_depend>
+
+  <export>
+    <pip_requirements>requirements.txt</pip_requirements>
+  </export>
 
 </package>

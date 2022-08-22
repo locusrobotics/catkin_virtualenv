@@ -19,9 +19,10 @@
 import importlib
 import unittest
 
-class TestVirtualenv(unittest.TestCase):
+from packaging import version
 
+
+class TestVirtualenv(unittest.TestCase):
     def test_import(self):
-    # Check that requests isn't in the virtualenv, even though rosdep will pull in python3-requests
-        with self.assertRaises(ImportError):
-            _ = importlib.import_module("requests")
+        requests = importlib.import_module("requests")
+        self.assertGreaterEqual(version.parse(requests.__version__), version.parse("2"))

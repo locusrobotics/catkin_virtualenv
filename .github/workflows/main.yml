@@ -6,14 +6,25 @@ on:
       - '*'
 
 jobs:
-  industrial_ci:
+  ci:
     strategy:
       matrix:
-        env:
-          - ROS_DISTRO: melodic
-          - ROS_DISTRO: noetic
-    runs-on: ubuntu-latest
+        include:
+          - os: ubuntu-18.04
+            distro: melodic
+            package-name: ''
+          - os: ubuntu-20.04
+            distro: noetic
+            # skip test_catkin_virtualenv_python2, upstream ros_comm/noetic isn't python2 compatible
+            # https://github.com/locusrobotics/ros_comm/pull/24
+            package-name: 'catkin_virtualenv test_catkin_virtualenv test_catkin_virtualenv_inherited test_catkin_virtualenv_isolated'
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v1
-      - uses: 'ros-industrial/industrial_ci@master'
-        env: ${{matrix.env}}
+      - uses: ros-tooling/setup-ros@v0.3
+        with:
+          required-ros-distributions: ${{ matrix.distro }}
+      - uses: ros-tooling/action-ros-ci@v0.2
+        with:
+          package-name: ${{ matrix.package-name }}
+          target-ros1-distro: ${{ matrix.distro }}
