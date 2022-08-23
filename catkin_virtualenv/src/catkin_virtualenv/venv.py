@@ -28,7 +28,7 @@ import subprocess
 import tempfile
 try:
     from urllib.request import urlretrieve
-except:
+except ImportError:
     # for python2
     from urllib import urlretrieve
 
