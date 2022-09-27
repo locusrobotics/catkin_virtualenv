@@ -1,12 +1,16 @@
 #!/usr/bin/env bash
 
-exec ${${PROJECT_NAME}_VENV_INSTALL_DIR}/bin/python - "$@" <<EOF
-import re
-import sys
+if [ "${ARG_RENAME_PROCESS}" = "TRUE" ]; then
+	exec ${${PROJECT_NAME}_VENV_INSTALL_DIR}/bin/python - "$@" <<- EOF
+	import re
+	import sys
 
-from setproctitle import setproctitle
+	from setproctitle import setproctitle
 
-program_path = "${CMAKE_INSTALL_PREFIX}/${program_install_location}/${program_basename}"
-setproctitle(' '.join([program_path] + sys.argv[1:]))
-exec(open(program_path).read())
-EOF
+	program_path = "${CMAKE_INSTALL_PREFIX}/${program_install_location}/${program_basename}"
+	setproctitle(' '.join([program_path] + sys.argv[1:]))
+	exec(open(program_path).read())
+	EOF
+else
+	exec ${${PROJECT_NAME}_VENV_INSTALL_DIR}/bin/python ${CMAKE_INSTALL_PREFIX}/${program_install_location}/${program_basename} "$@"
+fi
