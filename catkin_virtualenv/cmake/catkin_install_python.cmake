@@ -18,7 +18,11 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 function(catkin_install_python)
   # See https://github.com/ros/catkin/blob/kinetic-devel/cmake/catkin_install_python.cmake for overriden function
-  cmake_parse_arguments(ARG "OPTIONAL" "DESTINATION" "PROGRAMS" ${ARGN})
+  set(options OPTIONAL)
+  set(oneValueArgs DESTINATION RENAME_PROCESS)
+  set(multiValueArgs PROGRAMS)
+  cmake_parse_arguments(ARG "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+
   if(NOT ARG_PROGRAMS)
     message(FATAL_ERROR "catkin_install_python() called without required PROGRAMS argument.")
   endif()
@@ -29,6 +33,10 @@ function(catkin_install_python)
   if(NOT TARGET ${PROJECT_NAME}_generate_virtualenv)
     message(FATAL_ERROR "${PROJECT_NAME} loaded catkin_virtualenv, but never invoked 'catkin_generate_virtualenv'")
     return()
+  endif()
+
+  if (NOT DEFINED ARG_RENAME_PROCESS)
+    set(ARG_RENAME_PROCESS TRUE)
   endif()
 
   # Use CMake templating to create virtualenv loaders for all specified python scripts
