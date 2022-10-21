@@ -123,6 +123,9 @@ catkin_generate_virtualenv(
 
   # Disable creating a unit test to verify that package requirements are locked.
   CHECK_VENV FALSE  # Default TRUE
+  
+  # Disable renaming the process names to hide the interpreter name, this has can create issues when executing the process as root.
+  RENAME_PROCESS FALSE # Default TRUE
 
   # Provide extra arguments to the underlying pip invocation
   EXTRA_PIP_ARGS
