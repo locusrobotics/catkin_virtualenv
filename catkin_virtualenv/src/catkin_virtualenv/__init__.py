@@ -18,21 +18,14 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import logging
-import logging.config
-import os
 import subprocess
-import yaml
+import rosgraph.roslogging
 
 logger = logging.getLogger(__name__)
 
 
 def configure_logging():
-    try:
-        with open(os.environ["ROS_PYTHON_LOG_CONFIG_FILE"]) as config:
-            logging.config.dictConfig(yaml.safe_load(config))
-    except KeyError:
-        logging.basicConfig()
-
+    rosgraph.roslogging.configure_logging('catkin_virtualenv')
     return logging.getLogger()
 
 
