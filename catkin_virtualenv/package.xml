@@ -36,6 +36,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   <build_export_depend>python3-rospkg-modules</build_export_depend>
   <build_export_depend>python3-venv</build_export_depend>
   <build_export_depend>rosbash</build_export_depend>
+  <build_export_depend>rosgraph</build_export_depend>
   <build_export_depend>virtualenv</build_export_depend>
 
   <test_depend>roslint</test_depend>
