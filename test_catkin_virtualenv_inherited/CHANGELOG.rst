@@ -2,9 +2,6 @@
 Changelog for package test_catkin_virtualenv_inherited
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
-
 0.7.0 (2020-10-02)
 ------------------
 
