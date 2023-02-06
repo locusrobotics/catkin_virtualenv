@@ -65,8 +65,8 @@ class Virtualenv:
             raise RuntimeError(error_msg)
 
         preinstall = [
-            "pip==20.1",
-            "pip-tools==5.1.2",
+            "pip==23.0",
+            "pip-tools==6.12.2",
         ]
 
         builtin_venv = self._check_module(system_python, "venv")
