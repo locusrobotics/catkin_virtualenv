@@ -16,8 +16,8 @@ Changelog for package catkin_virtualenv
   * Drop kinetic
 * Contributors: Paul Bovbel
 
-Forthcoming
------------
+0.9.0 (2023-02-22)
+------------------
 * 0.8.0
 * Update changelogs
 * Use upstream to configure logging (#94)
