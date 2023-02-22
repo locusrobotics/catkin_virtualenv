@@ -13,6 +13,23 @@ Changelog for package test_catkin_virtualenv_isolated
   Co-authored-by: locus-services <33065330+locus-services@users.noreply.github.com>
 * Contributors: Paul Bovbel
 
+Forthcoming
+-----------
+* 0.8.0
+* Update changelogs
+* Fix catkin_virtualenv for python2 (#92)
+  * Add python2 test package
+  * Fix dependencies for python2
+  * Skip python2 for noetic upstream
+* Switch default interpreter to python3 (#77)
+  * Switch default interpreter to python3
+  * Remove python2
+  * Add back vitualenv, needed for python2
+  * Tailor: Updating Jenkinsfile
+  Co-authored-by: Gary Servin <gservin@locusrobotics.com>
+  Co-authored-by: locus-services <33065330+locus-services@users.noreply.github.com>
+* Contributors: Gary Servin, Paul Bovbel
+
 0.7.0 (2020-10-02)
 ------------------
 

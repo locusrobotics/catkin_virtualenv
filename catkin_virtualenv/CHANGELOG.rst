@@ -16,6 +16,47 @@ Changelog for package catkin_virtualenv
   * Drop kinetic
 * Contributors: Paul Bovbel
 
+Forthcoming
+-----------
+* 0.8.0
+* Update changelogs
+* Use upstream to configure logging (#94)
+* Allow disabling process rename when it creates issues (#93)
+* Check ensurepip to install pip via get-pip.py (#90)
+  * Check ensurepip to install pip via get-pip.py
+  * Add ImportError to pass lint
+* Fix catkin_virtualenv for python2 (#92)
+  * Add python2 test package
+  * Fix dependencies for python2
+  * Skip python2 for noetic upstream
+* Rename process to program name (#50)
+  * Rename process to node name
+  * Rethink approach
+  * Mirror how native processes are named
+  * Bump dependencies
+  * Try heredoc bash to python interp
+* Run catkin_run_tests_target only when CATKIN_ENABLE_TESTING is enabled (#89)
+* use PROJECT_SOURCE_DIR for requirements in venv_lock (#88)
+* Make CMake work in non-isolated builds. (#87)
+  * Make CMake work in non-isolated builds.
+  Specifically when `catkin_virtualenv` was used in multiple packages.
+  * Updated docs.
+  Removed split between isolated and non-isolated `venv_lock` targets.
+* fix rospkg to 1.3.0 (#85)
+* Improved _venv_bin to find binaries in local (#81)
+  Co-authored-by: Jorge López Fueyo <jorge@scaledrobotics.com>
+* Switch default interpreter to python3 (#77)
+  * Switch default interpreter to python3
+  * Remove python2
+  * Add back vitualenv, needed for python2
+  * Tailor: Updating Jenkinsfile
+  Co-authored-by: Gary Servin <gservin@locusrobotics.com>
+  Co-authored-by: locus-services <33065330+locus-services@users.noreply.github.com>
+* Bump dependencies (#76)
+  * Bump dependencies
+  * Drop kinetic
+* Contributors: Alec Tiefenthal, Gary Servin, Iori Yanokura, Jorge López Fueyo, Paul Bovbel, Shingo Kitagawa, Yuki Furuta
+
 0.7.0 (2020-10-02)
 ------------------
 
