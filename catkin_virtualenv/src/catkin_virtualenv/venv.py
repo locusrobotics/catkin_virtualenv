@@ -98,18 +98,18 @@ class Virtualenv:
                 version = version.decode('utf-8')
             version = version.strip()
             # download pip from https://bootstrap.pypa.io/pip/
-            if version in ['2.6', '2.7', '3.2', '3.3', '3.4', '3.5', '3.6']:
+            if version in ['2.6', '2.7', '3.2', '3.3', '3.4', '3.5', '3.6', '3.7', '3.8', '3.9', '3,10']:
                 get_pip_url = 'https://bootstrap.pypa.io/pip/{}/get-pip.py'.format(version)
             else:
                 get_pip_url = 'https://bootstrap.pypa.io/pip/get-pip.py'
             get_pip_path, _ = urlretrieve(get_pip_url)
-            run_command([self._venv_bin("python"), get_pip_path], check=True)
+            run_command([self._venv_bin("python3"), get_pip_path], check=True)
 
-        run_command([self._venv_bin("python"), "-m", "pip", "install"] + extra_pip_args + preinstall, check=True)
+        run_command([self._venv_bin("python3"), "-m", "pip", "install"] + extra_pip_args + preinstall, check=True)
 
     def install(self, requirements, extra_pip_args):
         """ Sync a virtualenv with the specified requirements. """
-        command = [self._venv_bin("python"), "-m", "pip", "install"] + extra_pip_args
+        command = [self._venv_bin("python3"), "-m", "pip", "install"] + extra_pip_args
         for req in requirements:
             run_command(command + ["-r", req], check=True)
 
