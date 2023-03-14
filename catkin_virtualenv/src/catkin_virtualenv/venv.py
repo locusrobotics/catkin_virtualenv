@@ -98,7 +98,7 @@ class Virtualenv:
                 version = version.decode('utf-8')
             version = version.strip()
             # download pip from https://bootstrap.pypa.io/pip/
-            if version in ['2.6', '2.7', '3.2', '3.3', '3.4', '3.5', '3.6', '3.7', '3.8', '3.9', '3,10']:
+            if version in ['2.6', '2.7', '3.2', '3.3', '3.4', '3.5', '3.6', '3.7', '3.8', '3.9', '3.10']:
                 get_pip_url = 'https://bootstrap.pypa.io/pip/{}/get-pip.py'.format(version)
             else:
                 get_pip_url = 'https://bootstrap.pypa.io/pip/get-pip.py'
