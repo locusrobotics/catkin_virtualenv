@@ -16,7 +16,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
-from distutils.core import setup
+from setuptools import setup
 from catkin_pkg.python_setup import generate_distutils_setup
 
 d = generate_distutils_setup(packages=["catkin_virtualenv"], package_dir={"": "src"})
