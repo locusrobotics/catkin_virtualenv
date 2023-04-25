@@ -1,8 +1,0 @@
-certifi==2020.4.5.1       # via requests
-chardet==3.0.4            # via requests
-idna==2.9                 # via requests
-packaging==20.4           # via -r requirements.in
-pyparsing==2.4.7          # via packaging
-requests==2.23.0          # via -r requirements.in
-six==1.15.0               # via packaging
-urllib3==1.25.9           # via requests
