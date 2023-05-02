@@ -14,6 +14,11 @@ wrapper scripts for any Python scripts in the package. Both will be included in 
 
 This library is GPL licensed due to the inclusion of dh_virtualenv.
 
+Compatibility:
+- Python 3.7+
+- Ubuntu 20.04+, maybe others
+- `catkin-build`, `colcon`, `catkin_make_isolated` (i.e. ros_buildfarm), but not `catkin_make`
+
 For general help, please check the [FAQ](http://answers.ros.org/questions/tags:catkin_virtualenv). Report bugs on the [issue tracker](https://github.com/locusrobotics/catkin_virtualenv/issues).
 
 ## Exporting python requirements
@@ -123,7 +128,7 @@ catkin_generate_virtualenv(
 
   # Disable creating a unit test to verify that package requirements are locked.
   CHECK_VENV FALSE  # Default TRUE
-  
+
   # Disable renaming the process names to hide the interpreter name, this has can create issues when executing the process as root.
   RENAME_PROCESS FALSE # Default TRUE
 
