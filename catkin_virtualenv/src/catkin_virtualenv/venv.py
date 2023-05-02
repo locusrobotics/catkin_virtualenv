@@ -119,7 +119,7 @@ class Virtualenv:
             existing_requirements = f.read()
 
         # Re-lock the requirements
-        command = [self._venv_bin("pip-compile"), "--no-header", requirements, "-o", "-"]
+        command = [self._venv_bin("pip-compile"), "--no-header", "--annotation-style", "line", requirements, "-o", "-"]
         if extra_pip_args:
             command += ["--pip-args", " ".join(extra_pip_args)]
 
@@ -152,7 +152,7 @@ class Virtualenv:
             return
 
         pip_compile = self._venv_bin("pip-compile")
-        command = [pip_compile, "--no-header", input_requirements]
+        command = [pip_compile, "--no-header", "--annotation-style", "line", input_requirements]
 
         if os.path.normpath(input_requirements) == os.path.normpath(output_requirements):
             raise RuntimeError(
