@@ -95,8 +95,7 @@ class Virtualenv:
                 version = version.decode('utf-8')
             version = version.strip()
             # download pip from https://bootstrap.pypa.io/pip/
-            get_pip_url = 'https://bootstrap.pypa.io/pip/{}/get-pip.py'.format(version)
-            get_pip_path, _ = urlretrieve(get_pip_url)
+            get_pip_path, _ = urlretrieve("https://bootstrap.pypa.io/pip/get-pip.py")
             run_command([self._venv_bin("python"), get_pip_path], check=True)
 
         run_command([self._venv_bin("python"), "-m", "pip", "install"] + extra_pip_args + preinstall, check=True)
