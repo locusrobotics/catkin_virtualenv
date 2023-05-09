@@ -33,7 +33,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
   <build_depend>catkin_virtualenv</build_depend>
 
-  <test_depend>python3-requests</test_depend>
+  <test_depend>python3-packaging</test_depend>
   <test_depend>rostest</test_depend>
 
 </package>

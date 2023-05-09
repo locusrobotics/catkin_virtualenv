@@ -19,10 +19,9 @@
 import importlib
 import unittest
 
-from packaging import version
-
 
 class TestVirtualenv(unittest.TestCase):
     def test_import(self):
-        requests = importlib.import_module("requests")
-        self.assertGreaterEqual(version.parse(requests.__version__), version.parse("2"))
+        packaging = importlib.import_module("packaging")
+        version = importlib.import_module("packaging.version")
+        self.assertGreaterEqual(version.parse(packaging.__version__), version.parse("2"))
