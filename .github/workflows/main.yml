@@ -18,6 +18,7 @@ jobs:
       - uses: ros-tooling/setup-ros@v0.3
         with:
           required-ros-distributions: ${{ matrix.distro }}
+      - run: sudo apt remove python3-openssl -y
       - uses: ros-tooling/action-ros-ci@v0.2
         with:
           package-name: ${{ matrix.package-name }}
