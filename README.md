@@ -126,6 +126,9 @@ catkin_generate_virtualenv(
 
   # Disable including pip requirements from catkin dependencies of this package.
   ISOLATE_REQUIREMENTS TRUE  # Default FALSE
+  # Note: due to https://github.com/nose-devs/nose/issues/1099 and nose being unmaintained, using this option will prevent catkin_add_nosetests from working.
+  # Hence CATKIN_IGNORE in the test_catkin_virtualenv_isolated package. `nose-py3` seems to be a decent stopgap if used to replace `nose` in `catkin_virtualenv/requirements.txt`
+  # but https://github.com/atsb/nose-py3/issues/9 is currently a show-stopper.
 
   # Disable creating a unit test to verify that package requirements are locked.
   CHECK_VENV FALSE  # Default TRUE
