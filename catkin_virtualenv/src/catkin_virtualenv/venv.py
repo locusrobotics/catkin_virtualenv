@@ -63,7 +63,6 @@ class Virtualenv:
         preinstall = [
             "pip==22.0.2",
             "pip-tools==6.10.0",
-            "pip-tools",
         ]
 
         builtin_venv = self._check_module(system_python, "venv")
