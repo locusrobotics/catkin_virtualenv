@@ -26,7 +26,11 @@ import re
 import shutil
 import subprocess
 import tempfile
-from urllib.request import urlretrieve
+try:
+    from urllib.request import urlretrieve
+except ImportError:
+    # for python2
+    from urllib import urlretrieve
 
 from distutils.spawn import find_executable
 
@@ -62,7 +66,8 @@ class Virtualenv:
 
         preinstall = [
             "pip==22.0.2",
-            "pip-tools==6.10.0",
+            # "pip-tools==6.10.0",
+            "pip-tools==6.13.0",
         ]
 
         builtin_venv = self._check_module(system_python, "venv")
