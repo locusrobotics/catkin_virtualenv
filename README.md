@@ -14,6 +14,12 @@ wrapper scripts for any Python scripts in the package. Both will be included in 
 
 This library is GPL licensed due to the inclusion of dh_virtualenv.
 
+Compatibility:
+- Python 3.7+
+- Ubuntu 20.04+, maybe others
+- ROS Noetic, maybe others
+- `catkin-build`, `colcon`, `catkin_make_isolated` (i.e. ros_buildfarm), but not `catkin_make`
+
 For general help, please check the [FAQ](http://answers.ros.org/questions/tags:catkin_virtualenv). Report bugs on the [issue tracker](https://github.com/locusrobotics/catkin_virtualenv/issues).
 
 ## Exporting python requirements
@@ -120,10 +126,13 @@ catkin_generate_virtualenv(
 
   # Disable including pip requirements from catkin dependencies of this package.
   ISOLATE_REQUIREMENTS TRUE  # Default FALSE
+  # Note: due to https://github.com/nose-devs/nose/issues/1099 and nose being unmaintained, using this option will prevent catkin_add_nosetests from working.
+  # Hence CATKIN_IGNORE in the test_catkin_virtualenv_isolated package. `nose-py3` seems to be a decent stopgap if used to replace `nose` in `catkin_virtualenv/requirements.txt`
+  # but https://github.com/atsb/nose-py3/issues/9 is currently a show-stopper.
 
   # Disable creating a unit test to verify that package requirements are locked.
   CHECK_VENV FALSE  # Default TRUE
-  
+
   # Disable renaming the process names to hide the interpreter name, this has can create issues when executing the process as root.
   RENAME_PROCESS FALSE # Default TRUE
 

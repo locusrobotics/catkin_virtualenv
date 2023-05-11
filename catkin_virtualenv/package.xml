@@ -30,8 +30,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   <author email="pbovbel@locusrobotics.com">Paul Bovbel</author>
 
   <buildtool_depend>catkin</buildtool_depend>
-  <buildtool_depend condition="$ROS_PYTHON_VERSION == 2">python-setuptools</buildtool_depend>
-  <buildtool_depend condition="$ROS_PYTHON_VERSION == 3">python3-setuptools</buildtool_depend>
+  <buildtool_depend>python3-setuptools</buildtool_depend>
 
   <build_export_depend>python3-dev</build_export_depend>
   <build_export_depend>python3-nose</build_export_depend>

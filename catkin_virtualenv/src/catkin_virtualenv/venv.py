@@ -65,8 +65,8 @@ class Virtualenv:
             raise RuntimeError(error_msg)
 
         preinstall = [
-            "pip==20.1",
-            "pip-tools==5.1.2",
+            "pip==22.0.2",
+            "pip-tools==6.10.0",
         ]
 
         builtin_venv = self._check_module(system_python, "venv")
@@ -98,11 +98,7 @@ class Virtualenv:
                 version = version.decode('utf-8')
             version = version.strip()
             # download pip from https://bootstrap.pypa.io/pip/
-            if version in ['2.6', '2.7', '3.2', '3.3', '3.4', '3.5', '3.6']:
-                get_pip_url = 'https://bootstrap.pypa.io/pip/{}/get-pip.py'.format(version)
-            else:
-                get_pip_url = 'https://bootstrap.pypa.io/pip/get-pip.py'
-            get_pip_path, _ = urlretrieve(get_pip_url)
+            get_pip_path, _ = urlretrieve("https://bootstrap.pypa.io/pip/get-pip.py")
             run_command([self._venv_bin("python"), get_pip_path], check=True)
 
         run_command([self._venv_bin("python"), "-m", "pip", "install"] + extra_pip_args + preinstall, check=True)
@@ -119,7 +115,7 @@ class Virtualenv:
             existing_requirements = f.read()
 
         # Re-lock the requirements
-        command = [self._venv_bin("pip-compile"), "--no-header", requirements, "-o", "-"]
+        command = [self._venv_bin("pip-compile"), "--no-header", "--annotation-style", "line", requirements, "-o", "-"]
         if extra_pip_args:
             command += ["--pip-args", " ".join(extra_pip_args)]
 
@@ -152,7 +148,7 @@ class Virtualenv:
             return
 
         pip_compile = self._venv_bin("pip-compile")
-        command = [pip_compile, "--no-header", input_requirements]
+        command = [pip_compile, "--no-header", "--annotation-style", "line", input_requirements]
 
         if os.path.normpath(input_requirements) == os.path.normpath(output_requirements):
             raise RuntimeError(
