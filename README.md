@@ -18,7 +18,7 @@ Compatibility:
 - Python 3.7+
 - Ubuntu 20.04+, maybe others
 - ROS Noetic, maybe others
-- `catkin-build`, `colcon`, `catkin_make_isolated` (i.e. ros_buildfarm), but not `catkin_make`
+- `catkin-tools`, `colcon`, `catkin_make_isolated` (i.e. ros_buildfarm), but not `catkin_make`
 
 For general help, please check the [FAQ](http://answers.ros.org/questions/tags:catkin_virtualenv). Report bugs on the [issue tracker](https://github.com/locusrobotics/catkin_virtualenv/issues).
 
