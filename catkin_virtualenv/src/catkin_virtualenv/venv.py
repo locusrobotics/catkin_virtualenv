@@ -132,6 +132,8 @@ class Virtualenv:
             content = content.lower()
             # Split into lines for diff
             content = content.splitlines()
+            # ignore order
+            content.sort()
             return content
 
         # Compare against existing requirements
