@@ -104,6 +104,8 @@ class Virtualenv:
         run_command([self._venv_bin("python"), "-m", "pip", "install"] + extra_pip_args + preinstall, check=True)
 
     def install(self, requirements, extra_pip_args):
+        """ Purge the cache first before installing. """ # (KLAD) testing to debug an issue on build farm
+        command = [self._venv_bin("python"), "-m", "pip", "cache", "purge"] 
         """ Sync a virtualenv with the specified requirements. """
         command = [self._venv_bin("python"), "-m", "pip", "install"] + extra_pip_args
         for req in requirements:
