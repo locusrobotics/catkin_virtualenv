@@ -2,6 +2,9 @@
 Changelog for package test_catkin_virtualenv_python2
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.9.0 (2023-02-22)
 ------------------
 * Fix version
