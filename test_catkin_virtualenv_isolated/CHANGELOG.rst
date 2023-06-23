@@ -13,8 +13,8 @@ Changelog for package test_catkin_virtualenv_isolated
   Co-authored-by: locus-services <33065330+locus-services@users.noreply.github.com>
 * Contributors: Paul Bovbel
 
-Forthcoming
------------
+0.9.1 (2023-06-23)
+------------------
 
 0.9.0 (2023-02-22)
 ------------------

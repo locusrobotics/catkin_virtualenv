@@ -5,8 +5,8 @@ Changelog for package test_catkin_virtualenv_inherited
 0.8.0 (2022-02-23)
 ------------------
 
-Forthcoming
------------
+0.9.1 (2023-06-23)
+------------------
 
 0.9.0 (2023-02-22)
 ------------------

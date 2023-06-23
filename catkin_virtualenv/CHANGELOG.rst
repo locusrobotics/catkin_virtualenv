@@ -16,8 +16,8 @@ Changelog for package catkin_virtualenv
   * Drop kinetic
 * Contributors: Paul Bovbel
 
-Forthcoming
------------
+0.9.1 (2023-06-23)
+------------------
 * ignore order in requirements consistency check (`#102 <https://github.com/locusrobotics/catkin_virtualenv/issues/102>`_)
   (cherry picked from commit f557bbc9a262bb1d9fbdb43c3baa86f7c115ef09)
 * Contributors: Paul Bovbel
