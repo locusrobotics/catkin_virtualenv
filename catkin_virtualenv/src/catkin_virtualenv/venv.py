@@ -109,10 +109,10 @@ class Virtualenv:
     def install(self, requirements, extra_pip_args):
         """Purge the cache first before installing."""  # (KLAD) testing to debug an issue on build farm
         command = [self._venv_bin("python"), "-m", "pip", "cache", "purge"]
-        """ Sync a virtualenv with the specified requirements. """
+        """ Sync a virtualenv with the specified requirements."""
         command = [self._venv_bin("python"), "-m", "pip", "install", "-vvv"] + extra_pip_args
         for req in requirements:
-            run_command(command + ["-r", req], check=True)
+            run_command(command + ["-r", req] + "--no-cache-dir", check=True)  # (klad) test nocachedir
 
     def check(self, requirements, extra_pip_args):
         """Check if a set of requirements is completely locked."""
