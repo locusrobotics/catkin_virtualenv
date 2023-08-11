@@ -102,16 +102,16 @@ class Virtualenv:
             get_pip_path, _ = urlretrieve("https://bootstrap.pypa.io/pip/get-pip.py")
             run_command([self._venv_bin("python"), get_pip_path], check=True)
 
-        #(gservin): test --no-cache-dir
+        # (gservin): test --no-cache-dir
         run_command(
             [self._venv_bin("python"), "-m", "pip", "install", "--no-cache-dir", "-vvv"] + extra_pip_args + preinstall,
-            check=True
+            check=True,
         )
 
     def install(self, requirements, extra_pip_args):
         """Purge the cache first before installing."""  # (KLAD) testing to debug an issue on build farm
         command = [self._venv_bin("python"), "-m", "pip", "cache", "purge"]
-        """ Sync a virtualenv with the specified requirements.""" #(KLAD) testing no-cache-dir
+        """ Sync a virtualenv with the specified requirements."""  # (KLAD) testing no-cache-dir
         command = [self._venv_bin("python"), "-m", "pip", "install", "-vvv", "--no-cache-dir"] + extra_pip_args
         for req in requirements:
             run_command(command + ["-r", req], check=True)
