@@ -57,8 +57,8 @@ Changelog for package catkin_virtualenv
   * Drop kinetic
 * Contributors: Alec Tiefenthal, Gary Servin, Iori Yanokura, Jorge López Fueyo, Paul Bovbel, Shingo Kitagawa, Yuki Furuta
 
-Forthcoming
------------
+0.10.0 (2023-09-25)
+-------------------
 * Fixing formatting with black
 * Add --no-cache-dir
 * Moving option
