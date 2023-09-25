@@ -11,8 +11,8 @@ Changelog for package test_catkin_virtualenv
 * Update changelogs
 * Contributors: Gary Servin
 
-Forthcoming
------------
+0.10.0 (2023-09-25)
+-------------------
 * Drop python2 and add Jammy support (#101)
   * Updating pip and pip-tools
   * Trying older version of pip and pip-tools
