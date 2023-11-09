@@ -1,0 +1,326 @@
+repo_name: locusrobotics/catkin_virtualenv
+report_id: 16cf6667c928f2d008513f3dbc60f637
+repo_type: Public
+timestamp: '2023-11-09T16:24:08+00:00'
+requested_by: locus-services
+provider: github
+branch: master
+detected_tools_count: 23
+tools:
+- name: Python
+  description: A clear and powerful object-oriented programming language, comparable
+    to Perl, Ruby, Scheme, or Java.
+  website_url: https://www.python.org
+  open_source: true
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Languages
+  image_url: https://img.stackshare.io/service/993/pUBY5pVj.png
+  detection_source: Repo Metadata
+- name: Ruby
+  description: A dynamic, interpreted, open source programming language with a focus
+    on simplicity and productivity
+  website_url: https://www.ruby-lang.org
+  open_source: true
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Languages
+  image_url: https://img.stackshare.io/service/989/ruby.png
+  detection_source: test_catkin_virtualenv_inherited/requirements.txt
+  last_updated_by: Paul Bovbel
+  last_updated_on: 2023-05-11 18:48:36.000000000 Z
+- name: CMake
+  description: 'An open-source system that manages the build process '
+  website_url: http://www.cmake.org/
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Java Build Tools
+  image_url: https://img.stackshare.io/service/2424/0UlUI_y1_400x400.jpg
+  detection_source: Repo Metadata
+- name: Git
+  description: Fast, scalable, distributed revision control system
+  website_url: http://git-scm.com/
+  open_source: true
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Version Control System
+  image_url: https://img.stackshare.io/service/1046/git.png
+  detection_source: Repo Metadata
+- name: GitHub Actions
+  description: Automate your workflow from idea to production
+  website_url: https://github.com/features/actions
+  open_source: false
+  hosted_saas: true
+  category: Build, Test, Deploy
+  sub_category: Continuous Integration
+  image_url: https://img.stackshare.io/service/11563/actions.png
+  detection_source: ".github/workflows/main.yml"
+  last_updated_by: Paul Bovbel
+  last_updated_on: 2022-08-22 23:07:41.000000000 Z
+- name: PyPI
+  description: A repository of software for the Python programming language
+  website_url: https://pypi.org/
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Hosted Package Repository
+  image_url: https://img.stackshare.io/service/12572/-RIWgodF_400x400.jpg
+  detection_source: test_catkin_virtualenv_inherited/requirements.txt
+  last_updated_by: Paul Bovbel
+  last_updated_on: 2020-05-21 16:40:11.000000000 Z
+- name: RubyGems
+  description: Easily download, install, and use ruby software packages on your system
+  website_url: https://rubygems.org/
+  open_source: false
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Package Managers
+  image_url: https://img.stackshare.io/service/12795/5jL6-BA5_400x400.jpeg
+  detection_source: test_catkin_virtualenv_inherited/requirements.txt
+  last_updated_by: Paul Bovbel
+  last_updated_on: 2023-05-11 18:48:36.000000000 Z
+- name: Shell
+  description: A shell is a text-based terminal, used for manipulating programs and
+    files. Shell scripts typically manage program execution.
+  website_url: https://en.wikipedia.org/wiki/Shell_script
+  open_source: false
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Languages
+  image_url: https://img.stackshare.io/service/4631/default_c2062d40130562bdc836c13dbca02d318205a962.png
+  detection_source: Repo Metadata
+- name: docutils
+  description: "http://t.co/lH6rcPxBja Service Outage and other informational alerts.\r\n\r\nFor
+    support, see ticket/IRC/email information on http://t.co/nE5akSwLqM"
+  website_url: http://docutils.sourceforge.net/
+  open_source: false
+  hosted_saas: false
+  image_url: https://img.stackshare.io/service/8480/LI68uG-2_normal.jpg
+  detection_source: catkin_virtualenv/requirements.txt
+  last_updated_by: Paul Bovbel
+  last_updated_on: 2023-05-11 18:48:36.000000000 Z
+- name: catkin-pkg
+  description: Catkin package library
+  package_url: https://pypi.org/catkin-pkg
+  version: 0.5.2
+  license: BSD-3-Clause
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: PyPI Packages
+  image_url: https://img.stackshare.io/package/20818/default_33e8d7fbba8bfff26ed0101b65f3a3af5fd63b4e.png
+  detection_source_url: catkin_virtualenv/requirements.txt
+  detection_source: catkin_virtualenv/requirements.txt
+  last_updated_by: Paul Bovbel
+  last_updated_on: 2023-05-11 18:48:36.000000000 Z
+- name: certifi
+  description: Python package for providing Mozilla's CA Bundle
+  package_url: https://pypi.org/certifi
+  version: 2022.12.7
+  license: MPL-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: PyPI Packages
+  image_url: https://img.stackshare.io/package/19849/default_75c38a39b9f0062814489e2ec2cbfca0ca15d9ba.png
+  detection_source_url: test_catkin_virtualenv/requirements.txt
+  detection_source: test_catkin_virtualenv_inherited/requirements.txt
+  last_updated_by: Paul Bovbel
+  last_updated_on: 2023-05-11 18:48:36.000000000 Z
+  vulnerabilities:
+  - name: Removal of e-Tugra root certificate
+    cve_id: CVE-2023-37920
+    cve_url: https://github.com/advisories/GHSA-xqr8-7jwr-rhp7
+    detected_date: Jul 26
+    severity: high
+    first_patched: 2023.7.22
+- name: cffi
+  description: Foreign Function Interface for Python calling C code
+  package_url: https://pypi.org/cffi
+  version: 1.15.1
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: PyPI Packages
+  image_url: https://img.stackshare.io/package/19909/default_67f813d4aac73d024261bcfded6ef2b918e384a0.png
+  detection_source_url: test_catkin_virtualenv/requirements.txt
+  detection_source: test_catkin_virtualenv_inherited/requirements.txt
+  last_updated_by: Paul Bovbel
+  last_updated_on: 2023-05-11 18:48:36.000000000 Z
+- name: chardet
+  description: Universal encoding detector for Python 2 and 3
+  package_url: https://pypi.org/chardet
+  version: 3.0.4
+  license: LGPL-2.1
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: PyPI Packages
+  image_url: https://img.stackshare.io/package/19856/default_4a8a8fdc10130068bf295812b98e9b72fb42fe70.png
+  detection_source_url: test_catkin_virtualenv_inherited/requirements.txt
+  detection_source: test_catkin_virtualenv_inherited/requirements.txt
+  last_updated_by: Paul Bovbel
+  last_updated_on: 2020-05-21 16:40:11.000000000 Z
+- name: distro
+  description: Distro - an OS platform information API
+  package_url: https://pypi.org/distro
+  version: 1.8.0
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: PyPI Packages
+  image_url: https://img.stackshare.io/package/20579/default_c2fe08b928beca268da55c7fc17121eb06b5e794.png
+  detection_source_url: catkin_virtualenv/requirements.txt
+  detection_source: catkin_virtualenv/requirements.txt
+  last_updated_by: Paul Bovbel
+  last_updated_on: 2023-05-11 18:48:36.000000000 Z
+- name: idna
+  description: Internationalized Domain Names in Applications
+  package_url: https://pypi.org/idna
+  version: '3.4'
+  license: BSD-3-Clause
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: PyPI Packages
+  image_url: https://img.stackshare.io/package/19863/default_f24e00e4cb7620e436f9d06e0305070e1335922a.png
+  detection_source_url: test_catkin_virtualenv/requirements.txt
+  detection_source: test_catkin_virtualenv_inherited/requirements.txt
+  last_updated_by: Paul Bovbel
+  last_updated_on: 2023-05-11 18:48:36.000000000 Z
+- name: nose
+  description: Nose extends unittest to make testing easier
+  package_url: https://pypi.org/nose
+  version: 1.3.7
+  license: LGPL-2.1+
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: PyPI Packages
+  image_url: https://img.stackshare.io/package/19887/default_680f9274a97353753534797409b2c06b6bd32266.png
+  detection_source_url: catkin_virtualenv/requirements.txt
+  detection_source: catkin_virtualenv/requirements.txt
+  last_updated_by: Paul Bovbel
+  last_updated_on: 2023-05-11 18:48:36.000000000 Z
+- name: packaging
+  description: Core utilities for Python packages
+  package_url: https://pypi.org/packaging
+  version: '23.1'
+  license: BSD-3-Clause,Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: PyPI Packages
+  image_url: https://img.stackshare.io/package/19894/default_f716e4bc541a9eb6e3f5b7a20d7c35355075b0b4.png
+  detection_source_url: test_catkin_virtualenv/requirements.txt
+  detection_source: test_catkin_virtualenv/requirements.txt
+  last_updated_by: Paul Bovbel
+  last_updated_on: 2023-05-11 18:48:36.000000000 Z
+- name: pycparser
+  description: C parser in Python
+  package_url: https://pypi.org/pycparser
+  version: '2.21'
+  license: BSD-3-Clause
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: PyPI Packages
+  image_url: https://img.stackshare.io/package/20072/default_d7fc4eabe57370d13c2a8ad2f7f6bb876c96c66d.png
+  detection_source_url: test_catkin_virtualenv/requirements.txt
+  detection_source: test_catkin_virtualenv_inherited/requirements.txt
+  last_updated_by: Paul Bovbel
+  last_updated_on: 2023-05-11 18:48:36.000000000 Z
+- name: pyparsing
+  description: Python parsing module
+  package_url: https://pypi.org/pyparsing
+  version: 3.0.9
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: PyPI Packages
+  image_url: https://img.stackshare.io/package/19881/default_2270bfab784e3d2c2d999d26b11ee478a9dad238.png
+  detection_source_url: catkin_virtualenv/requirements.txt
+  detection_source: catkin_virtualenv/requirements.txt
+  last_updated_by: Paul Bovbel
+  last_updated_on: 2023-05-11 18:48:36.000000000 Z
+- name: python-dateutil
+  description: Extensions to the standard Python datetime module
+  package_url: https://pypi.org/python-dateutil
+  version: 2.8.2
+  license: NRL
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: PyPI Packages
+  image_url: https://img.stackshare.io/package/19833/default_58dbe7b4d7ec447b62773209af0f9a31bbabf5bd.png
+  detection_source_url: catkin_virtualenv/requirements.txt
+  detection_source: catkin_virtualenv/requirements.txt
+  last_updated_by: Paul Bovbel
+  last_updated_on: 2023-05-11 18:48:36.000000000 Z
+- name: requests
+  description: Python HTTP for Humans
+  package_url: https://pypi.org/requests
+  version: 2.29.0
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: PyPI Packages
+  image_url: https://img.stackshare.io/package/19826/default_d7c684bf2673f008a9f02ac93901229297a22d7e.png
+  detection_source_url: test_catkin_virtualenv/requirements.txt
+  detection_source: test_catkin_virtualenv_inherited/requirements.txt
+  last_updated_by: Paul Bovbel
+  last_updated_on: 2023-05-11 18:48:36.000000000 Z
+  vulnerabilities:
+  - name: Unintended leak of Proxy-Authorization header in requests
+    cve_id: CVE-2023-32681
+    cve_url: https://github.com/advisories/GHSA-j8r2-6x86-q33q
+    detected_date: May 23
+    severity: moderate
+    first_patched: 2.31.0
+- name: six
+  description: Python 2 and 3 compatibility utilities
+  package_url: https://pypi.org/six
+  version: 1.16.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: PyPI Packages
+  image_url: https://img.stackshare.io/package/19827/default_74a61b43bdb9fc0cba2978316b9976f43545029b.png
+  detection_source_url: catkin_virtualenv/requirements.txt
+  detection_source: catkin_virtualenv/requirements.txt
+  last_updated_by: Paul Bovbel
+  last_updated_on: 2023-05-11 18:48:36.000000000 Z
+- name: urllib3
+  description: HTTP library with thread-safe connection pooling
+  package_url: https://pypi.org/urllib3
+  version: 1.26.15
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: PyPI Packages
+  image_url: https://img.stackshare.io/package/19842/default_4604ff5dcb7f4d9c7b3833591c2142493951b19c.png
+  detection_source_url: test_catkin_virtualenv/requirements.txt
+  detection_source: test_catkin_virtualenv_inherited/requirements.txt
+  last_updated_by: Paul Bovbel
+  last_updated_on: 2023-05-11 18:48:36.000000000 Z
+  vulnerabilities:
+  - name: urllib3's request body not stripped after redirect from 303 status changes
+      request method to GET
+    cve_id: CVE-2023-45803
+    cve_url: https://github.com/advisories/GHSA-g4mx-q9vg-27p4
+    detected_date: Oct 18
+    severity: moderate
+    first_patched: 1.26.18
+  - name: "`Cookie` HTTP header isn't stripped on cross-origin redirects"
+    cve_id: CVE-2023-43804
+    cve_url: https://github.com/advisories/GHSA-v845-jxx5-vc9f
+    detected_date: Oct 3
+    severity: moderate
+    first_patched: 1.26.17
