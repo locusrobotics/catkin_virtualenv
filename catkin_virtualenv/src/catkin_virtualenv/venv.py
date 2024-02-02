@@ -26,6 +26,7 @@ import re
 import shutil
 import subprocess
 import tempfile
+
 try:
     from urllib.request import urlretrieve
 except ImportError:
@@ -45,11 +46,11 @@ logger = logging.getLogger(__name__)
 
 class Virtualenv:
     def __init__(self, path):
-        """ Manage a virtualenv at the specified path. """
+        """Manage a virtualenv at the specified path."""
         self.path = path
 
     def initialize(self, python, use_system_packages, extra_pip_args, clean=True):
-        """ Initialize a new virtualenv using the specified python version and extra arguments. """
+        """Initialize a new virtualenv using the specified python version and extra arguments."""
         if clean:
             try:
                 shutil.rmtree(self.path)
@@ -65,7 +66,7 @@ class Virtualenv:
             raise RuntimeError(error_msg)
 
         preinstall = [
-            "pip==22.0.2",
+            "pip==22.2.2",
             "pip-tools==6.10.0",
         ]
 
@@ -83,7 +84,7 @@ class Virtualenv:
 
         without_pip = self._check_module(system_python, "ensurepip") is False
         if without_pip:
-            virtualenv.append('--without-pip')
+            virtualenv.append("--without-pip")
 
         virtualenv.append(self.path)
         run_command(virtualenv, check=True)
@@ -91,26 +92,32 @@ class Virtualenv:
         if without_pip:
             # install pip via get-pip.py
             version_proc = run_command(
-                ['python', "-cimport sys; print('{}.{}'.format(*sys.version_info))"],
-                capture_output=True)
+                ["python", "-cimport sys; print('{}.{}'.format(*sys.version_info))"], capture_output=True
+            )
             version = version_proc.stdout
             if isinstance(version, bytes):
-                version = version.decode('utf-8')
+                version = version.decode("utf-8")
             version = version.strip()
             # download pip from https://bootstrap.pypa.io/pip/
             get_pip_path, _ = urlretrieve("https://bootstrap.pypa.io/pip/get-pip.py")
             run_command([self._venv_bin("python"), get_pip_path], check=True)
 
-        run_command([self._venv_bin("python"), "-m", "pip", "install"] + extra_pip_args + preinstall, check=True)
+        # (gservin): test --no-cache-dir
+        run_command(
+            [self._venv_bin("python"), "-m", "pip", "install", "--no-cache-dir", "-vvv"] + extra_pip_args + preinstall,
+            check=True,
+        )
 
     def install(self, requirements, extra_pip_args):
-        """ Sync a virtualenv with the specified requirements. """
-        command = [self._venv_bin("python"), "-m", "pip", "install"] + extra_pip_args
+        """Purge the cache first before installing."""  # (KLAD) testing to debug an issue on build farm
+        command = [self._venv_bin("python"), "-m", "pip", "cache", "purge"]
+        """ Sync a virtualenv with the specified requirements."""  # (KLAD) testing no-cache-dir
+        command = [self._venv_bin("python"), "-m", "pip", "install", "-vvv", "--no-cache-dir"] + extra_pip_args
         for req in requirements:
             run_command(command + ["-r", req], check=True)
 
     def check(self, requirements, extra_pip_args):
-        """ Check if a set of requirements is completely locked. """
+        """Check if a set of requirements is completely locked."""
         with open(requirements, "r") as f:
             existing_requirements = f.read()
 
@@ -138,7 +145,7 @@ class Virtualenv:
         return diff
 
     def lock(self, package_name, input_requirements, no_overwrite, extra_pip_args):
-        """ Create a frozen requirement set from a set of input specifications. """
+        """Create a frozen requirement set from a set of input specifications."""
         try:
             output_requirements = collect_requirements(package_name, no_deps=True)[0]
         except IndexError:
@@ -169,7 +176,7 @@ class Virtualenv:
         logger.info("Wrote new lock file to {}".format(output_requirements))
 
     def relocate(self, target_dir):
-        """ Relocate a virtualenv to another directory. """
+        """Relocate a virtualenv to another directory."""
         self._delete_bytecode()
         relocate.fix_shebangs(self.path, target_dir)
         relocate.fix_activate_path(self.path, target_dir)
@@ -197,7 +204,7 @@ class Virtualenv:
             return False
 
     def _delete_bytecode(self):
-        """ Remove all .py[co] files since they embed absolute paths. """
+        """Remove all .py[co] files since they embed absolute paths."""
         for root, _, files in os.walk(self.path):
             for f in files:
                 if _BYTECODE_REGEX.match(f):
