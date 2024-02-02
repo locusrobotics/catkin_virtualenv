@@ -48,6 +48,45 @@ Changelog for package test_catkin_virtualenv_inherited
 * Update changelogs
 * Contributors: Gary Servin, Paul Bovbel
 
+Forthcoming
+-----------
+* 0.10.0
+* Update changelogs
+* Drop python2 and add Jammy support (#101)
+  * Updating pip and pip-tools
+  * Trying older version of pip and pip-tools
+  * Using slightly newer version of pip and piptools
+  * Ensuring we are using python3
+  * fix typo
+  * Updating catkin-pkg for Jammy support
+  * Remove test_virtualenv_python2
+  * Update requirements to fix build error
+  * Remove python3 direct reference from venv
+  * Update pip and pip-tools for 3.7+ compatibility
+  * Don't enumerate python versions
+  * Add compatibility notes
+  * Remove melodic test and python2 references
+  * Fix build error more
+  * Get rid of requests as a package for testing
+  * get_pip isn't versioned 3.6 onwards
+  * Fixup double pip-tools
+  * Revert "Get rid of requests as a package for testing"
+  This reverts commit 55e5b5889d1080303c52fb4e6671d5061498ac57.
+  * Try fix action
+  * Disable isolated tests
+  * Revert changes to match the dependencies
+  ---------
+  Co-authored-by: Kalpesh Lad <klad@locusrobotics.com>
+  Co-authored-by: Gary Servin <gservin@locusrobotics.com>
+* 0.9.0
+* Update changelogs
+* 0.8.0
+* Update changelogs
+* Revert "Update changelogs"
+  This reverts commit 33618e7dec29a058931e5e7190456b4418140c78.
+* Update changelogs
+* Contributors: Gary Servin, Paul Bovbel
+
 0.7.0 (2020-10-02)
 ------------------
 

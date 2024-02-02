@@ -144,6 +144,103 @@ Changelog for package catkin_virtualenv
   * Drop kinetic
 * Contributors: Alec Tiefenthal, Arne Hitzmann, Gary Servin, Iori Yanokura, Jorge López Fueyo, Kalpesh Lad, Paul Bovbel, Shingo Kitagawa, Yuki Furuta
 
+Forthcoming
+-----------
+* 0.10.0
+* Update changelogs
+* Testing with pip cache purge prior to install pip packages (#103)
+  * Testing with pip cache purge prior to install pip packages
+  * Tailor: Updating Jenkinsfile
+  * Adding verbose logging to attempt to catch pypi issue
+  * Fixing typo
+  * typos
+  * formatting with black
+  * Updating pip version to 22.2.2 as a potential fix for https://github.com/pypa/pip/issues/11340
+  * Testing with no-cache-dir during install
+  * Moving option
+  * Add --no-cache-dir
+  * Fixing formatting with black
+  * Tailor: Updating Jenkinsfile
+  * Tailor: Updating Jenkinsfile
+  * Tailor: Updating Jenkinsfile
+  ---------
+  Co-authored-by: locus-services <33065330+locus-services@users.noreply.github.com>
+  Co-authored-by: Gary Servin <gservin@locusrobotics.com>
+* ignore order in requirements consistency check (#102)
+* Drop python2 and add Jammy support (#101)
+  * Updating pip and pip-tools
+  * Trying older version of pip and pip-tools
+  * Using slightly newer version of pip and piptools
+  * Ensuring we are using python3
+  * fix typo
+  * Updating catkin-pkg for Jammy support
+  * Remove test_virtualenv_python2
+  * Update requirements to fix build error
+  * Remove python3 direct reference from venv
+  * Update pip and pip-tools for 3.7+ compatibility
+  * Don't enumerate python versions
+  * Add compatibility notes
+  * Remove melodic test and python2 references
+  * Fix build error more
+  * Get rid of requests as a package for testing
+  * get_pip isn't versioned 3.6 onwards
+  * Fixup double pip-tools
+  * Revert "Get rid of requests as a package for testing"
+  This reverts commit 55e5b5889d1080303c52fb4e6671d5061498ac57.
+  * Try fix action
+  * Disable isolated tests
+  * Revert changes to match the dependencies
+  ---------
+  Co-authored-by: Kalpesh Lad <klad@locusrobotics.com>
+  Co-authored-by: Gary Servin <gservin@locusrobotics.com>
+* Import setup from setuptools instead of distutils.core (#100)
+  * updated package.xml to format version 3
+  * change to setuptools in accordance with migration guide
+* 0.9.0
+* Update changelogs
+* Add rosgraph dependency (#98)
+* 0.8.0
+* Update changelogs
+* Revert "Update changelogs"
+  This reverts commit 33618e7dec29a058931e5e7190456b4418140c78.
+* Update changelogs
+* Use upstream to configure logging (#94)
+* Allow disabling process rename when it creates issues (#93)
+* Check ensurepip to install pip via get-pip.py (#90)
+  * Check ensurepip to install pip via get-pip.py
+  * Add ImportError to pass lint
+* Fix catkin_virtualenv for python2 (#92)
+  * Add python2 test package
+  * Fix dependencies for python2
+  * Skip python2 for noetic upstream
+* Rename process to program name (#50)
+  * Rename process to node name
+  * Rethink approach
+  * Mirror how native processes are named
+  * Bump dependencies
+  * Try heredoc bash to python interp
+* Run catkin_run_tests_target only when CATKIN_ENABLE_TESTING is enabled (#89)
+* use PROJECT_SOURCE_DIR for requirements in venv_lock (#88)
+* Make CMake work in non-isolated builds. (#87)
+  * Make CMake work in non-isolated builds.
+  Specifically when `catkin_virtualenv` was used in multiple packages.
+  * Updated docs.
+  Removed split between isolated and non-isolated `venv_lock` targets.
+* fix rospkg to 1.3.0 (#85)
+* Improved _venv_bin to find binaries in local (#81)
+  Co-authored-by: Jorge López Fueyo <jorge@scaledrobotics.com>
+* Switch default interpreter to python3 (#77)
+  * Switch default interpreter to python3
+  * Remove python2
+  * Add back vitualenv, needed for python2
+  * Tailor: Updating Jenkinsfile
+  Co-authored-by: Gary Servin <gservin@locusrobotics.com>
+  Co-authored-by: locus-services <33065330+locus-services@users.noreply.github.com>
+* Bump dependencies (#76)
+  * Bump dependencies
+  * Drop kinetic
+* Contributors: Alec Tiefenthal, Arne Hitzmann, Gary Servin, Iori Yanokura, Jorge López Fueyo, Kalpesh Lad, Paul Bovbel, Shingo Kitagawa, Yuki Furuta
+
 0.7.0 (2020-10-02)
 ------------------
 
