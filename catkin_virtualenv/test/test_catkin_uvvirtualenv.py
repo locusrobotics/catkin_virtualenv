@@ -30,16 +30,21 @@ import shutil
 
 REQUIREMENTS_TXT = pathlib.Path(__file__).resolve().parent / "testdata" / "requirements.txt"
 REQUIREMENTS_IN = pathlib.Path(__file__).resolve().parent / "testdata" / "requirements.in"
+SECOND_REQUIREMENTS_TXT = pathlib.Path(__file__).resolve().parent / "testdata" / "second-requirements.txt"
 
 
 class TestUVVirtualenv(unittest.TestCase):
 
     def setUp(self) -> None:
         self._venv_dir = pathlib.Path(tempfile.mkdtemp(suffix="catkin_locusvirtualenv"))
-        self._venv_name = str(uuid.uuid4())
 
-        self._full_venv_path = self._venv_dir / self._venv_name
-        self._uv_venv = UVVirtualEnv(self._full_venv_path)
+        self._first_venv_name = str(uuid.uuid4())
+        self._full_first_venv_path = self._venv_dir / self._first_venv_name
+        self._first_uv_venv = UVVirtualEnv(self._full_first_venv_path)
+
+        self._second_venv_name = str(uuid.uuid4())
+        self._full_second_venv_path = self._venv_dir / self._second_venv_name
+        self._second_uv_venv = UVVirtualEnv(self._full_second_venv_path)
 
         if not REQUIREMENTS_TXT.exists():
             raise RuntimeError("Requirements.txt not in expected location")
@@ -47,7 +52,11 @@ class TestUVVirtualenv(unittest.TestCase):
         if not REQUIREMENTS_IN.exists():
             raise RuntimeError("Requirements.in not in expected location")
 
-        self._default_installation = UvPackageInstallation(self._venv_name, requirements=[REQUIREMENTS_TXT])
+        if not SECOND_REQUIREMENTS_TXT.exists():
+            raise RuntimeError("Second-Requirements.txt not in expected location")
+
+        self._default_installation = UvPackageInstallation(requirements=[REQUIREMENTS_TXT])
+        self._second_installation = UvPackageInstallation(requirements=[SECOND_REQUIREMENTS_TXT])
 
         return super().setUp()
 
@@ -55,6 +64,11 @@ class TestUVVirtualenv(unittest.TestCase):
 
         shutil.rmtree(self._venv_dir)
         return super().tearDown()
+
+    def build_package_path(self, venv: UVVirtualEnv, package_name: str) -> pathlib.Path:
+
+        # TODO This is britle with respect to python version.
+        return venv.path / "lib/python3.10/site-packages" / package_name
 
     def test_sanity(self):
         UVVirtualEnv(self._venv_dir)
@@ -72,8 +86,30 @@ class TestUVVirtualenv(unittest.TestCase):
             UVVirtualEnv("/proc")
 
     def test_init(self):
-        self._uv_venv.initialize()
-        self.assertTrue(self._full_venv_path.exists)
-        python_executable_path = self._full_venv_path / "bin" / "python"
+        self._first_uv_venv.initialize()
+        self.assertTrue(self._full_first_venv_path.exists)
+        python_executable_path = self._full_first_venv_path / "bin" / "python"
         self.assertTrue(python_executable_path.exists())
         self.assertTrue(python_executable_path.is_file)
+
+    def test_install(self):
+        self._first_uv_venv.initialize()
+        self._first_uv_venv.install(self._default_installation)
+
+        self.assertTrue(self.build_package_path(self._first_uv_venv, "requests").exists())
+        self.assertFalse(self.build_package_path(self._first_uv_venv, "flask").exists())
+
+    def test_dual_install(self):
+        self._first_uv_venv.initialize()
+        self._second_uv_venv.initialize()
+
+        self.assertNotEqual(self._first_uv_venv, self._second_uv_venv)
+
+        self._first_uv_venv.install(self._default_installation)
+        self._second_uv_venv.install(self._second_installation)
+
+        self.assertTrue(self.build_package_path(self._first_uv_venv, "requests").exists())
+        self.assertFalse(self.build_package_path(self._first_uv_venv, "flask").exists())
+
+        self.assertTrue(self.build_package_path(self._second_uv_venv, "flask").exists())
+        self.assertFalse(self.build_package_path(self._second_uv_venv, "requests").exists())

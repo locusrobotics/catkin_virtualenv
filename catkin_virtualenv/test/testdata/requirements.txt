@@ -1,1 +1,2 @@
+# This file cannot be changed without also changing the tests
 requests

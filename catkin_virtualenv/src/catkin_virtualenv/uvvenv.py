@@ -45,7 +45,6 @@ class UVExecutable:
 
 @dataclasses.dataclass
 class UvPackageInstallation:
-    venv_name: str
     requirements: typing.List[pathlib.Path]
     extra_pip_args: typing.List[str] = dataclasses.field(default_factory=lambda: [])
     extra_uv_args: typing.List[str] = dataclasses.field(default_factory=lambda: [])
@@ -66,16 +65,23 @@ class UVVirtualEnv(Virtualenv):
 
         if isinstance(path, str):
             path = pathlib.Path(path)
+
         self.path: pathlib.Path = path
 
         if self.path in protected_paths:
             raise RuntimeError(f"Cannot install into {self.path}")
 
+        self._uv_executable = find_executable("uv")
+        if self._uv_executable is None:
+            raise RuntimeError("UV must be installed")
+
         self._venv_python: typing.Union[pathlib.Path, None] = None
 
-    @property
-    def uv_executable() -> pathlib.Path:
-        return None
+    def __eq__(self, other):
+        """Overrides the default implementation"""
+        if isinstance(other, UVVirtualEnv):
+            return self.path == other.path
+        return False
 
     @property
     def venv_python(self) -> pathlib.Path:
@@ -110,14 +116,12 @@ class UVVirtualEnv(Virtualenv):
                 # Todo tighten up the  handling
                 pass
 
-        uv_executable = find_executable("uv")
-
         # Todo run the actual command
         # Evaluate whether we need preinstall
         # The command needs to look like: uv venv /tmp/ve1 --python 3.10.12
 
         run_command(
-            [uv_executable, "venv", str(self.path)] + extra_pip_args + extra_uv_args,
+            [self._uv_executable, "venv", str(self.path)] + extra_pip_args + extra_uv_args,
             check=True,
         )
 
@@ -125,10 +129,18 @@ class UVVirtualEnv(Virtualenv):
         """Purge the cache first before installing."""  # (KLAD) testing to debug an issue on build farm
         # command = [self.venv_python, "-m", "pip", "cache", "purge"]
         # """ Sync a virtualenv with the specified requirements."""  # (KLAD) testing no-cache-dir
-        command = [self.uv_executable, "--verbose"] + installation.extra_pip_args + installation.extra_uv_args
+        command = (
+            [self._uv_executable, "pip", "install", "--verbose"]
+            + installation.extra_pip_args
+            + installation.extra_uv_args
+        )
 
+        # https://github.com/astral-sh/uv?tab=readme-ov-file#python-discovery
+        #
+        install_env = os.environ.copy()
+        install_env["VIRTUAL_ENV"] = self.path
         for requirements in installation.requirements:
-            run_command(command + ["-r", str(requirements)], check=True)
+            run_command(command + ["-r", str(requirements)], check=True, env=install_env)
 
     def lock(self, package_name, input_requirements, no_overwrite, extra_pip_args):
         """Create a frozen requirement set from a set of input specifications."""
