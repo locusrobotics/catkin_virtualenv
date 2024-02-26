@@ -20,16 +20,17 @@
 import logging
 import subprocess
 import rosgraph.roslogging
+import typing
 
 logger = logging.getLogger(__name__)
 
 
 def configure_logging():
-    rosgraph.roslogging.configure_logging('catkin_virtualenv')
+    rosgraph.roslogging.configure_logging("catkin_virtualenv")
     return logging.getLogger()
 
 
-def run_command(cmd, *args, **kwargs):
+def run_command(cmd: typing.List[str], *args, **kwargs):
     logger.info(" ".join(cmd))
     if kwargs.pop("capture_output", False):
         kwargs["stdout"] = subprocess.PIPE

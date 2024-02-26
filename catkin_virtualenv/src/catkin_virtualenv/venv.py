@@ -25,6 +25,7 @@ import os
 import re
 import shutil
 import subprocess
+import pathlib
 import tempfile
 
 try:
@@ -144,7 +145,7 @@ class Virtualenv:
 
         return diff
 
-    def lock(self, package_name, input_requirements, no_overwrite, extra_pip_args):
+    def _get_output_requirements(self, package_name, input_requirements, no_overwrite) -> pathlib.Path:
         """Create a frozen requirement set from a set of input specifications."""
         try:
             output_requirements = collect_requirements(package_name, no_deps=True)[0]
@@ -156,19 +157,22 @@ class Virtualenv:
             logger.info("Lock file already exists, not overwriting")
             return
 
-        pip_compile = self._venv_bin("pip-compile")
-        command = [pip_compile, "--no-header", "--annotation-style", "line", input_requirements]
-
         if os.path.normpath(input_requirements) == os.path.normpath(output_requirements):
             raise RuntimeError(
                 "Trying to write locked requirements {} into a path specified as input: {}".format(
                     output_requirements, input_requirements
                 )
             )
+        return output_requirements
 
+    def lock(self, package_name, input_requirements, no_overwrite, extra_pip_args):
+
+        output_requirements = self._get_output_requirements(package_name, input_requirements, no_overwrite)
         if extra_pip_args:
             command += ["--pip-args", " ".join(extra_pip_args)]
 
+        pip_compile = self._venv_bin("pip-compile")
+        command = [pip_compile, "--no-header", "--annotation-style", "line", input_requirements]
         command += ["-o", output_requirements]
 
         run_command(command, check=True)
