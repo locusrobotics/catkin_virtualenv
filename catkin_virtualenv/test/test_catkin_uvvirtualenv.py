@@ -37,14 +37,15 @@ class TestUVVirtualenv(unittest.TestCase):
 
     def setUp(self) -> None:
         self._venv_dir = pathlib.Path(tempfile.mkdtemp(suffix="catkin_locusvirtualenv"))
+        self._cache_path = pathlib.Path(tempfile.mkdtemp(suffix="catkin_locusvirtualenv_cache_dir"))
 
         self._first_venv_name = str(uuid.uuid4())
         self._full_first_venv_path = self._venv_dir / self._first_venv_name
-        self._first_uv_venv = UVVirtualEnv(self._full_first_venv_path)
+        self._first_uv_venv = UVVirtualEnv(self._full_first_venv_path, self._cache_path)
 
         self._second_venv_name = str(uuid.uuid4())
         self._full_second_venv_path = self._venv_dir / self._second_venv_name
-        self._second_uv_venv = UVVirtualEnv(self._full_second_venv_path)
+        self._second_uv_venv = UVVirtualEnv(self._full_second_venv_path, self._cache_path)
 
         if not REQUIREMENTS_TXT.exists():
             raise RuntimeError("Requirements.txt not in expected location")
@@ -84,6 +85,19 @@ class TestUVVirtualenv(unittest.TestCase):
     def test_no_protected_paths(self):
         with self.assertRaises(RuntimeError):
             UVVirtualEnv("/proc")
+
+    def test_equality_for_same_path(self):
+        self.assertEqual(UVVirtualEnv("/tmp/foo"), UVVirtualEnv("/tmp/foo"))
+
+    def test_inequality_for_same_path_but_different_cache(self):
+        self.assertNotEqual(UVVirtualEnv("/tmp/foo", "/tmp/bar"), UVVirtualEnv("/tmp/foo", "/tmp/baz"))
+
+    def test_command_sanitization(self):
+
+        venv = UVVirtualEnv("/tmp/foo")
+        expected_result = ["foo", "bar", "baz"]
+        actual_result = venv._sanitize_commands(["foo", "bar", "", None, "", "baz"])
+        self.assertEqual(expected_result, actual_result)
 
     def test_init(self):
         self._first_uv_venv.initialize()

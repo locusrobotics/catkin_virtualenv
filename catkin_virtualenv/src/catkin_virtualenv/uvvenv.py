@@ -58,9 +58,10 @@ protected_paths = set([pathlib.Path("/"), pathlib.Path("/proc"), pathlib.Path("/
 
 
 class UVVirtualEnv(Virtualenv):
-    def __init__(self, path: typing.Union[str, pathlib.Path]):
+    def __init__(self, path: typing.Union[str, pathlib.Path], cache_dir: typing.Union[str, pathlib.Path, None] = None):
 
-        if path is None or path is "":
+        self._cache_dir = None
+        if path is None or path == "":
             raise RuntimeError("Path is empty")
 
         if isinstance(path, str):
@@ -77,10 +78,18 @@ class UVVirtualEnv(Virtualenv):
 
         self._venv_python: typing.Union[pathlib.Path, None] = None
 
+        if cache_dir is not None and cache_dir != "":
+            if isinstance(cache_dir, str):
+                cache_dir = pathlib.Path(cache_dir)
+            self._cache_dir = cache_dir
+
+            if self._cache_dir in protected_paths:
+                raise RuntimeError(f"Cannot cache into {self._cache_dir}")
+
     def __eq__(self, other):
         """Overrides the default implementation"""
         if isinstance(other, UVVirtualEnv):
-            return self.path == other.path
+            return self.path == other.path and self._cache_dir == other._cache_dir
         return False
 
     @property
@@ -88,6 +97,9 @@ class UVVirtualEnv(Virtualenv):
         if not self._venv_python:
             self._venv_python = pathlib.Path(self._venv_bin("python"))
         return self.venv_python
+
+    def _sanitize_commands(self, cmd: typing.List[str]) -> typing.List[str]:
+        return [arg.strip() for arg in cmd if arg != "" and arg != None]
 
     def initialize(
         self,
@@ -120,17 +132,26 @@ class UVVirtualEnv(Virtualenv):
         # Evaluate whether we need preinstall
         # The command needs to look like: uv venv /tmp/ve1 --python 3.10.12
 
+        cache_dir_arg = None
+        if self._cache_dir is not None:
+            cache_dir_arg = f"--cache-dir={self._cache_dir}"
+
+        command = [self._uv_executable, "venv", cache_dir_arg, str(self.path)] + extra_pip_args + extra_uv_args
+        sanitized_command = self._sanitize_commands(command)
         run_command(
-            [self._uv_executable, "venv", str(self.path)] + extra_pip_args + extra_uv_args,
+            sanitized_command,
             check=True,
         )
 
     def install(self, installation: UvPackageInstallation):
         """Purge the cache first before installing."""  # (KLAD) testing to debug an issue on build farm
-        # command = [self.venv_python, "-m", "pip", "cache", "purge"]
-        # """ Sync a virtualenv with the specified requirements."""  # (KLAD) testing no-cache-dir
+
+        cache_dir_arg = None
+        if self._cache_dir is not None:
+            cache_dir_arg = f"--cache-dir={self._cache_dir}"
+
         command = (
-            [self._uv_executable, "pip", "install", "--verbose"]
+            [self._uv_executable, "pip", "install", cache_dir_arg, "--verbose"]
             + installation.extra_pip_args
             + installation.extra_uv_args
         )
@@ -140,7 +161,9 @@ class UVVirtualEnv(Virtualenv):
         install_env = os.environ.copy()
         install_env["VIRTUAL_ENV"] = self.path
         for requirements in installation.requirements:
-            run_command(command + ["-r", str(requirements)], check=True, env=install_env)
+
+            sanitized_command = self._sanitize_commands(command + ["-r", str(requirements)])
+            run_command(sanitized_command, check=True, env=install_env)
 
     def lock(self, package_name, input_requirements, no_overwrite, extra_pip_args):
         """Create a frozen requirement set from a set of input specifications."""
