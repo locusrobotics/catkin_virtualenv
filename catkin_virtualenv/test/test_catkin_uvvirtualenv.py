@@ -20,9 +20,10 @@
 import importlib
 import unittest
 
-from catkin_virtualenv.uvvenv import UVVirtualEnv, UvPackageInstallation
+from catkin_virtualenv.uvvenv import UVVirtualEnv, UvPackageInstallation, PythonVersion
 from packaging import version
 import pathlib
+import mock
 import tempfile
 import uuid
 import shutil
@@ -31,13 +32,18 @@ import shutil
 REQUIREMENTS_TXT = pathlib.Path(__file__).resolve().parent / "testdata" / "requirements.txt"
 REQUIREMENTS_IN = pathlib.Path(__file__).resolve().parent / "testdata" / "requirements.in"
 SECOND_REQUIREMENTS_TXT = pathlib.Path(__file__).resolve().parent / "testdata" / "second-requirements.txt"
+OTA_REQUIREMENTS_IN = pathlib.Path(__file__).resolve().parent / "testdata" / "ota-requirements.in"
+OTA_REQUIREMENTS_GOOD_TXT = pathlib.Path(__file__).resolve().parent / "testdata" / "ota-good-requirements.txt"
+OTA_REQUIREMENTS_BAD_TXT = pathlib.Path(__file__).resolve().parent / "testdata" / "ota-bad-requirements.txt"
+
+TMP_CATKIN_LOCUSVIRTUALENV = "catkin_locusvirtualenv"
+TMP_CATKIN_LOCUSVIRTUALENV_CACHE = "catkin_locusvirtualenv_cache_dir"
 
 
-class TestUVVirtualenv(unittest.TestCase):
-
+class UVVirtualEnvTestCase(unittest.TestCase):
     def setUp(self) -> None:
-        self._venv_dir = pathlib.Path(tempfile.mkdtemp(suffix="catkin_locusvirtualenv"))
-        self._cache_path = pathlib.Path(tempfile.mkdtemp(suffix="catkin_locusvirtualenv_cache_dir"))
+        self._venv_dir = pathlib.Path(tempfile.mkdtemp(suffix=TMP_CATKIN_LOCUSVIRTUALENV))
+        self._cache_path = pathlib.Path(tempfile.mkdtemp(suffix=TMP_CATKIN_LOCUSVIRTUALENV_CACHE))
 
         self._first_venv_name = str(uuid.uuid4())
         self._full_first_venv_path = self._venv_dir / self._first_venv_name
@@ -63,8 +69,24 @@ class TestUVVirtualenv(unittest.TestCase):
 
     def tearDown(self) -> None:
 
+        parent = pathlib.Path(self._venv_dir).parent
         shutil.rmtree(self._venv_dir)
+
+        # The above will normally clean up directories
+        # Sometimes, mainly when debugging directories are leftover
+        # The below will clean up matching dir names
+        for file in parent.iterdir():
+            base_name = str(file.name)
+            c1 = file.is_dir()
+            c2 = TMP_CATKIN_LOCUSVIRTUALENV_CACHE in base_name
+            c3 = TMP_CATKIN_LOCUSVIRTUALENV in base_name
+            if c1 and (c2 or c3):
+                shutil.rmtree(file)
+
         return super().tearDown()
+
+
+class TestUVVirtualenv(UVVirtualEnvTestCase):
 
     def build_package_path(self, venv: UVVirtualEnv, package_name: str) -> pathlib.Path:
 
@@ -104,7 +126,8 @@ class TestUVVirtualenv(unittest.TestCase):
         self.assertTrue(self._full_first_venv_path.exists)
         python_executable_path = self._full_first_venv_path / "bin" / "python"
         self.assertTrue(python_executable_path.exists())
-        self.assertTrue(python_executable_path.is_file)
+        self.assertTrue(python_executable_path.is_file())
+        self.assertTrue(python_executable_path.is_symlink())
 
     def test_install(self):
         self._first_uv_venv.initialize()
@@ -127,3 +150,33 @@ class TestUVVirtualenv(unittest.TestCase):
 
         self.assertTrue(self.build_package_path(self._second_uv_venv, "flask").exists())
         self.assertFalse(self.build_package_path(self._second_uv_venv, "requests").exists())
+
+    def test_can_lock_from_packages(self):
+        with mock.patch("catkin_virtualenv.collect_requirements.process_package") as process_package_mock:
+            process_package_mock.return_value = (["pre-commit"], [])
+            expected_path = pathlib.Path("/tmp/requirements.txt")
+            self._first_uv_venv.lock(
+                "fake-package",
+                OTA_REQUIREMENTS_IN,
+                False,
+                test_output_requirements=expected_path,
+            )
+
+        self.assertTrue(expected_path.exists())
+        self.assertTrue(expected_path.is_file())
+
+    def test_can_lock_from_packages(self):
+        with mock.patch("catkin_virtualenv.collect_requirements.process_package") as process_package_mock:
+            process_package_mock.return_value = (["pre-commit"], [])
+            expected_path = pathlib.Path("/tmp/requirements.txt")
+            actual_diff = self._first_uv_venv.check(OTA_REQUIREMENTS_GOOD_TXT)
+
+        self.assertTrue(expected_path.exists())
+        self.assertTrue(expected_path.is_file())
+
+    def test_python_version(self):
+        PythonVersion("python3")
+        PythonVersion("python3.10")
+        PythonVersion("3.10.12")
+        with self.assertRaises(ValueError):
+            PythonVersion("python2")
