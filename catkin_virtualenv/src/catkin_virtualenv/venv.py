@@ -26,7 +26,7 @@ import re
 import shutil
 import subprocess
 import pathlib
-import tempfile
+import typing
 
 try:
     from urllib.request import urlretrieve
@@ -117,17 +117,28 @@ class Virtualenv:
         for req in requirements:
             run_command(command + ["-r", req], check=True)
 
-    def check(self, requirements, extra_pip_args):
+    def check(self, requirements_in, extra_pip_args):
         """Check if a set of requirements is completely locked."""
-        with open(requirements, "r") as f:
+        with open(requirements_in, "r") as f:
             existing_requirements = f.read()
 
         # Re-lock the requirements
-        command = [self._venv_bin("pip-compile"), "--no-header", "--annotation-style", "line", requirements, "-o", "-"]
+        command = [
+            self._venv_bin("pip-compile"),
+            "--no-header",
+            "--annotation-style",
+            "line",
+            requirements_in,
+            "-o",
+            "-",
+        ]
         if extra_pip_args:
             command += ["--pip-args", " ".join(extra_pip_args)]
 
         generated_requirements = run_command(command, check=True, capture_output=True).stdout.decode()
+        return self._diff_requirements(existing_requirements, generated_requirements)
+
+    def _diff_requirements(self, existing_requirements, generated_requirements) -> typing.List[str]:
 
         def _format(content):
             # Remove comments
@@ -141,9 +152,7 @@ class Virtualenv:
             return content
 
         # Compare against existing requirements
-        diff = list(difflib.unified_diff(_format(existing_requirements), _format(generated_requirements)))
-
-        return diff
+        return list(difflib.unified_diff(_format(existing_requirements), _format(generated_requirements)))
 
     def _get_output_requirements(self, package_name, input_requirements, no_overwrite) -> pathlib.Path:
         """Create a frozen requirement set from a set of input specifications."""

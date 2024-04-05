@@ -18,10 +18,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from .venv import Virtualenv
-from .collect_requirements import collect_requirements
+from .venv import Virtualenv, _COMMENT_REGEX, _BYTECODE_REGEX
 import pathlib
 import typing
+import re
 import shutil
 import dataclasses
 from distutils.spawn import find_executable
@@ -35,7 +35,22 @@ logger = logging.getLogger(__name__)
 
 @dataclasses.dataclass
 class PythonVersion:
-    artifact: typing.Union[str, pathlib.Path]
+    version: str = "python3"
+
+    def __post_init__(self):
+
+        match = None
+        if self.version.startswith("python"):
+            ver = self.version.removeprefix("python")
+            if ver == "3":
+                match = True
+            else:
+                match = re.search("3\.[0-9]{1,3}", ver)
+
+        else:
+            match = re.search("[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}", self.version)
+        if match is None:
+            raise ValueError("Not a python version or not a UV understood format")
 
 
 @dataclasses.dataclass
@@ -101,9 +116,24 @@ class UVVirtualEnv(Virtualenv):
     def _sanitize_commands(self, cmd: typing.List[str]) -> typing.List[str]:
         return [arg.strip() for arg in cmd if arg != "" and arg != None]
 
+    def _build_compile_command(self, requirements: typing.Union[str, pathlib.Path]):
+
+        if isinstance(requirements, pathlib.Path):
+            requirements = str(requirements)
+
+        return [
+            self._uv_executable,
+            "pip",
+            "compile",
+            "--no-header",
+            "--annotation-style",
+            "line",
+            requirements,
+        ]
+
     def initialize(
         self,
-        use_system_packages: bool = False,
+        python: PythonVersion = PythonVersion("python3"),
         extra_pip_args: typing.List[str] = list_factory(),
         extra_uv_args: typing.List[str] = list_factory(),
         clean=True,
@@ -136,7 +166,11 @@ class UVVirtualEnv(Virtualenv):
         if self._cache_dir is not None:
             cache_dir_arg = f"--cache-dir={self._cache_dir}"
 
-        command = [self._uv_executable, "venv", cache_dir_arg, str(self.path)] + extra_pip_args + extra_uv_args
+        command = (
+            [self._uv_executable, "venv", cache_dir_arg, str(self.path), "--python", python.version]
+            + extra_pip_args
+            + extra_uv_args
+        )
         sanitized_command = self._sanitize_commands(command)
         run_command(
             sanitized_command,
@@ -144,7 +178,6 @@ class UVVirtualEnv(Virtualenv):
         )
 
     def install(self, installation: UvPackageInstallation):
-        """Purge the cache first before installing."""  # (KLAD) testing to debug an issue on build farm
 
         cache_dir_arg = None
         if self._cache_dir is not None:
@@ -165,16 +198,46 @@ class UVVirtualEnv(Virtualenv):
             sanitized_command = self._sanitize_commands(command + ["-r", str(requirements)])
             run_command(sanitized_command, check=True, env=install_env)
 
-    def lock(self, package_name, input_requirements, no_overwrite, extra_pip_args):
-        """Create a frozen requirement set from a set of input specifications."""
-        output_requirements = self._get_output_requirements(package_name, input_requirements, no_overwrite)
-        pip_compile = self._venv_bin("pip-compile")
-        command = [pip_compile, "--no-header", "--annotation-style", "line", input_requirements]
+    def check(self, requirements: pathlib.Path, extra_pip_args: typing.List = None):
+        """Check if a set of requirements is completely locked."""
+        with open(requirements, "r") as f:
+            existing_requirements = f.read()
+
+        # Re-lock the requirements
+        command = self._build_compile_command(requirements)
+        command += ["-o", "-"]
         if extra_pip_args:
             command += ["--pip-args", " ".join(extra_pip_args)]
 
-        command += ["-o", output_requirements]
+        generated_requirements = run_command(command, check=True, capture_output=True).stdout.decode()
+        return self._diff_requirements(existing_requirements, generated_requirements)
+
+    def lock(
+        self,
+        package_name,
+        input_requirements: pathlib.Path,
+        no_overwrite: bool,
+        extra_pip_args: typing.List[str] = list_factory(),
+        test_output_requirements: pathlib.Path = None,  # This is just here because of collect_requirements return value
+    ):
+        """Create a frozen requirement set from a set of input specifications."""
+
+        """
+        Translates to CLI : uv pip compile requirements.in -o requirements.txt  
+        
+        """
+        output_requirements = self._get_output_requirements(package_name, input_requirements, no_overwrite)
+
+        command = self._build_compile_command(input_requirements)
+        if extra_pip_args:
+            command += ["--pip-args", " ".join(extra_pip_args)]
+
+        # TODO get rid of this once I understand the types of collect_requirements
+        output_requirements_path = output_requirements
+        if test_output_requirements is not None:
+            output_requirements_path = str(test_output_requirements)
+        command += ["-o", output_requirements_path]
 
         run_command(command, check=True)
 
-        logger.info("Wrote new lock file to {}".format(output_requirements))
+        logger.info("Wrote new lock file to {}".format(output_requirements_path))
