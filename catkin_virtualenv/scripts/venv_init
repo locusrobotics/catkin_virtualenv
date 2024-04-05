@@ -22,29 +22,33 @@ import argparse
 
 from catkin_virtualenv import configure_logging
 from catkin_virtualenv.venv import Virtualenv
+from catkin_virtualenv.uvvenv import UVVirtualEnv, PythonVersion
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     configure_logging()
 
     parser = argparse.ArgumentParser(description=Virtualenv.initialize.__doc__)
-    parser.add_argument(
-        'venv', help="Path where to initialize the virtualenv")
-    parser.add_argument(
-        '--python', default="python3", help="Build the virtualenv with which python version.")
-    parser.add_argument(
-        '--use-system-packages', action="store_true", help="Use system site packages.")
-    parser.add_argument(
-        '--extra-pip-args', default='""', type=str, help="Extra pip args for install.")
+    parser.add_argument("venv", help="Path where to initialize the virtualenv")
+    parser.add_argument("--python", default="python3", help="Build the virtualenv with which python version.")
+    parser.add_argument("--use-system-packages", action="store_true", help="Use system site packages.")
+    parser.add_argument("--use-uv", action="store_true", help="Use uv for deduplication.")
+    parser.add_argument("--uv-cache", default=None, help="Cache dir for UV.")
+    parser.add_argument("--extra-pip-args", default='""', type=str, help="Extra pip args for install.")
 
     args = parser.parse_args()
 
     extra_pip_args = args.extra_pip_args[1:-1]
 
-    print(args.use_system_packages)
-    venv = Virtualenv(args.venv)
-    venv.initialize(
-        python=args.python,
-        use_system_packages=args.use_system_packages,
-        extra_pip_args=[arg for arg in extra_pip_args.split(" ") if arg != ""],
-    )
+    sanitized_extra_pip_args = [arg for arg in extra_pip_args.split(" ") if arg != ""]
+    if not args.use_uv:
+        print(args.use_system_packages)
+        venv = Virtualenv(args.venv)
+        venv.initialize(
+            python=args.python,
+            use_system_packages=args.use_system_packages,
+            extra_pip_args=sanitized_extra_pip_args,
+        )
+    else:
+        uvvenv = UVVirtualEnv(args.venv, args.uv_cache)
+        uvvenv.initialize(python=PythonVersion(args.python), extra_pip_args=sanitized_extra_pip_args)

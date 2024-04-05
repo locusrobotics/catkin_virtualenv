@@ -22,25 +22,30 @@ import argparse
 
 from catkin_virtualenv import configure_logging
 from catkin_virtualenv.venv import Virtualenv
+from catkin_virtualenv.uvvenv import UVVirtualEnv, UvPackageInstallation
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     configure_logging()
 
     parser = argparse.ArgumentParser(description=Virtualenv.install.__doc__)
-    parser.add_argument(
-        'venv', help="Path of virtualenv to manage.")
-    parser.add_argument(
-        '--requirements', required=True, nargs='+', help="Requirements to sync to virtualenv.")
-    parser.add_argument(
-        '--extra-pip-args', default='""', type=str, help="Extra pip args for install.")
+    parser.add_argument("venv", help="Path of virtualenv to manage.")
+    parser.add_argument("--use-uv", action="store_true", help="Use uv for deduplication.")
+    parser.add_argument("--uv-cache", default=None, help="Cache dir for UV.")
+    parser.add_argument("--requirements", required=True, nargs="+", help="Requirements to sync to virtualenv.")
+    parser.add_argument("--extra-pip-args", default='""', type=str, help="Extra pip args for install.")
 
     args = parser.parse_args()
 
     extra_pip_args = args.extra_pip_args[1:-1]
 
-    venv = Virtualenv(args.venv)
-    venv.install(
-        requirements=args.requirements,
-        extra_pip_args=[arg for arg in extra_pip_args.split(" ") if arg != ""],
-    )
+    sanitized_extra_pip_args = [arg for arg in extra_pip_args.split(" ") if arg != ""]
+    if not args.us_uv:
+        venv = Virtualenv(args.venv)
+        venv.install(
+            requirements=args.requirements,
+            extra_pip_args=sanitized_extra_pip_args,
+        )
+    else:
+        uvvenv = UVVirtualEnv(args.venv, cache_dir=args.uv_cache)
+        uvvenv.install(UvPackageInstallation(args.requirements, extra_pip_args=sanitized_extra_pip_args))
