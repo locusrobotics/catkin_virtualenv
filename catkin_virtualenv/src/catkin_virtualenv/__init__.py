@@ -22,6 +22,7 @@ import subprocess
 import rosgraph.roslogging
 import typing
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -30,7 +31,7 @@ def configure_logging():
     return logging.getLogger()
 
 
-def run_command(cmd: typing.List[str], *args, **kwargs):
+def run_command(cmd: typing.List[str], *args, **kwargs) -> subprocess.CompletedProcess:
     logger.info(" ".join(cmd))
     if kwargs.pop("capture_output", False):
         kwargs["stdout"] = subprocess.PIPE

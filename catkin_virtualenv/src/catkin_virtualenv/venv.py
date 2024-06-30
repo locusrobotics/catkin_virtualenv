@@ -152,7 +152,9 @@ class Virtualenv:
             return content
 
         # Compare against existing requirements
-        return list(difflib.unified_diff(_format(existing_requirements), _format(generated_requirements)))
+        existing_content = _format(existing_requirements)
+        generated_content = _format(generated_requirements)
+        return list(difflib.unified_diff(existing_content, generated_content))
 
     def _get_output_requirements(self, package_name, input_requirements, no_overwrite) -> pathlib.Path:
         """Create a frozen requirement set from a set of input specifications."""

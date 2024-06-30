@@ -21,6 +21,7 @@
 from .venv import Virtualenv, _COMMENT_REGEX, _BYTECODE_REGEX
 import pathlib
 import typing
+import sys
 import re
 import shutil
 import dataclasses
@@ -70,6 +71,34 @@ def list_factory():
 
 
 protected_paths = set([pathlib.Path("/"), pathlib.Path("/proc"), pathlib.Path("/sys")])
+
+
+def check_package_exists(venv_path: pathlib.Path, package_name: str, cache_dir: pathlib.Path = None) -> bool:
+    install_env = os.environ.copy()
+    install_env["VIRTUAL_ENV"] = str(venv_path).strip()
+    # "--cache-dir", str(cache_dir)
+    command = ["uv", "pip", "freeze"]
+    completed = run_command(command, check=True, capture_output=True, env=install_env)
+    return package_name in completed.stdout.decode()
+
+
+def check_package_importable():
+    pass
+
+
+def check_package_in_cache(cache_path: pathlib.Path, package_name: str) -> bool:
+    c1 = False
+    c2 = False
+    c3 = False
+
+    for filename in cache_path.glob("**/*"):
+        if filename.name == "CACHEDIR.TAG":
+            c1 = True
+        if filename.name == f"{package_name}.rkyv":
+            c2 = True
+        if filename.is_dir() and filename.name == package_name:
+            c3 = True
+    return c1 and c2 and c3
 
 
 class UVVirtualEnv(Virtualenv):
@@ -131,6 +160,13 @@ class UVVirtualEnv(Virtualenv):
             requirements,
         ]
 
+    def _set_venv_envar(self) -> dict[str, str]:
+        install_env = os.environ.copy()
+        install_env["VIRTUAL_ENV"] = self.path
+        print(self.path)
+        return install_env
+
+    # TODO remove pip args
     def initialize(
         self,
         python: PythonVersion = PythonVersion("python3"),
@@ -191,26 +227,33 @@ class UVVirtualEnv(Virtualenv):
 
         # https://github.com/astral-sh/uv?tab=readme-ov-file#python-discovery
         #
-        install_env = os.environ.copy()
-        install_env["VIRTUAL_ENV"] = self.path
+        install_env = self._set_venv_envar()
         for requirements in installation.requirements:
 
             sanitized_command = self._sanitize_commands(command + ["-r", str(requirements)])
             run_command(sanitized_command, check=True, env=install_env)
 
-    def check(self, requirements: pathlib.Path, extra_pip_args: typing.List = None):
+    def check(self, requirements: pathlib.Path, extra_uv_args: typing.List = None) -> typing.List[str]:
         """Check if a set of requirements is completely locked."""
         with open(requirements, "r") as f:
             existing_requirements = f.read()
 
         # Re-lock the requirements
         command = self._build_compile_command(requirements)
-        command += ["-o", "-"]
-        if extra_pip_args:
-            command += ["--pip-args", " ".join(extra_pip_args)]
+        # command += ["-o", "-"]
 
-        generated_requirements = run_command(command, check=True, capture_output=True).stdout.decode()
-        return self._diff_requirements(existing_requirements, generated_requirements)
+        # TODO Check what UV supports
+        if False and extra_uv_args:
+            command += ["--pip-args", " ".join(extra_uv_args)]
+
+        install_env = self._set_venv_envar()
+        print(f"Running Command: {' '.join(command)}")
+        completed_process = run_command(command, check=False, capture_output=True, env=install_env)
+        if completed_process.returncode != 0:
+            raise RuntimeError(completed_process.stderr)
+        generated_requirements = completed_process.stdout.decode()
+        diff = self._diff_requirements(existing_requirements, generated_requirements)
+        return diff
 
     def lock(
         self,
@@ -220,11 +263,12 @@ class UVVirtualEnv(Virtualenv):
         extra_pip_args: typing.List[str] = list_factory(),
         test_output_requirements: pathlib.Path = None,  # This is just here because of collect_requirements return value
     ):
-        """Create a frozen requirement set from a set of input specifications."""
-
         """
-        Translates to CLI : uv pip compile requirements.in -o requirements.txt  
-        
+        Create a frozen requirement set from a set of input specifications
+
+
+        Translates to CLI : uv pip compile requirements.in -o requirements.txt
+
         """
         output_requirements = self._get_output_requirements(package_name, input_requirements, no_overwrite)
 
