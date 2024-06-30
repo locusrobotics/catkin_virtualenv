@@ -1,0 +1,106 @@
+#!/usr/bin/env python
+# Software License Agreement (GPL)
+#
+# \file      test_virtualenv_script
+# \authors   Paul Bovbel <pbovbel@locusrobotics.com>
+# \copyright Copyright (c) (2017,), Locus Robotics, All rights reserved.
+#
+# This program is free software: you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation, either version 2 of the
+# License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+import importlib
+import rostest
+import sys
+import unittest
+import os
+import pathlib
+
+from packaging import version
+
+from catkin_virtualenv.uvvenv import check_package_exists, check_package_in_cache, UVVirtualEnv
+
+
+class TestUVVirtualenv(unittest.TestCase):
+    """
+
+    These tests run on the virtualenv initalized and installed into by Catkin.
+    No manipulation of the venv should be performed in the tests.
+
+    These test are not true unit tests.
+    Some tests require network access in order to download packages.
+    If network or package repositories are down, then tests may fail.
+
+    The tests also require disk access.
+    All tests use temporary files or directories for i/o.
+
+    """
+
+    def setUp(self) -> None:
+        self._canary_package = "requests"
+        self._non_canary_package = "numpy"
+        self._venv_dir: pathlib.Path = pathlib.Path(sys.executable).parent.parent
+
+        # TODO resolve this from CMAKE args or environment
+        # This is current set in the CMakeLists.txt for this project
+        self._cache_path = pathlib.Path("/tmp/testing/uv/cache")
+
+        # TODO cleaner way to do this
+        # This relies on knowing that the .venv directory is a sibling of the requirements.txt file
+        self._requirements_text_path = pathlib.Path(
+            "/home/bstrausser/locus_dev/src/catkin_virtualenv/test_catkin_virtualenv_uv/requirements.txt"
+        )
+
+        self._venv_dir_suffix = "test_catkin_virtualenv_uv/venv"
+        self._uvvenv = UVVirtualEnv(self._venv_dir)
+        return super().setUp()
+
+    def test_import(self):
+        """
+        Test that a given package is importable from the venv
+        """
+        requests = importlib.import_module(self._canary_package)
+        self.assertGreaterEqual(version.parse(requests.__version__), version.parse("2"))
+
+    def test_cannot_import(self):
+        """
+        Test that a package that has not been installed is not importable from the venv
+        """
+        with self.assertRaises(ImportError) as e:
+            importlib.import_module(self._non_canary_package)
+
+    def test_import_file_path(self):
+        """
+        Test that a package that is importable has a path rooted in the venv
+        """
+        requests = importlib.import_module(self._canary_package)
+        actual_path = pathlib.Path(requests.__file__)
+        self.assertTrue(self._venv_dir_suffix in str(actual_path))
+
+    def test_packages_exit_in_cache(self):
+        """
+        Test that a package that is found in the cache
+        """
+
+        self.assertTrue(check_package_exists(self._venv_dir, self._canary_package))
+        self.assertFalse(check_package_exists(self._venv_dir, self._non_canary_package))
+
+    def test_check_returns(self):
+        """
+        Test that the venv has no diffs from
+        """
+        self.assertTrue(self._requirements_text_path.exists())
+        diff = self._uvvenv.check(self._requirements_text_path)
+        self.assertEqual(diff, [])
+
+
+if __name__ == "__main__":
+    rostest.rosrun("test_catkin_virtualenv", "test_virtualenv_script", TestUVVirtualenv, sys.argv)
