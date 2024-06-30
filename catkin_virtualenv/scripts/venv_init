@@ -18,31 +18,20 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-import argparse
 
+import typing
 from catkin_virtualenv import configure_logging
 from catkin_virtualenv.venv import Virtualenv
+from catkin_virtualenv.cli import _parse_init_args, _build_sanitized_extra_args
 from catkin_virtualenv.uvvenv import UVVirtualEnv, PythonVersion
 
 
-if __name__ == "__main__":
+def main(argv: typing.Union[typing.List[str], None] = None) -> None:
     configure_logging()
+    args = _parse_init_args(argv)
 
-    parser = argparse.ArgumentParser(description=Virtualenv.initialize.__doc__)
-    parser.add_argument("venv", help="Path where to initialize the virtualenv")
-    parser.add_argument("--python", default="python3", help="Build the virtualenv with which python version.")
-    parser.add_argument("--use-system-packages", action="store_true", help="Use system site packages.")
-    parser.add_argument("--use-uv", action="store_true", help="Use uv for deduplication.")
-    parser.add_argument("--uv-cache", default=None, help="Cache dir for UV.")
-    parser.add_argument("--extra-pip-args", default='""', type=str, help="Extra pip args for install.")
-
-    args = parser.parse_args()
-
-    extra_pip_args = args.extra_pip_args[1:-1]
-
-    sanitized_extra_pip_args = [arg for arg in extra_pip_args.split(" ") if arg != ""]
     if not args.use_uv:
-        print(args.use_system_packages)
+        sanitized_extra_pip_args = _build_sanitized_extra_args(args, use_uv=False)
         venv = Virtualenv(args.venv)
         venv.initialize(
             python=args.python,
@@ -50,5 +39,10 @@ if __name__ == "__main__":
             extra_pip_args=sanitized_extra_pip_args,
         )
     else:
+        sanitized_extra_uv_args = _build_sanitized_extra_args(args, use_uv=True)
         uvvenv = UVVirtualEnv(args.venv, args.uv_cache)
-        uvvenv.initialize(python=PythonVersion(args.python), extra_pip_args=sanitized_extra_pip_args)
+        uvvenv.initialize(python=PythonVersion(args.python), extra_pip_args=sanitized_extra_uv_args)
+
+
+if __name__ == "__main__":
+    main()
