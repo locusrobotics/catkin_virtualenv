@@ -1,4 +1,6 @@
 catkin-pkg
 nose
+mock
 rospkg
 setproctitle
+uv
