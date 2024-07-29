@@ -77,7 +77,7 @@ class Virtualenv:
             virtualenv = ["virtualenv", "--no-setuptools", "--verbose", "--python", python]
             # py2's virtualenv command will try install latest setuptools. setuptools>=45 not compatible with py2,
             # but we do require a reasonably up-to-date version (because of pip==20.1), so v44 at least.
-            preinstall += ["setuptools>=44,<45"]
+            preinstall += ["setuptools>=68,<69"]
 
         if use_system_packages:
             virtualenv.append("--system-site-packages")
