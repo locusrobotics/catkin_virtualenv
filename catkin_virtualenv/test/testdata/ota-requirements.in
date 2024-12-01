@@ -1,0 +1,8 @@
+aiohttp
+aiojobs
+dataclasses
+requests
+Jinja2
+setproctitle
+testcontainers
+mock
