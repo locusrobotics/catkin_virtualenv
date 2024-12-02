@@ -2,7 +2,7 @@
 @Library('tailor-meta@0.1.24')_
 tailorTestPipeline(
   // Name of job that generated this test definition.
-  rosdistro_job: '/ci/rosdistro/feature%2Ftest-kal',
+  rosdistro_job: 'hotdog',
   // Distribution name
   rosdistro_name: 'ros1',
   // Release track to test branch against.
