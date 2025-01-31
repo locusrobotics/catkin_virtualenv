@@ -66,7 +66,7 @@ class Virtualenv:
             raise RuntimeError(error_msg)
 
         preinstall = [
-            "pip==24.3.1",
+            "pip==25.0",
             "pip-tools==7.4.1",
         ]
 
