@@ -48,8 +48,8 @@ Changelog for package test_catkin_virtualenv_inherited
 * Update changelogs
 * Contributors: Gary Servin, Paul Bovbel
 
-Forthcoming
------------
+0.14.0 (2025-02-04)
+-------------------
 
 0.13.0 (2024-09-16)
 -------------------
