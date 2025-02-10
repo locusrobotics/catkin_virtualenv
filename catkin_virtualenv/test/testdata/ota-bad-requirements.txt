@@ -1,0 +1,3 @@
+aiohttp==3.9.3
+aiojobs==1.2.1
+redis==5.0.7              # Not included Causes Error
