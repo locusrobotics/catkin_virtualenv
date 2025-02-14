@@ -122,7 +122,7 @@ class Virtualenv:
             existing_requirements = f.read()
 
         # Re-lock the requirements
-        command = [self._venv_bin("pip-compile"), "--no-header", "--annotation-style", "line", requirements, "-o", "-"]
+        command = [self._find_pip_compile(), "--no-header", "--annotation-style", "line", requirements, "-o", "-"]
         if extra_pip_args:
             command += ["--pip-args", " ".join(extra_pip_args)]
 
@@ -156,7 +156,7 @@ class Virtualenv:
             logger.info("Lock file already exists, not overwriting")
             return
 
-        pip_compile = self._venv_bin("pip-compile")
+        pip_compile = self._find_pip_compile()
         command = [pip_compile, "--no-header", "--annotation-style", "line", input_requirements]
 
         if os.path.normpath(input_requirements) == os.path.normpath(output_requirements):
@@ -193,6 +193,15 @@ class Virtualenv:
         elif os.path.exists(os.path.join(self.path, "local", "bin", binary_name)):
             return os.path.abspath(os.path.join(self.path, "local", "bin", binary_name))
         raise RuntimeError("Binary {} not found in venv".format(binary_name))
+
+    def _find_pip_compile(self):
+        try:
+            return self._venv_bin("pip-compile")
+        except RuntimeError as exc:
+            global_pip_compile = shutil.which("pip-compile")
+            if global_pip_compile is None:
+                raise RuntimeError("pip-compile not found found in Venv or global PATH") from exc
+            return global_pip_compile
 
     def _check_module(self, python_executable, module):
         try:
