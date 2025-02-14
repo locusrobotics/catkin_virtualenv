@@ -1,8 +1,6 @@
-certifi==2022.12.7        # via requests
-cffi==1.15.1              # via cryptography
-charset-normalizer==3.1.0  # via requests
-idna==3.4                 # via requests
-packaging==23.1           # via -r requirements.in
-pycparser==2.21           # via cffi
-requests==2.29.0          # via -r requirements.in
-urllib3==1.26.15          # via requests
+certifi==2025.1.31        # via requests
+charset-normalizer==3.4.1  # via requests
+idna==3.10                # via requests
+packaging==24.2           # via -r requirements.in
+requests==2.32.3          # via -r requirements.in
+urllib3==2.2.3            # via -r requirements.in, requests
