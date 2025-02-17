@@ -66,8 +66,8 @@ class Virtualenv:
             raise RuntimeError(error_msg)
 
         preinstall = [
-            "pip==22.2.2",
-            "pip-tools==6.10.0",
+            "pip==23.3.2",
+            "pip-tools==7.4.1",
         ]
 
         builtin_venv = self._check_module(system_python, "venv")
@@ -90,14 +90,6 @@ class Virtualenv:
         run_command(virtualenv, check=True)
 
         if without_pip:
-            # install pip via get-pip.py
-            version_proc = run_command(
-                ["python", "-cimport sys; print('{}.{}'.format(*sys.version_info))"], capture_output=True
-            )
-            version = version_proc.stdout
-            if isinstance(version, bytes):
-                version = version.decode("utf-8")
-            version = version.strip()
             # download pip from https://bootstrap.pypa.io/pip/
             get_pip_path, _ = urlretrieve("https://bootstrap.pypa.io/pip/get-pip.py")
             run_command([self._venv_bin("python"), get_pip_path], check=True)
