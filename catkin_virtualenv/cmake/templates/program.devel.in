@@ -8,7 +8,7 @@ if [ "${ARG_RENAME_PROCESS}" = "TRUE" ]; then
 	from setproctitle import setproctitle
 
 	program_path = "${program_path}"
-	setproctitle(' '.join([program_path] + sys.argv[1:]))
+	setproctitle(' '.join(["${program_basename}"] + sys.argv[1:]))
 	exec(open(program_path).read())
 	EOF
 else
