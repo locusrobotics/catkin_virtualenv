@@ -1,0 +1,196 @@
+Starting >>> test_catkin_virtualenv_uv                                         
+Starting >> test_catkin_virtualenv_uv:loadenv                                  
+Starting >> test_catkin_virtualenv_uv:check                                    
+Subprocess > test_catkin_virtualenv_uv:check `cd /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv; catkin test --get-env test_catkin_virtualenv_uv | catkin env -si  /usr/bin/make cmake_check_build_system; cd -`
+Output << test_catkin_virtualenv_uv:check /home/bstrausser/locus_dev/logs/test_catkin_virtualenv_uv/test.check.000.log
+/usr/bin/cmake -S/home/bstrausser/locus_dev/src/catkin_virtualenv/test_catkin_virtualenv_uv -B/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv --check-build-system CMakeFiles/Makefile.cmake 0
+cd /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv; catkin test --get-env test_catkin_virtualenv_uv | catkin env -si  /usr/bin/make cmake_check_build_system; cd -
+
+Finished << test_catkin_virtualenv_uv:check                                    
+Starting >> test_catkin_virtualenv_uv:findtest                                 
+Subprocess > test_catkin_virtualenv_uv:findtest `cd /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv; catkin test --get-env test_catkin_virtualenv_uv | catkin env -si  /usr/bin/make -q run_tests; cd -`
+Starting >> test_catkin_virtualenv_uv:make                                     
+Subprocess > test_catkin_virtualenv_uv:make `cd /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv; catkin test --get-env test_catkin_virtualenv_uv | catkin env -si  /usr/bin/make run_tests; cd -`
+[test 0.1 s] [0/1 complete] [1/16 jobs] [0 queued] [test_catkin_virtualenv_... [test 0.2 s] [0/1 complete] [1/16 jobs] [0 queued] [test_catkin_virtualenv_... [test 0.3 s] [0/1 complete] [1/16 jobs] [0 queued] [test_catkin_virtualenv_... [test 0.4 s] [0/1 complete] [1/16 jobs] [0 queued] [test_catkin_virtualenv_... [test 0.5 s] [0/1 complete] [1/16 jobs] [0 queued] [test_catkin_virtualenv_... [test 0.6 s] [0/1 complete] [1/16 jobs] [0 queued] [test_catkin_virtualenv_... [test 0.7 s] [0/1 complete] [1/16 jobs] [0 queued] [test_catkin_virtualenv_... [test 0.8 s] [0/1 complete] [1/16 jobs] [0 queued] [test_catkin_virtualenv_... [test 0.9 s] [0/1 complete] [1/16 jobs] [0 queued] [test_catkin_virtualenv_... [test 1.0 s] [0/1 complete] [1/16 jobs] [0 queued] [test_catkin_virtualenv_... [test 1.1 s] [0/1 complete] [1/16 jobs] [0 queued] [test_catkin_virtualenv_... [test 1.2 s] [0/1 complete] [1/16 jobs] [0 queued] [test_catkin_virtualenv_... [test 1.3 s] [0/1 complete] [1/16 jobs] [0 queued] [test_catkin_virtualenv_... [test 1.4 s] [0/1 complete] [1/16 jobs] [0 queued] [test_catkin_virtualenv_... [test 1.5 s] [0/1 complete] [1/16 jobs] [0 queued] [test_catkin_virtualenv_... [test 1.6 s] [0/1 complete] [1/16 jobs] [0 queued] [test_catkin_virtualenv_... [test 1.7 s] [0/1 complete] [1/16 jobs] [0 queued] [test_catkin_virtualenv_... [test 1.8 s] [0/1 complete] [1/16 jobs] [0 queued] [test_catkin_virtualenv_... [test 1.9 s] [0/1 complete] [1/16 jobs] [0 queued] [test_catkin_virtualenv_... [test 2.0 s] [0/1 complete] [1/16 jobs] [0 queued] [test_catkin_virtualenv_... /usr/bin/cmake -S/home/bstrausser/locus_dev/src/catkin_virtualenv/test_catkin_virtualenv_uv -B/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv --check-build-system CMakeFiles/Makefile.cmake 0
+/usr/bin/make  -f CMakeFiles/Makefile2 run_tests
+make[1]: Entering directory '/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv'
+/usr/bin/cmake -S/home/bstrausser/locus_dev/src/catkin_virtualenv/test_catkin_virtualenv_uv -B/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv --check-build-system CMakeFiles/Makefile.cmake 0
+/usr/bin/cmake -E cmake_progress_start /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv/CMakeFiles 5
+/usr/bin/make  -f CMakeFiles/Makefile2 CMakeFiles/run_tests.dir/all
+make[2]: Entering directory '/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv'
+/usr/bin/make  -f CMakeFiles/clean_test_results_test_catkin_virtualenv_uv.dir/build.make CMakeFiles/clean_test_results_test_catkin_virtualenv_uv.dir/depend
+make[3]: Entering directory '/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv'
+cd /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv && /usr/bin/cmake -E cmake_depends "Unix Makefiles" /home/bstrausser/locus_dev/src/catkin_virtualenv/test_catkin_virtualenv_uv /home/bstrausser/locus_dev/src/catkin_virtualenv/test_catkin_virtualenv_uv /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv/CMakeFiles/clean_test_results_test_catkin_virtualenv_uv.dir/DependInfo.cmake --color=
+make[3]: Leaving directory '/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv'
+/usr/bin/make  -f CMakeFiles/clean_test_results_test_catkin_virtualenv_uv.dir/build.make CMakeFiles/clean_test_results_test_catkin_virtualenv_uv.dir/build
+make[3]: Entering directory '/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv'
+/usr/bin/python3 /opt/locusrobotics/hotdog/dev/ros1/share/catkin/cmake/test/remove_test_results.py /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv/test_results/test_catkin_virtualenv_uv
+Removing test result files from '/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv/test_results/test_catkin_virtualenv_uv'
+make[3]: Leaving directory '/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv'
+[  0%] Built target clean_test_results_test_catkin_virtualenv_uv
+/usr/bin/make  -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/depend
+make[3]: Entering directory '/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv'
+cd /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv && /usr/bin/cmake -E cmake_depends "Unix Makefiles" /home/bstrausser/locus_dev/src/catkin_virtualenv/test_catkin_virtualenv_uv /home/bstrausser/locus_dev/src/catkin_virtualenv/test_catkin_virtualenv_uv /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv/CMakeFiles/tests.dir/DependInfo.cmake --color=
+make[3]: Leaving directory '/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv'
+/usr/bin/make  -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/build
+make[3]: Entering directory '/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv'
+make[3]: Nothing to be done for 'CMakeFiles/tests.dir/build'.
+make[3]: Leaving directory '/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv'
+[  0%] Built target tests
+/usr/bin/make  -f CMakeFiles/test_catkin_virtualenv_uv_generate_virtualenv.dir/build.make CMakeFiles/test_catkin_virtualenv_uv_generate_virtualenv.dir/depend
+make[3]: Entering directory '/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv'
+cd /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv && /usr/bin/cmake -E cmake_depends "Unix Makefiles" /home/bstrausser/locus_dev/src/catkin_virtualenv/test_catkin_virtualenv_uv /home/bstrausser/locus_dev/src/catkin_virtualenv/test_catkin_virtualenv_uv /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv/CMakeFiles/test_catkin_virtualenv_uv_generate_virtualenv.dir/DependInfo.cmake --color=
+make[3]: Leaving directory '/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv'
+/usr/bin/make  -f CMakeFiles/test_catkin_virtualenv_uv_generate_virtualenv.dir/build.make CMakeFiles/test_catkin_virtualenv_uv_generate_virtualenv.dir/build
+make[3]: Entering directory '/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv'
+[ 20%] [34m[1mPer-package virtualenv target[0m
+make[3]: Leaving directory '/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv'
+[100%] Built target test_catkin_virtualenv_uv_generate_virtualenv
+/usr/bin/make  -f CMakeFiles/_run_tests_test_catkin_virtualenv_uv_rostest_test_virtualenv_script.test.dir/build.make CMakeFiles/_run_tests_test_catkin_virtualenv_uv_rostest_test_virtualenv_script.test.dir/depend
+make[3]: Entering directory '/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv'
+cd /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv && /usr/bin/cmake -E cmake_depends "Unix Makefiles" /home/bstrausser/locus_dev/src/catkin_virtualenv/test_catkin_virtualenv_uv /home/bstrausser/locus_dev/src/catkin_virtualenv/test_catkin_virtualenv_uv /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv/CMakeFiles/_run_tests_test_catkin_virtualenv_uv_rostest_test_virtualenv_script.test.dir/DependInfo.cmake --color=
+make[3]: Leaving directory '/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv'
+/usr/bin/make  -f CMakeFiles/_run_tests_test_catkin_virtualenv_uv_rostest_test_virtualenv_script.test.dir/build.make CMakeFiles/_run_tests_test_catkin_virtualenv_uv_rostest_test_virtualenv_script.test.dir/build
+make[3]: Entering directory '/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv'
+catkin_generated/env_cached.sh /usr/bin/python3 /opt/locusrobotics/hotdog/dev/ros1/share/catkin/cmake/test/run_tests.py /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv/test_results/test_catkin_virtualenv_uv/rostest-test_virtualenv_script.xml "/usr/bin/python3 /opt/locusrobotics/hotdog/dev/ros1/share/rostest/cmake/../../../bin/rostest --pkgdir=/home/bstrausser/locus_dev/src/catkin_virtualenv/test_catkin_virtualenv_uv --package=test_catkin_virtualenv_uv --results-filename test_virtualenv_script.xml --results-base-dir \"/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv/test_results\" /home/bstrausser/locus_dev/src/catkin_virtualenv/test_catkin_virtualenv_uv/test/virtualenv_script.test "
+-- run_tests.py: execute commands
+  /usr/bin/python3 /opt/locusrobotics/hotdog/dev/ros1/share/rostest/cmake/../../../bin/rostest --pkgdir=/home/bstrausser/locus_dev/src/catkin_virtualenv/test_catkin_virtualenv_uv --package=test_catkin_virtualenv_uv --results-filename test_virtualenv_script.xml --results-base-dir "/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv/test_results" /home/bstrausser/locus_dev/src/catkin_virtualenv/test_catkin_virtualenv_uv/test/virtualenv_script.test
+... logging to /home/bstrausser/.ros/log/rostest-LOCLAP680-650315.log
+[INFO] [rostest]: rostest starting with options {{'text_mode': False, 'pkg_dir': '/home/bstrausser/locus_dev/src/catkin_virtualenv/test_catkin_virtualenv_uv', 'package': 'test_catkin_virtualenv_uv', 'results_filename': 'test_virtualenv_script.xml', 'results_base_dir': '/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv/test_results', 'reuse_master': None, 'clear': None}}, args ['/home/bstrausser/locus_dev/src/catkin_virtualenv/test_catkin_virtualenv_uv/test/virtualenv_script.test']
+[ROSUNIT] Outputting test results to /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv/test_results/test_catkin_virtualenv_uv/rostest-test_virtualenv_script.xml
+[INFO] [rostest]: setup[/home/bstrausser/locus_dev/src/catkin_virtualenv/test_catkin_virtualenv_uv/test/virtualenv_script.test] run_id[cdb06eac-364e-11ef-ba32-1f9179c6d19f] starting
+[INFO] [rostest]: started roslaunch server http://LOCLAP680:42033/
+[INFO] [rostest]: _addRostestParent [<rostest.rostest_parent.ROSTestLaunchParent object at 0x7ad07fadba30>]
+[INFO] [rostest]: setup[/home/bstrausser/locus_dev/src/catkin_virtualenv/test_catkin_virtualenv_uv/test/virtualenv_script.test] run_id[cdb06eac-364e-11ef-ba32-1f9179c6d19f] done
+[INFO] [rostest]: Running test [virtualenv_script]
+[INFO] [rostest]: ROS_MASTER_URI=http://LOCLAP680:44861/
+[INFO] [rostest]: setting /run_id to cdb06eac-364e-11ef-ba32-1f9179c6d19f
+[INFO] [rostest]: running test virtualenv_script
+[INFO] [rostest]: process[virtualenv_script-1]: started with pid [650351]
+[INFO] [rostest]: [virtualenv_script-1] process has finished cleanly
+log file: /home/bstrausser/.ros/log/cdb06eac-364e-11ef-ba32-1f9179c6d19f/virtualenv_script-1*.log
+[INFO] [rostest]: test [virtualenv_script] finished
+[INFO] [rostest]: test [virtualenv_script] results are in [/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv/test_results/test_catkin_virtualenv_uv/rosunit-virtualenv_script.xml]
+[INFO] [rostest]: test [virtualenv_script] results summary: 0 errors, 0 failures, 5 tests
+[INFO] [rostest]: [ROSTEST] test [virtualenv_script] done
+[INFO] [rostest]: tearDown[/home/bstrausser/locus_dev/src/catkin_virtualenv/test_catkin_virtualenv_uv/test/virtualenv_script.test]
+[INFO] [rostest]: shutting down processing monitor...
+[INFO] [rostest]: ... shutting down processing monitor complete
+[INFO] [rostest]: rostest teardown /home/bstrausser/locus_dev/src/catkin_virtualenv/test_catkin_virtualenv_uv/test/virtualenv_script.test complete
+[Testcase: testvirtualenv_script] ... ok
+[INFO] [rostest]: finally rostest parent tearDown [<rostest.rostest_parent.ROSTestLaunchParent object at 0x7ad07fadba30>]
+[INFO] [rostest]: calling pmon_shutdown
+[INFO] [rostest]: ... done calling pmon_shutdown
+
+[ROSTEST]-----------------------------------------------------------------------
+
+[test_catkin_virtualenv_uv.rosunit-virtualenv_script/test_cannot_import][passed]
+[test_catkin_virtualenv_uv.rosunit-virtualenv_script/test_check_returns][passed]
+[test_catkin_virtualenv_uv.rosunit-virtualenv_script/test_import][passed]
+[test_catkin_virtualenv_uv.rosunit-virtualenv_script/test_import_file_path][passed]
+[test_catkin_virtualenv_uv.rosunit-virtualenv_script/test_packages_exit_in_cache][passed]
+
+SUMMARY
+[32m * RESULT: SUCCESS[0m
+ * TESTS: 5
+ * ERRORS: 0
+ * FAILURES: 0
+
+rostest log file is in /home/bstrausser/.ros/log/rostest-LOCLAP680-650315.log
+-- run_tests.py: verify result "/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv/test_results/test_catkin_virtualenv_uv/rostest-test_virtualenv_script.xml"
+make[3]: Leaving directory '/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv'
+[100%] Built target _run_tests_test_catkin_virtualenv_uv_rostest_test_virtualenv_script.test
+/usr/bin/make  -f CMakeFiles/_run_tests_test_catkin_virtualenv_uv_rostest.dir/build.make CMakeFiles/_run_tests_test_catkin_virtualenv_uv_rostest.dir/depend
+make[3]: Entering directory '/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv'
+cd /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv && /usr/bin/cmake -E cmake_depends "Unix Makefiles" /home/bstrausser/locus_dev/src/catkin_virtualenv/test_catkin_virtualenv_uv /home/bstrausser/locus_dev/src/catkin_virtualenv/test_catkin_virtualenv_uv /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv/CMakeFiles/_run_tests_test_catkin_virtualenv_uv_rostest.dir/DependInfo.cmake --color=
+make[3]: Leaving directory '/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv'
+/usr/bin/make  -f CMakeFiles/_run_tests_test_catkin_virtualenv_uv_rostest.dir/build.make CMakeFiles/_run_tests_test_catkin_virtualenv_uv_rostest.dir/build
+make[3]: Entering directory '/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv'
+make[3]: Nothing to be done for 'CMakeFiles/_run_tests_test_catkin_virtualenv_uv_rostest.dir/build'.
+make[3]: Leaving directory '/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv'
+[100%] Built target _run_tests_test_catkin_virtualenv_uv_rostest
+/usr/bin/make  -f CMakeFiles/_run_tests_test_catkin_virtualenv_uv_venv_check_test_catkin_virtualenv_uv-requirements.dir/build.make CMakeFiles/_run_tests_test_catkin_virtualenv_uv_venv_check_test_catkin_virtualenv_uv-requirements.dir/depend
+make[3]: Entering directory '/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv'
+cd /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv && /usr/bin/cmake -E cmake_depends "Unix Makefiles" /home/bstrausser/locus_dev/src/catkin_virtualenv/test_catkin_virtualenv_uv /home/bstrausser/locus_dev/src/catkin_virtualenv/test_catkin_virtualenv_uv /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv/CMakeFiles/_run_tests_test_catkin_virtualenv_uv_venv_check_test_catkin_virtualenv_uv-requirements.dir/DependInfo.cmake --color=
+make[3]: Leaving directory '/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv'
+/usr/bin/make  -f CMakeFiles/_run_tests_test_catkin_virtualenv_uv_venv_check_test_catkin_virtualenv_uv-requirements.dir/build.make CMakeFiles/_run_tests_test_catkin_virtualenv_uv_venv_check_test_catkin_virtualenv_uv-requirements.dir/build
+make[3]: Entering directory '/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv'
+catkin_generated/env_cached.sh /usr/bin/python3 /opt/locusrobotics/hotdog/dev/ros1/share/catkin/cmake/test/run_tests.py /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv/test_results/test_catkin_virtualenv_uv/venv_check-test_catkin_virtualenv_uv-requirements.xml --working-dir /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv "/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv/catkin_generated/env_cached.sh rosrun catkin_virtualenv venv_check venv --requirements /home/bstrausser/locus_dev/src/catkin_virtualenv/test_catkin_virtualenv_uv/requirements.txt           --use-uv           --xunit-output /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv/test_results/test_catkin_virtualenv_uv/venv_check-test_catkin_virtualenv_uv-requirements.xml"
+-- run_tests.py: execute commands with working directory "/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv"
+  /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv/catkin_generated/env_cached.sh rosrun catkin_virtualenv venv_check venv --requirements /home/bstrausser/locus_dev/src/catkin_virtualenv/test_catkin_virtualenv_uv/requirements.txt           --use-uv           --xunit-output /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv/test_results/test_catkin_virtualenv_uv/venv_check-test_catkin_virtualenv_uv-requirements.xml
+venv
+Running Command: /home/bstrausser/.cargo/bin/uv pip compile --no-header --annotation-style line /home/bstrausser/locus_dev/src/catkin_virtualenv/test_catkin_virtualenv_uv/requirements.txt
+[INFO] [catkin_virtualenv]: /home/bstrausser/.cargo/bin/uv pip compile --no-header --annotation-style line /home/bstrausser/locus_dev/src/catkin_virtualenv/test_catkin_virtualenv_uv/requirements.txt
+Running Diff
+Traceback (most recent call last):
+  File "/home/bstrausser/locus_dev/devel/lib/catkin_virtualenv/venv_check", line 15, in <module>
+    exec(compile(fh.read(), python_script, 'exec'), context)
+  File "/home/bstrausser/locus_dev/src/catkin_virtualenv/catkin_virtualenv/scripts/venv_check", line 68, in <module>
+    main()
+  File "/home/bstrausser/locus_dev/src/catkin_virtualenv/catkin_virtualenv/scripts/venv_check", line 53, in main
+    check_xunit(args, diff)
+  File "/home/bstrausser/locus_dev/src/catkin_virtualenv/catkin_virtualenv/scripts/venv_check", line 59, in check_xunit
+    diff_check(args.xunit_output, args.requirements, diff)
+  File "/home/bstrausser/locus_dev/src/catkin_virtualenv/catkin_virtualenv/src/catkin_virtualenv/cli.py", line 21, in diff_check
+    raise RuntimeError("Requirements must not be not none and must be a list")
+RuntimeError: Requirements must not be not none and must be a list
+-- run_tests.py: verify result "/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv/test_results/test_catkin_virtualenv_uv/venv_check-test_catkin_virtualenv_uv-requirements.xml"
+Cannot find results, writing failure results to '/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv/test_results/test_catkin_virtualenv_uv/MISSING-venv_check-test_catkin_virtualenv_uv-requirements.xml'
+make[3]: Leaving directory '/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv'
+[100%] Built target _run_tests_test_catkin_virtualenv_uv_venv_check_test_catkin_virtualenv_uv-requirements
+/usr/bin/make  -f CMakeFiles/_run_tests_test_catkin_virtualenv_uv_venv_check.dir/build.make CMakeFiles/_run_tests_test_catkin_virtualenv_uv_venv_check.dir/depend
+make[3]: Entering directory '/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv'
+cd /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv && /usr/bin/cmake -E cmake_depends "Unix Makefiles" /home/bstrausser/locus_dev/src/catkin_virtualenv/test_catkin_virtualenv_uv /home/bstrausser/locus_dev/src/catkin_virtualenv/test_catkin_virtualenv_uv /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv/CMakeFiles/_run_tests_test_catkin_virtualenv_uv_venv_check.dir/DependInfo.cmake --color=
+make[3]: Leaving directory '/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv'
+/usr/bin/make  -f CMakeFiles/_run_tests_test_catkin_virtualenv_uv_venv_check.dir/build.make CMakeFiles/_run_tests_test_catkin_virtualenv_uv_venv_check.dir/build
+make[3]: Entering directory '/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv'
+make[3]: Nothing to be done for 'CMakeFiles/_run_tests_test_catkin_virtualenv_uv_venv_check.dir/build'.
+make[3]: Leaving directory '/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv'
+[100%] Built target _run_tests_test_catkin_virtualenv_uv_venv_check
+/usr/bin/make  -f CMakeFiles/_run_tests_test_catkin_virtualenv_uv.dir/build.make CMakeFiles/_run_tests_test_catkin_virtualenv_uv.dir/depend
+make[3]: Entering directory '/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv'
+cd /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv && /usr/bin/cmake -E cmake_depends "Unix Makefiles" /home/bstrausser/locus_dev/src/catkin_virtualenv/test_catkin_virtualenv_uv /home/bstrausser/locus_dev/src/catkin_virtualenv/test_catkin_virtualenv_uv /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv/CMakeFiles/_run_tests_test_catkin_virtualenv_uv.dir/DependInfo.cmake --color=
+make[3]: Leaving directory '/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv'
+/usr/bin/make  -f CMakeFiles/_run_tests_test_catkin_virtualenv_uv.dir/build.make CMakeFiles/_run_tests_test_catkin_virtualenv_uv.dir/build
+make[3]: Entering directory '/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv'
+make[3]: Nothing to be done for 'CMakeFiles/_run_tests_test_catkin_virtualenv_uv.dir/build'.
+make[3]: Leaving directory '/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv'
+[100%] Built target _run_tests_test_catkin_virtualenv_uv
+/usr/bin/make  -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/depend
+make[3]: Entering directory '/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv'
+cd /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv && /usr/bin/cmake -E cmake_depends "Unix Makefiles" /home/bstrausser/locus_dev/src/catkin_virtualenv/test_catkin_virtualenv_uv /home/bstrausser/locus_dev/src/catkin_virtualenv/test_catkin_virtualenv_uv /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv/CMakeFiles/run_tests.dir/DependInfo.cmake --color=
+make[3]: Leaving directory '/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv'
+/usr/bin/make  -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/build
+make[3]: Entering directory '/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv'
+make[3]: Nothing to be done for 'CMakeFiles/run_tests.dir/build'.
+make[3]: Leaving directory '/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv'
+[100%] Built target run_tests
+make[2]: Leaving directory '/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv'
+/usr/bin/cmake -E cmake_progress_start /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv/CMakeFiles 0
+make[1]: Leaving directory '/home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv'
+cd /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv; catkin test --get-env test_catkin_virtualenv_uv | catkin env -si  /usr/bin/make run_tests; cd -
+
+Finished << test_catkin_virtualenv_uv:make                                     
+Starting >> test_catkin_virtualenv_uv:results                                  
+Subprocess > test_catkin_virtualenv_uv:results `cd /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv; catkin test --get-env test_catkin_virtualenv_uv | catkin env -si  catkin_test_results --verbose; cd -`
+Full test results for 'test_results/test_catkin_virtualenv_uv/MISSING-venv_check-test_catkin_virtualenv_uv-requirements.xml'
+-------------------------------------------------
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite tests="1" failures="1" time="1" errors="0" name="venv_check-test_catkin_virtualenv_uv-requirements.xml">
+  <testcase name="test_ran" status="run" time="1" classname="Results">
+    <failure message="Unable to find test results for venv_check-test_catkin_virtualenv_uv-requirements.xml, test did not run.
+Expected results in /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv/test_results/test_catkin_virtualenv_uv/venv_check-test_catkin_virtualenv_uv-requirements.xml" type=""/>
+  </testcase>
+</testsuite>
+-------------------------------------------------
+test_results/test_catkin_virtualenv_uv/MISSING-venv_check-test_catkin_virtualenv_uv-requirements.xml: 1 tests, 0 errors, 1 failures, 0 skipped
+Summary: 7 tests, 0 errors, 1 failures, 0 skipped
+cd /home/bstrausser/locus_dev/build/test_catkin_virtualenv_uv; catkin test --get-env test_catkin_virtualenv_uv | catkin env -si  catkin_test_results --verbose; cd -
+
+Failed <<< test_catkin_virtualenv_uv          [ 2.1 seconds ]                  
+[test] Summary: 0 of 1 packages succeeded.                                     
+[test] Ignored: None.                                                          
+[test] Warnings: 1 packages succeeded with warnings.                           
+[test] Abandoned: No packages were abandoned.                                  
+[test] Failed: 1 packages failed.                                              
+[test] Runtime: 2.1 seconds total.                                             

@@ -21,56 +21,48 @@
 import argparse
 import inspect
 import sys
+import typing
 
 import xml.etree.ElementTree as ET
 
 from catkin_virtualenv import configure_logging
 from catkin_virtualenv.venv import Virtualenv
+from catkin_virtualenv.uvvenv import UVVirtualEnv
+from catkin_virtualenv.cli import _parse_check_args, _build_sanitized_extra_args, diff_check
+
+logger = configure_logging()
 
 
-if __name__ == '__main__':
-    logger = configure_logging()
+def main(argv: typing.Union[typing.List[str], None] = None) -> None:
 
-    parser = argparse.ArgumentParser(description=Virtualenv.install.__doc__)
-    parser.add_argument(
-        'venv', help="Path of virtualenv to manage.")
-    parser.add_argument(
-        '--requirements', required=True, help="Requirements to check.")
-    parser.add_argument(
-        '--extra-pip-args', default='""', type=str, help="Extra pip args for install.")
-    parser.add_argument(
-        '--xunit-output', help="Destination where to write xunit output.")
+    args = _parse_check_args(argv)
 
-    args = parser.parse_args()
+    extra_pip_args = _build_sanitized_extra_args(args, False)
 
-    extra_pip_args = args.extra_pip_args[1:-1]
+    diff = []
+    if args.use_uv:
+        diff = []
+        venv = UVVirtualEnv(args.venv)
+        diff = venv.check(requirements=args.requirements, extra_uv_args=args.extra_uv_args)
+    else:
+        venv = Virtualenv(args.venv)
+        diff = venv.check(
+            requirements=args.requirements,
+            extra_pip_args=extra_pip_args,
+        )
+    check_xunit(args, diff)
 
-    venv = Virtualenv(args.venv)
-    diff = venv.check(
-        requirements=args.requirements,
-        extra_pip_args=[arg for arg in extra_pip_args.split(" ") if arg != ""],
-    )
+
+def check_xunit(args: argparse.Namespace, diff: typing.List[str]):
 
     if args.xunit_output:
-        testsuite = ET.Element('testsuite', name="venv_check", tests="1", failures="1" if diff else "0", errors="0")
-        testcase = ET.SubElement(testsuite, 'testcase', name="check_locked", classname="catkin_virtualenv.Venv")
-        if diff:
-            failure = ET.SubElement(testcase, 'failure', message="{} is not fully locked".format(args.requirements))
-            message = inspect.cleandoc("""
-            Consider defining INPUT_REQUIREMENTS to have catkin_virtualenv generate a lock file for this package.
-            See https://github.com/locusrobotics/catkin_virtualenv/blob/master/README.md#locking-dependencies.
-            The following changes would fully lock {requirements}:
-            """.format(requirements=args.requirements))
-            message += '\n' + '\n'.join(diff)
-            failure.text = message
-
-        else:
-            success = ET.SubElement(testcase, 'success', message="{} is fully locked".format(args.requirements))
-
-        tree = ET.ElementTree(testsuite)
-        tree.write(args.xunit_output, encoding='utf-8', xml_declaration=True)
+        diff_check(args.xunit_output, args.requirements, diff)
 
     else:
         if diff:
-            logger.error("{} is not fully locked, see diff:\n{}".format(args.requirements, '\n'.join(diff)))
+            logger.error("{} is not fully locked, see diff:\n{}".format(args.requirements, "\n".join(diff)))
             sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()

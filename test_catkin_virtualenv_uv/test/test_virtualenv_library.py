@@ -1,6 +1,6 @@
 # Software License Agreement (GPL)
 #
-# \file      __init__.py
+# \file      test_virtualenv_library.py
 # \authors   Paul Bovbel <pbovbel@locusrobotics.com>
 # \copyright Copyright (c) (2017,), Locus Robotics, All rights reserved.
 #
@@ -16,24 +16,13 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
+import importlib
+import unittest
 
-import logging
-import subprocess
-import rosgraph.roslogging
-import typing
-
-
-logger = logging.getLogger(__name__)
+from packaging import version
 
 
-def configure_logging():
-    rosgraph.roslogging.configure_logging("catkin_virtualenv")
-    return logging.getLogger()
-
-
-def run_command(cmd: typing.List[str], *args, **kwargs) -> subprocess.CompletedProcess:
-    logger.info(" ".join(cmd))
-    if kwargs.pop("capture_output", False):
-        kwargs["stdout"] = subprocess.PIPE
-        kwargs["stderr"] = subprocess.PIPE
-    return subprocess.run(cmd, *args, **kwargs)
+class TestVirtualenv(unittest.TestCase):
+    def test_import(self):
+        requests = importlib.import_module("requests")
+        self.assertGreaterEqual(version.parse(requests.__version__), version.parse("2"))

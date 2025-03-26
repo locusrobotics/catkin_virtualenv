@@ -17,8 +17,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 function(catkin_generate_virtualenv)
-  set(oneValueArgs PYTHON_VERSION PYTHON_INTERPRETER USE_SYSTEM_PACKAGES ISOLATE_REQUIREMENTS INPUT_REQUIREMENTS CHECK_VENV)
-  set(multiValueArgs EXTRA_PIP_ARGS)
+  set(oneValueArgs PYTHON_VERSION PYTHON_INTERPRETER USE_SYSTEM_PACKAGES ISOLATE_REQUIREMENTS INPUT_REQUIREMENTS CHECK_VENV USE_UV UV_CACHE)
+  set(multiValueArgs EXTRA_PIP_ARGS EXTRA_UV_ARGS)
   cmake_parse_arguments(ARG "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
 
   ### Handle argument defaults and deprecations
@@ -32,19 +32,64 @@ function(catkin_generate_virtualenv)
     set(ARG_PYTHON_INTERPRETER "python3")
   endif()
 
-  if(NOT DEFINED ARG_USE_SYSTEM_PACKAGES OR ARG_USE_SYSTEM_PACKAGES)
-    message(STATUS "Using system site packages")
-    set(venv_args "--use-system-packages")
+  
+
+  if(DEFINED ARG_USE_UV)
+    message(STATUS "USING UV")
+    set(use_uv "--use-uv")
+
+    if( ARG_ISOLATE_REQUIREMENTS )
+      message( FATAL_ERROR "You can use ISOLATE_REQUIREMENTS in conjunction with USE_UV" )
+    endif()
+
+    if(NOT DEFINED ARG_USE_UV_CACHE OR ARG_USE_UV_CACHE)
+      message(STATUS "Using uv cache")
+      set(use_uv_cache "--uv-cache")
+    endif()
+
+    if(NOT DEFINED ARG_UV_CACHE  )
+      message(STATUS "Setting uv cache location to default")
+      set(uv_cache "/tmp/testing/uv/cache")
+    else()
+      message(STATUS "Setting uv cache location")
+      set(uv_cache "${ARG_UV_CACHE}")
+    endif()
+    
+    message(STATUS "Clearing Venv args")
+    set(venv_args "")
+  
+    if (NOT DEFINED ARG_EXTRA_UV_ARGS)
+      message(STATUS "Setting Extra UV Args")
+      set(ARG_EXTRA_UV_ARGS "")
+    endif()
+  
+  else()
+    
+    message(STATUS "NOT USING UV")
+    
+    if(NOT DEFINED ARG_USE_SYSTEM_PACKAGES OR ARG_USE_SYSTEM_PACKAGES)
+      message(STATUS "Using system site packages")
+      set(venv_args "--use-system-packages")
+    endif()
+    
+    if (NOT DEFINED ARG_EXTRA_PIP_ARGS)
+      set(ARG_EXTRA_PIP_ARGS "-qq" "--retries 10" "--timeout 30")
+    endif()
+
+    message(STATUS "Clearing UV Args")
+    set(use_uv "")
+    set(use_uv_cache "")
+    set(uv_cache "")
   endif()
+
 
   if(ARG_ISOLATE_REQUIREMENTS)
     message(STATUS "Only using requirements from this catkin package")
     set(lock_args "${lock_args} --no-deps")
   endif()
 
-  if (NOT DEFINED ARG_EXTRA_PIP_ARGS)
-    set(ARG_EXTRA_PIP_ARGS "-qq" "--retries 10" "--timeout 30")
-  endif()
+ 
+  
 
   # Convert CMake list to ' '-separated list
   string(REPLACE ";" "\ " processed_pip_args "${ARG_EXTRA_PIP_ARGS}")
@@ -92,10 +137,13 @@ function(catkin_generate_virtualenv)
     endif()
   endforeach()
 
+  
+
+
   add_custom_command(COMMENT "Generate virtualenv in ${CMAKE_BINARY_DIR}/${venv_dir}"
     OUTPUT ${CMAKE_BINARY_DIR}/${venv_dir}/bin/python
     COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv venv_init ${venv_dir}
-      --python ${ARG_PYTHON_INTERPRETER} ${venv_args} --extra-pip-args ${processed_pip_args}
+      --python ${ARG_PYTHON_INTERPRETER} ${venv_args} --extra-pip-args ${processed_pip_args} ${use_uv} ${use_uv_cache} ${uv_cache}
   )
 
   if(DEFINED ARG_INPUT_REQUIREMENTS AND NOT package_requirements STREQUAL "")
@@ -114,7 +162,7 @@ function(catkin_generate_virtualenv)
   add_custom_command(COMMENT "Install requirements to ${CMAKE_BINARY_DIR}/${venv_dir}"
     OUTPUT ${CMAKE_BINARY_DIR}/${venv_dir}/bin/activate
     COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv venv_install ${venv_dir}
-      --requirements ${requirements_list} --extra-pip-args ${processed_pip_args}
+      --requirements ${requirements_list} --extra-pip-args ${processed_pip_args} ${use_uv} ${use_uv_cache} ${uv_cache}
     DEPENDS
       ${CMAKE_BINARY_DIR}/${venv_dir}/bin/python
       ${package_requirements}
@@ -154,13 +202,25 @@ function(catkin_generate_virtualenv)
 
   if(CATKIN_ENABLE_TESTING AND NOT package_requirements STREQUAL "" AND (NOT DEFINED ARG_CHECK_VENV OR ARG_CHECK_VENV))
     file(MAKE_DIRECTORY ${CATKIN_TEST_RESULTS_DIR}/${PROJECT_NAME})
-    catkin_run_tests_target("venv_check" "${PROJECT_NAME}-requirements" "venv_check-${PROJECT_NAME}-requirements.xml"
-      COMMAND "${CATKIN_ENV} rosrun catkin_virtualenv venv_check ${venv_dir} --requirements ${package_requirements} \
-        --extra-pip-args \"${processed_pip_args}\" \
-        --xunit-output ${CATKIN_TEST_RESULTS_DIR}/${PROJECT_NAME}/venv_check-${PROJECT_NAME}-requirements.xml"
-      DEPENDENCIES ${PROJECT_NAME}_generate_virtualenv
-      WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-    )
+    if(NOT DEFINED ARG_USE_UV)
+      catkin_run_tests_target("venv_check" "${PROJECT_NAME}-requirements" "venv_check-${PROJECT_NAME}-requirements.xml"
+        COMMAND "${CATKIN_ENV} rosrun catkin_virtualenv venv_check ${venv_dir} --requirements ${package_requirements} \
+          --extra-pip-args \"${processed_pip_args}\" \
+          --xunit-output ${CATKIN_TEST_RESULTS_DIR}/${PROJECT_NAME}/venv_check-${PROJECT_NAME}-requirements.xml"
+        DEPENDENCIES ${PROJECT_NAME}_generate_virtualenv
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+      )
+    else()
+      message(STATUS "PackReq: ${package_requirements}")
+
+      catkin_run_tests_target("venv_check" "${PROJECT_NAME}-requirements" "venv_check-${PROJECT_NAME}-requirements.xml"
+        COMMAND "${CATKIN_ENV} rosrun catkin_virtualenv venv_check ${venv_dir} --requirements ${package_requirements} \
+          --use-uv \
+          --xunit-output ${CATKIN_TEST_RESULTS_DIR}/${PROJECT_NAME}/venv_check-${PROJECT_NAME}-requirements.xml"
+        DEPENDENCIES ${PROJECT_NAME}_generate_virtualenv
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+      )
+    endif()
   endif()
 
   install(DIRECTORY ${CMAKE_BINARY_DIR}/install/${venv_dir}
