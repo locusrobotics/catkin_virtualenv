@@ -144,8 +144,8 @@ Changelog for package catkin_virtualenv
   * Drop kinetic
 * Contributors: Alec Tiefenthal, Arne Hitzmann, Gary Servin, Iori Yanokura, Jorge López Fueyo, Kalpesh Lad, Paul Bovbel, Shingo Kitagawa, Yuki Furuta
 
-Forthcoming
------------
+0.14.1 (2025-04-16)
+-------------------
 * Use program basename instead of full path (#117)
   (cherry picked from commit c8c20c957328b2f31738b105b094411fe691bbc6)
 * Contributors: Paul Bovbel
