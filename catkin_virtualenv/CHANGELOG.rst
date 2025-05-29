@@ -144,6 +144,12 @@ Changelog for package catkin_virtualenv
   * Drop kinetic
 * Contributors: Alec Tiefenthal, Arne Hitzmann, Gary Servin, Iori Yanokura, Jorge López Fueyo, Kalpesh Lad, Paul Bovbel, Shingo Kitagawa, Yuki Furuta
 
+Forthcoming
+-----------
+* Use program basename instead of full path
+* [ROS-O] Update dependencies version to support testing on Ubuntu noble / ROS-O (`#115 <https://github.com/locusrobotics/catkin_virtualenv/issues/115>`_)
+* Contributors: Paul Bovbel, Yuki Furuta
+
 0.14.0 (2025-02-04)
 -------------------
 
