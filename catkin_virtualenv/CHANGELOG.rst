@@ -144,8 +144,8 @@ Changelog for package catkin_virtualenv
   * Drop kinetic
 * Contributors: Alec Tiefenthal, Arne Hitzmann, Gary Servin, Iori Yanokura, Jorge López Fueyo, Kalpesh Lad, Paul Bovbel, Shingo Kitagawa, Yuki Furuta
 
-Forthcoming
------------
+0.15.0 (2025-05-29)
+-------------------
 * Find pip-compile in global path if it does not exist in venv (`#114 <https://github.com/locusrobotics/catkin_virtualenv/issues/114>`_)
 * Use program basename instead of full path (`#117 <https://github.com/locusrobotics/catkin_virtualenv/issues/117>`_)
 * [ROS-O] Update dependencies version to support testing on Ubuntu noble / ROS-O (`#115 <https://github.com/locusrobotics/catkin_virtualenv/issues/115>`_)
