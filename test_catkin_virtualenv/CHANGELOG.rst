@@ -48,6 +48,11 @@ Changelog for package test_catkin_virtualenv
 * Update changelogs
 * Contributors: Gary Servin, Paul Bovbel
 
+Forthcoming
+-----------
+* [ROS-O] Update dependencies version to support testing on Ubuntu noble / ROS-O (`#115 <https://github.com/locusrobotics/catkin_virtualenv/issues/115>`_)
+* Contributors: Yuki Furuta
+
 0.14.0 (2025-02-04)
 -------------------
 
