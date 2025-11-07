@@ -60,9 +60,9 @@ class Virtualenv:
 
         python = self.python
 
-        self.system_python = find_executable(python)  # eg. /usr/bin/python3.12
+        system_python = find_executable(python)  # eg. /usr/bin/python3.12
 
-        if not self.system_python:
+        if not system_python:
             error_msg = "Unable to find a system-installed {}.".format(python)
             if python and python[0].isdigit():
                 error_msg += " Perhaps you meant python{}".format(python)
@@ -73,7 +73,7 @@ class Virtualenv:
             "pip-tools==7.4.1",
         ]
 
-        builtin_venv = self._check_module(self.system_python, "venv")
+        builtin_venv = self._check_module(system_python, "venv")
         if builtin_venv:
             virtualenv = [self.python, "-m", "venv"]
         else:
