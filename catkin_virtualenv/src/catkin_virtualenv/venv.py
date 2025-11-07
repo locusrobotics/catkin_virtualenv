@@ -49,7 +49,6 @@ class Virtualenv:
         self.path = path
         self.python = python  # eg. python3.12
 
-
     def initialize(self, use_system_packages, extra_pip_args, clean=True):
         """Initialize a new virtualenv using the specified python version and extra arguments."""
         if clean:
@@ -59,8 +58,8 @@ class Virtualenv:
                 pass
 
         python = self.python
+        system_python = find_executable(python)
 
-        system_python = find_executable(python)  # eg. /usr/bin/python3.12
 
         if not system_python:
             error_msg = "Unable to find a system-installed {}.".format(python)
