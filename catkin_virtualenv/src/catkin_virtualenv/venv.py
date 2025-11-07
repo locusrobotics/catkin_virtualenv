@@ -75,7 +75,7 @@ class Virtualenv:
 
         builtin_venv = self._check_module(system_python, "venv")
         if builtin_venv:
-            virtualenv = [self.python, "-m", "venv"]
+            virtualenv = [system_python, "-m", "venv"]
         else:
             virtualenv = ["virtualenv", "--no-setuptools", "--verbose", "--python", self.python]
             # py2's virtualenv command will try install latest setuptools. setuptools>=45 not compatible with py2,
@@ -85,7 +85,7 @@ class Virtualenv:
         if use_system_packages:
             virtualenv.append("--system-site-packages")
 
-        without_pip = self._check_module(self.python, "ensurepip") is False
+        without_pip = self._check_module(system_python, "ensurepip") is False
         if without_pip:
             virtualenv.append("--without-pip")
 
