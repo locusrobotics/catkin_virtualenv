@@ -23,7 +23,6 @@ import argparse
 from catkin_virtualenv import configure_logging
 from catkin_virtualenv.venv import Virtualenv
 
-
 if __name__ == '__main__':
     configure_logging()
 
@@ -34,12 +33,14 @@ if __name__ == '__main__':
         '--requirements', required=True, nargs='+', help="Requirements to sync to virtualenv.")
     parser.add_argument(
         '--extra-pip-args', default='""', type=str, help="Extra pip args for install.")
+    parser.add_argument(
+        '--python', default="python3", help="Build the virtualenv with which python version.")
 
     args = parser.parse_args()
 
     extra_pip_args = args.extra_pip_args[1:-1]
 
-    venv = Virtualenv(args.venv)
+    venv = Virtualenv(args.venv, args.python)
     venv.install(
         requirements=args.requirements,
         extra_pip_args=[arg for arg in extra_pip_args.split(" ") if arg != ""],

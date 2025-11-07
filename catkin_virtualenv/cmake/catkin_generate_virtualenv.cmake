@@ -114,6 +114,7 @@ function(catkin_generate_virtualenv)
   add_custom_command(COMMENT "Install requirements to ${CMAKE_BINARY_DIR}/${venv_dir}"
     OUTPUT ${CMAKE_BINARY_DIR}/${venv_dir}/bin/activate
     COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv venv_install ${venv_dir}
+      --python ${ARG_PYTHON_INTERPRETER}
       --requirements ${requirements_list} --extra-pip-args ${processed_pip_args}
     DEPENDS
       ${CMAKE_BINARY_DIR}/${venv_dir}/bin/python

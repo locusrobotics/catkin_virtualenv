@@ -34,7 +34,7 @@ except ImportError:
 
 from distutils.spawn import find_executable
 
-from . import run_command, relocate
+from . import relocate, run_command
 from .collect_requirements import collect_requirements
 
 _BYTECODE_REGEX = re.compile(r".*\.py[co]")
@@ -67,8 +67,9 @@ class Virtualenv:
             raise RuntimeError(error_msg)
 
         preinstall = [
-            "pip==24.0",
-            "pip-tools==7.4.1",
+            "pip==25.3",
+            "pip-tools==7.5.1",
+            "setuptools",  # No-longer preinstalled with python3.14 venvs.
         ]
 
         builtin_venv = self._check_module(system_python, "venv")
@@ -76,9 +77,10 @@ class Virtualenv:
             virtualenv = [system_python, "-m", "venv"]
         else:
             virtualenv = ["virtualenv", "--no-setuptools", "--verbose", "--python", python]
+            # TODO: This fix for setuptools breaks python2 support. Do we still care about Python2?
             # py2's virtualenv command will try install latest setuptools. setuptools>=45 not compatible with py2,
             # but we do require a reasonably up-to-date version (because of pip==20.1), so v44 at least.
-            preinstall += ["setuptools>=44,<45"]
+            preinstall += ["setuptools"]
 
         if use_system_packages:
             virtualenv.append("--system-site-packages")
