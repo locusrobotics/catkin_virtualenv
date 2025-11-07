@@ -77,7 +77,7 @@ class Virtualenv:
         if builtin_venv:
             virtualenv = [system_python, "-m", "venv"]
         else:
-            virtualenv = ["virtualenv", "--no-setuptools", "--verbose", "--python", self.python]
+            virtualenv = ["virtualenv", "--no-setuptools", "--verbose", "--python", python]
             # py2's virtualenv command will try install latest setuptools. setuptools>=45 not compatible with py2,
             # but we do require a reasonably up-to-date version (because of pip==20.1), so v44 at least.
             preinstall += ["setuptools>=44,<45"]
@@ -95,7 +95,7 @@ class Virtualenv:
         if without_pip:
             # install pip via get-pip.py
             version_proc = run_command(
-                [self.python, "-cimport sys; print('{}.{}'.format(*sys.version_info))"], capture_output=True
+                [python, "-cimport sys; print('{}.{}'.format(*sys.version_info))"], capture_output=True
             )
             version = version_proc.stdout
             if isinstance(version, bytes):
@@ -103,11 +103,11 @@ class Virtualenv:
             version = version.strip()
             # download pip from https://bootstrap.pypa.io/pip/
             get_pip_path, _ = urlretrieve("https://bootstrap.pypa.io/pip/get-pip.py")
-            run_command([self._venv_bin("python"), get_pip_path], check=True)
+            run_command([self._venv_bin(python), get_pip_path], check=True)
 
         # (gservin): test --no-cache-dir
         run_command(
-            [self._venv_bin(self.python), "-m", "pip", "install", "--no-cache-dir", "-vvv"] + extra_pip_args + preinstall,
+            [self._venv_bin(python), "-m", "pip", "install", "--no-cache-dir", "-vvv"] + extra_pip_args + preinstall,
             check=True,
         )
 
