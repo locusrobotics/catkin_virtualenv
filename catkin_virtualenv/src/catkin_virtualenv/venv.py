@@ -60,7 +60,6 @@ class Virtualenv:
         python = self.python
         system_python = find_executable(python)
 
-
         if not system_python:
             error_msg = "Unable to find a system-installed {}.".format(python)
             if python and python[0].isdigit():
