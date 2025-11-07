@@ -42,9 +42,8 @@ if __name__ == '__main__':
     extra_pip_args = args.extra_pip_args[1:-1]
 
     print(args.use_system_packages)
-    venv = Virtualenv(args.venv)
+    venv = Virtualenv(args.venv, python=args.python)
     venv.initialize(
-        python=args.python,
         use_system_packages=args.use_system_packages,
         extra_pip_args=[arg for arg in extra_pip_args.split(" ") if arg != ""],
     )
