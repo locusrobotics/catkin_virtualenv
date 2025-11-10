@@ -23,7 +23,6 @@ import argparse
 from catkin_virtualenv import configure_logging
 from catkin_virtualenv.venv import Virtualenv
 
-
 if __name__ == '__main__':
     configure_logging()
 
@@ -38,12 +37,14 @@ if __name__ == '__main__':
         '--no-overwrite', action="store_true", help="Don't overwrite lock file if it exists.")
     parser.add_argument(
         '--extra-pip-args', default='""', type=str, help="Extra pip args for install.")
+    parser.add_argument(
+        '--python', default="python3", help="Build the virtualenv with which python version.")
 
     args = parser.parse_args()
 
     extra_pip_args = args.extra_pip_args[1:-1]
 
-    venv = Virtualenv(args.venv)
+    venv = Virtualenv(args.venv, python=args.python)
     venv.lock(
         package_name=args.package_name,
         input_requirements=args.input_requirements,

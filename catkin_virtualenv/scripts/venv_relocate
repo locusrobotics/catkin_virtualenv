@@ -32,10 +32,12 @@ if __name__ == '__main__':
         'venv', help="Path where virtualenv currently is")
     parser.add_argument(
         '--target-dir', required=True, help="Path where virtualenv will live.")
+    parser.add_argument(
+        '--python', default="python3", help="Build the virtualenv with which python version.")
 
     args = parser.parse_args()
 
-    venv = Virtualenv(args.venv)
+    venv = Virtualenv(args.venv, python=args.python)
     venv.relocate(
         target_dir=args.target_dir,
     )

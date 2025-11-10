@@ -66,10 +66,11 @@ class Virtualenv:
                 error_msg += " Perhaps you meant python{}".format(python)
             raise RuntimeError(error_msg)
 
+        # TODO: Add `setuptools` only if resolved python is 3.12 or newer.
         preinstall = [
             "pip==25.3",
             "pip-tools==7.5.1",
-            "setuptools",  # No-longer preinstalled with python3.14 venvs.
+            "setuptools",  # No-longer automatically part of venvs 3.12 or newer.
         ]
 
         builtin_venv = self._check_module(system_python, "venv")

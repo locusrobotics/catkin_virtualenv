@@ -21,12 +21,10 @@
 import argparse
 import inspect
 import sys
-
 import xml.etree.ElementTree as ET
 
 from catkin_virtualenv import configure_logging
 from catkin_virtualenv.venv import Virtualenv
-
 
 if __name__ == '__main__':
     logger = configure_logging()
@@ -40,12 +38,14 @@ if __name__ == '__main__':
         '--extra-pip-args', default='""', type=str, help="Extra pip args for install.")
     parser.add_argument(
         '--xunit-output', help="Destination where to write xunit output.")
-
+    parser.add_argument(
+        '--python', default="python3", help="Build the virtualenv with which python version.")
+    
     args = parser.parse_args()
 
     extra_pip_args = args.extra_pip_args[1:-1]
 
-    venv = Virtualenv(args.venv)
+    venv = Virtualenv(args.venv, python=args.python)
     diff = venv.check(
         requirements=args.requirements,
         extra_pip_args=[arg for arg in extra_pip_args.split(" ") if arg != ""],
