@@ -10,7 +10,7 @@ tailorTestPipeline(
   // Release label to pull test images from.
   release_label: '25.2-rc',
   // OS distributions to test.
-  distributions: ['jammy'],
+  distributions: ['jammy', 'noble'],
   // Version of tailor_meta to build against
   tailor_meta: '0.2.3',
   // Master or release branch associated with this track
