@@ -37,6 +37,30 @@ class TestVirtualenv(unittest.TestCase):
         attrs = importlib.import_module("attrs")
         self.assertEqual(attrs.__version__, "25.3.0")
 
+    def test_inherited_distro_specific_package_version(self):
+        """
+        Verify that the correct requirements file from the dependency was inherited.
+
+        This package depends on test_catkin_virtualenv_distro_codename, which exports
+        distro-specific requirements files. The virtualenv should have installed:
+        - On Jammy: six==1.16.0 (from requirements-jammy.txt)
+        - On Noble: six==1.17.0 (from requirements-noble.txt)
+        - On other distros: six==1.15.0 (from requirements.txt)
+        """
+        six = importlib.import_module("six")
+        codename = distro.codename().lower()
+
+        expected_versions = {
+            "jammy": "1.16.0",
+            "noble": "1.17.0",
+        }
+        expected = expected_versions.get(codename, "1.15.0")
+
+        self.assertEqual(
+            six.__version__,
+            expected,
+            f"Expected inherited six {expected} on {codename}, got {six.__version__}",
+        )
 
 
     def test_inherited_distro_specific_package_version(self):
