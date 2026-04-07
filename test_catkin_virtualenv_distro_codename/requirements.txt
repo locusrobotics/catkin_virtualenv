@@ -1,0 +1,2 @@
+# Default requirements - pinned to six 1.16.0 as marker
+six==1.16.0

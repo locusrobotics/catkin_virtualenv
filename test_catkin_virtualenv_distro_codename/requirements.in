@@ -1,0 +1,3 @@
+# Base requirements input file
+# Use 'six' as a simple marker package - different versions indicate which requirements file was used
+six>=1.10
