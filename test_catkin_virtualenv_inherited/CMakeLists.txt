@@ -1,12 +1,14 @@
 cmake_minimum_required(VERSION 3.5.1)
 project(test_catkin_virtualenv_inherited)
 
-find_package(catkin REQUIRED COMPONENTS catkin_virtualenv)
+find_package(catkin REQUIRED COMPONENTS catkin_virtualenv test_catkin_virtualenv test_catkin_virtualenv_distro_codename)
 
 catkin_package()
 
 catkin_generate_virtualenv(
   INPUT_REQUIREMENTS requirements.in
+  CHECK_VENV FALSE
+  USE_SYSTEM_PACKAGES FALSE
 )
 
 install(FILES requirements.txt

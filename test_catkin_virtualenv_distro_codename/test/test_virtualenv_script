@@ -16,37 +16,41 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
-import distro
 import importlib
+import rostest
+import distro
+import sys
 import unittest
 
+from packaging import version
 
-class TestDistroRequirements(unittest.TestCase):
-    """Test that distro-specific requirements files are used correctly."""
 
-    def test_distro_specific_package_version(self):
+class TestVirtualenv(unittest.TestCase):
+
+    def test_inherited_distro_specific_package_version(self):
         """
-        Verify that the correct requirements file was used based on distro.
+        Verify that the correct requirements file from the dependency was inherited.
 
-        - On Jammy: six==1.17.0 (from requirements-jammy.txt)
-        - On Noble: six==1.18.0 (from requirements-noble.txt)
-        - On other distros: six==1.16.0 (from requirements.txt)
+        This package depends on test_catkin_virtualenv_distro_codename, which exports
+        distro-specific requirements files. The virtualenv should have installed:
+        - On Jammy: six==1.16.0 (from requirements-jammy.txt)
+        - On Noble: six==1.17.0 (from requirements-noble.txt)
+        - On other distros: six==1.15.0 (from requirements.txt)
         """
         six = importlib.import_module("six")
         codename = distro.codename().lower()
 
         expected_versions = {
-            "jammy": "1.17.0",
-            "noble": "1.18.0",
+            "jammy": "1.16.0",
+            "noble": "1.17.0",
         }
-        expected = expected_versions.get(codename, "1.16.0")
+        expected = expected_versions.get(codename, "1.15.0")
 
         self.assertEqual(
             six.__version__,
             expected,
-            f"Expected six {expected} on {codename}, got {six.__version__}",
+            f"Expected inherited six {expected} on {codename}, got {six.__version__}",
         )
 
-
-if __name__ == "__main__":
-    unittest.main()
+if __name__ == '__main__':
+    rostest.rosrun('test_catkin_virtualenv_inherited', 'test_virtualenv_script', TestVirtualenv, sys.argv)

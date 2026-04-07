@@ -5,6 +5,7 @@ find_package(catkin REQUIRED COMPONENTS catkin_virtualenv)
 
 catkin_generate_virtualenv(
   INPUT_REQUIREMENTS requirements.in
+  USE_SYSTEM_PACKAGES FALSE
 )
 
 # Order with catkin_generate_virtualenv shouldn't matter

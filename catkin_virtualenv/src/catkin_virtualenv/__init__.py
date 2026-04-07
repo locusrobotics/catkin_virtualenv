@@ -19,13 +19,15 @@
 
 import logging
 import subprocess
-import rosgraph.roslogging
 
 logger = logging.getLogger(__name__)
 
 
 def configure_logging():
-    rosgraph.roslogging.configure_logging('catkin_virtualenv')
+    logging.basicConfig(
+        level=logging.INFO,
+        format='[%(levelname)s] [%(name)s]: %(message)s'
+    )
     return logging.getLogger()
 
 
