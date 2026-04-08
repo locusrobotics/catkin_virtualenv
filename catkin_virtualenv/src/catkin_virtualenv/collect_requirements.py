@@ -101,7 +101,9 @@ def collect_requirements(package_name, no_deps=False):
             requirements_list = requirements + requirements_list
 
             if not no_deps:
-                for dependency in dependencies:
+                # Add dependencies in reverse order so that with prepend logic,
+                # they end up in declaration order (first declared = installed first)
+                for dependency in reversed(dependencies):
                     package_queue.put(dependency.name)
 
     return requirements_list
