@@ -90,6 +90,10 @@ def collect_requirements(package_name, no_deps=False):
     processed_packages = set()
     requirements_list = []
 
+    if no_deps:
+        # For isolated builds, always include catkin_virtualenv
+        package_queue.put("catkin_virtualenv")
+
     while not package_queue.empty():
         queued_package = package_queue.get()
 
