@@ -19,6 +19,8 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 from __future__ import print_function
 
+import distro
+import logging
 import os
 
 from queue import Queue
@@ -28,13 +30,39 @@ from catkin_pkg.package import parse_package
 
 CATKIN_VIRTUALENV_TAGNAME = "pip_requirements"
 
+logger = logging.getLogger(__name__)
+
+
+def get_distro_requirements_path(base_requirements_path):
+    # type: (str) -> str
+    """
+    Given a base requirements path (e.g., 'requirements.txt'), return the path to a
+    distro-specific requirements file if it exists (e.g., 'requirements-jammy.txt' on Ubuntu Jammy).
+    Falls back to the original path if no distro-specific file exists.
+    """
+    codename = distro.codename().lower()
+    if not codename:
+        return base_requirements_path
+
+    # Split the path to insert the distro codename
+    base, ext = os.path.splitext(base_requirements_path)
+    distro_requirements_path = f"{base}-{codename}{ext}"
+
+    if os.path.exists(distro_requirements_path):
+        logger.info(f"Using distro-specific requirements file: {distro_requirements_path}")
+        return distro_requirements_path
+
+    return base_requirements_path
+
 
 def parse_exported_requirements(package, package_dir):
     # type: (catkin_pkg.package.Package) -> List[str]
     requirements_list = []
     for export in package.exports:
         if export.tagname == CATKIN_VIRTUALENV_TAGNAME:
-            requirements_list.append(os.path.join(package_dir, export.content))
+            base_requirements_path = os.path.join(package_dir, export.content)
+            requirements_path = get_distro_requirements_path(base_requirements_path)
+            requirements_list.append(requirements_path)
     return requirements_list
 
 
@@ -73,7 +101,9 @@ def collect_requirements(package_name, no_deps=False):
             requirements_list = requirements + requirements_list
 
             if not no_deps:
-                for dependency in dependencies:
+                # Add dependencies in reverse order so that with prepend logic,
+                # they end up in declaration order (first declared = installed first)
+                for dependency in reversed(dependencies):
                     package_queue.put(dependency.name)
 
     return requirements_list

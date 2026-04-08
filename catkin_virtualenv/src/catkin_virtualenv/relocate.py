@@ -20,7 +20,6 @@
 
 import os
 import re
-import subprocess
 
 from . import run_command
 

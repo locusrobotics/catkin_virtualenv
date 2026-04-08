@@ -25,7 +25,6 @@ import os
 import re
 import shutil
 import subprocess
-import tempfile
 
 try:
     from urllib.request import urlretrieve

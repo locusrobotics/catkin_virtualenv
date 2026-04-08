@@ -18,33 +18,21 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 import importlib
-import distro
 import rostest
+import distro
 import sys
 import unittest
 
-from packaging import version
 
 
 class TestVirtualenv(unittest.TestCase):
 
-    def test_import(self):
-        """
-        Verify that virtualenv installs the correct version of attrs that's defined
-        in this package, rather than the version defined in the dependency.
-        """
-
-        attrs = importlib.import_module("attrs")
-        self.assertEqual(attrs.__version__, "25.3.0")
-
-
-
     def test_inherited_distro_specific_package_version(self):
         """
-        Verify that the correct requirements file from the dependency was inherited.
+        Verify that the virtualenv picked the correct exported requirements file.
 
-        This package depends on test_catkin_virtualenv_distro_codename, which exports
-        distro-specific requirements files. The virtualenv should have installed:
+        This package exports distro-specific requirements files, so the virtualenv
+        should have installed:
         - On Jammy: colorama==0.4.4 (from requirements-jammy.txt)
         - On Noble: colorama==0.4.5 (from requirements-noble.txt)
         - On other distros: colorama==0.4.3 (from requirements.txt)
@@ -61,8 +49,8 @@ class TestVirtualenv(unittest.TestCase):
         self.assertEqual(
             colorama.__version__,
             expected,
-            f"Expected inherited colorama {expected} on {codename}, got {colorama.__version__}",
+            f"Expected colorama {expected} on {codename}, got {colorama.__version__}",
         )
 
 if __name__ == '__main__':
-    rostest.rosrun('test_catkin_virtualenv_inherited', 'test_virtualenv_script', TestVirtualenv, sys.argv)
+    rostest.rosrun('test_catkin_virtualenv_distro_codename', 'test_virtualenv_script', TestVirtualenv, sys.argv)

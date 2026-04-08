@@ -1,6 +1,2 @@
-certifi==2025.1.31        # via requests
-charset-normalizer==3.4.1  # via requests
-idna==3.10                # via requests
 packaging==24.2           # via -r requirements.in
-requests==2.32.3          # via -r requirements.in
-urllib3==2.2.3            # via -r requirements.in, requests
+attrs==25.4.0

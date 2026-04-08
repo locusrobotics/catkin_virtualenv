@@ -1,2 +1,1 @@
-requests>2.30,<=2.32
-urllib3>=2
+attrs==25.3.0
