@@ -23,6 +23,6 @@ import unittest
 class TestVirtualenv(unittest.TestCase):
 
     def test_import(self):
-        # Test ISOLATE_REQUIREMENTS TRUE: attrs from test_catkin_virtualenv should NOT be inherited
+        # Test ISOLATE_REQUIREMENTS TRUE: colorama from test_catkin_virtualenv should NOT be inherited
         with self.assertRaises(ImportError):
-            _ = importlib.import_module("attrs")
+            _ = importlib.import_module("colorama")

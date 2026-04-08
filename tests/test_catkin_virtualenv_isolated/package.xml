@@ -22,8 +22,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 -->
 <package format="2">
   <name>test_catkin_virtualenv_isolated</name>
-  <version>0.9.0</version>
-  <description>Test ISOLATE_REQUIREMENTS: dependency requirements (from test_catkin_virtualenv) should NOT be inherited.</description>
+  <version>0.18.0</version>
+  <description>Test ISOLATE_REQUIREMENTS: dependency requirements (from test_catkin_virtualenv_distro_codename) should NOT be inherited.</description>
 
   <maintainer email="pbovbel@locusrobotics.com">Paul Bovbel</maintainer>
   <license>GPL</license>
@@ -33,7 +33,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
   <build_depend>catkin_virtualenv</build_depend>
 
-  <depend>test_catkin_virtualenv</depend>
+  <depend>test_catkin_virtualenv_distro_codename</depend>
 
   <test_depend>rostest</test_depend>
 

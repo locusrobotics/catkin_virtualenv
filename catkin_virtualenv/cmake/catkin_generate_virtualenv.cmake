@@ -23,6 +23,8 @@ function(catkin_generate_virtualenv)
 
   ### Handle argument defaults and deprecations
 
+  set(collect_args "--package-name ${PROJECT_NAME}")
+
   if(DEFINED ARG_PYTHON_VERSION)
     message(WARNING "PYTHON_VERSION has been deprecated, set 'PYTHON_INTERPRETER python${ARG_PYTHON_VERSION}' instead")
     set(ARG_PYTHON_INTERPRETER "python${ARG_PYTHON_VERSION}")
@@ -39,7 +41,7 @@ function(catkin_generate_virtualenv)
 
   if(ARG_ISOLATE_REQUIREMENTS)
     message(STATUS "Only using requirements from this catkin package")
-    set(lock_args "${lock_args} --no-deps")
+    set(collect_args "${collect_args} --no-deps)")
   endif()
 
   if (NOT DEFINED ARG_EXTRA_PIP_ARGS)
@@ -71,16 +73,14 @@ function(catkin_generate_virtualenv)
 
   # Store just _this_ project's requirements file in ${package_requirements}
   execute_process(
-    COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv collect_requirements --no-deps
-      --package-name ${PROJECT_NAME} ${lock_args}
+    COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv collect_requirements ${collect_args} --no-deps
     OUTPUT_VARIABLE package_requirements
     OUTPUT_STRIP_TRAILING_WHITESPACE
   )
 
   # Collect all of this project's inherited requirements into ${requirements_list}
   execute_process(
-    COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv collect_requirements
-      --package-name ${PROJECT_NAME} ${lock_args}
+    COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv collect_requirements ${collect_args}
     OUTPUT_VARIABLE requirements_list
     OUTPUT_STRIP_TRAILING_WHITESPACE
   )
