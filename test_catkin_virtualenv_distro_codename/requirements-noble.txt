@@ -1,2 +1,2 @@
-# Noble-specific requirements - pinned to six 1.18.0 as marker
+# Noble-specific requirements - pinned to six 1.17.0 as marker
 six==1.17.0
