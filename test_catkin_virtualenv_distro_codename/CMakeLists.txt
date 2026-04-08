@@ -6,7 +6,6 @@ find_package(catkin REQUIRED COMPONENTS catkin_virtualenv)
 catkin_generate_virtualenv(
   INPUT_REQUIREMENTS requirements.in
   CHECK_VENV FALSE
-  USE_SYSTEM_PACKAGES FALSE
 )
 
 catkin_package()

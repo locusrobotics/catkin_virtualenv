@@ -8,7 +8,6 @@ catkin_package()
 catkin_generate_virtualenv(
   INPUT_REQUIREMENTS requirements.in
   CHECK_VENV FALSE
-  USE_SYSTEM_PACKAGES FALSE
 )
 
 install(FILES requirements.txt

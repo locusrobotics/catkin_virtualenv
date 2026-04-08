@@ -29,11 +29,15 @@ from packaging import version
 class TestVirtualenv(unittest.TestCase):
 
     def test_import(self):
-        requests = importlib.import_module("requests")
-        self.assertLessEqual(version.parse(requests.__version__), version.parse("2.32"))
-        self.assertGreater(version.parse(requests.__version__), version.parse("2.30"))
+        """
+        Verify that virtualenv installs the correct version of attrs that's defined
+        in this package, rather than the version defined in the dependency.
+        """
 
-        _ = importlib.import_module("packaging")
+        attrs = importlib.import_module("attrs")
+        self.assertEqual(attrs.__version__, "25.3.0")
+
+
 
     def test_inherited_distro_specific_package_version(self):
         """
