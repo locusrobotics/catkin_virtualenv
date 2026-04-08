@@ -33,9 +33,15 @@ class TestVirtualenv(unittest.TestCase):
 
         This package exports distro-specific requirements files, so the virtualenv
         should have installed:
+<<<<<<< HEAD
         - On Jammy: colorama==0.4.4 (from requirements-jammy.txt)
         - On Noble: colorama==0.4.5 (from requirements-noble.txt)
         - On other distros: colorama==0.4.3 (from requirements.txt)
+=======
+        - On Jammy: six==1.16.0 (from requirements-jammy.txt)
+        - On Noble: six==1.17.0 (from requirements-noble.txt)
+        - On other distros: six==1.15.0 (from requirements.txt)
+>>>>>>> a4c0a4a (Fix tests by removing requests due to six complexity; use attrs instead)
         """
         colorama = importlib.import_module("colorama")
         codename = distro.codename().lower()
