@@ -1,2 +1,2 @@
-# Default requirements - pinned to six 1.15.0 as marker
-six==1.15.0
+# Default requirements - pinned to colorama 0.4.3 as marker
+colorama==0.4.3

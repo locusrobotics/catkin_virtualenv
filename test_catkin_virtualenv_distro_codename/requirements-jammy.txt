@@ -1,2 +1,2 @@
-# Jammy-specific requirements - pinned to six 1.16.0 as marker
-six==1.16.0
+# Jammy-specific requirements - pinned to colorama 0.4.4 as marker
+colorama==0.4.4
