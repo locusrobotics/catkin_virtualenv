@@ -33,6 +33,7 @@ class TestVirtualenv(unittest.TestCase):
 
         This package exports distro-specific requirements files, so the virtualenv
         should have installed:
+
         - On Jammy: colorama==0.4.4 (from requirements-jammy.txt)
         - On Noble: colorama==0.4.5 (from requirements-noble.txt)
         - On other distros: colorama==0.4.3 (from requirements.txt)

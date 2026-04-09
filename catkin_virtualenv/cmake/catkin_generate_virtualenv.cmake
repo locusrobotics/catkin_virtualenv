@@ -39,7 +39,7 @@ function(catkin_generate_virtualenv)
 
   if(ARG_ISOLATE_REQUIREMENTS)
     message(STATUS "Only using requirements from this catkin package")
-    set(lock_args "${lock_args} --no-deps")
+    set(collect_args "--no-deps")
   endif()
 
   if (NOT DEFINED ARG_EXTRA_PIP_ARGS)
@@ -71,8 +71,8 @@ function(catkin_generate_virtualenv)
 
   # Store just _this_ project's requirements file in ${package_requirements}
   execute_process(
-    COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv collect_requirements --no-deps
-      --package-name ${PROJECT_NAME} ${lock_args}
+    COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv collect_requirements
+      --package-name ${PROJECT_NAME} --no-deps
     OUTPUT_VARIABLE package_requirements
     OUTPUT_STRIP_TRAILING_WHITESPACE
   )
@@ -80,10 +80,21 @@ function(catkin_generate_virtualenv)
   # Collect all of this project's inherited requirements into ${requirements_list}
   execute_process(
     COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv collect_requirements
-      --package-name ${PROJECT_NAME} ${lock_args}
+      --package-name ${PROJECT_NAME} ${collect_args}
     OUTPUT_VARIABLE requirements_list
     OUTPUT_STRIP_TRAILING_WHITESPACE
   )
+
+  # In isolated mode, we still need catkin_virtualenv's own requirements (pip-tools, etc)
+  if(ARG_ISOLATE_REQUIREMENTS)
+    execute_process(
+      COMMAND ${CATKIN_ENV} rosrun catkin_virtualenv collect_requirements --no-deps
+        --package-name catkin_virtualenv
+      OUTPUT_VARIABLE catkin_virtualenv_requirements
+      OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+    set(requirements_list "${catkin_virtualenv_requirements};${requirements_list}")
+  endif()
 
   # Trigger rebuild if any of the requirements files change
   foreach(requirements_file ${requirements_list})
@@ -155,9 +166,7 @@ function(catkin_generate_virtualenv)
   if(CATKIN_ENABLE_TESTING AND NOT package_requirements STREQUAL "" AND (NOT DEFINED ARG_CHECK_VENV OR ARG_CHECK_VENV))
     file(MAKE_DIRECTORY ${CATKIN_TEST_RESULTS_DIR}/${PROJECT_NAME})
     catkin_run_tests_target("venv_check" "${PROJECT_NAME}-requirements" "venv_check-${PROJECT_NAME}-requirements.xml"
-      COMMAND "${CATKIN_ENV} rosrun catkin_virtualenv venv_check ${venv_dir} --requirements ${package_requirements} \
-        --extra-pip-args \"${processed_pip_args}\" \
-        --xunit-output ${CATKIN_TEST_RESULTS_DIR}/${PROJECT_NAME}/venv_check-${PROJECT_NAME}-requirements.xml"
+      COMMAND "${CATKIN_ENV} rosrun catkin_virtualenv venv_check ${venv_dir} --requirements ${package_requirements} --extra-pip-args \"${processed_pip_args}\" --xunit-output ${CATKIN_TEST_RESULTS_DIR}/${PROJECT_NAME}/venv_check-${PROJECT_NAME}-requirements.xml"
       DEPENDENCIES ${PROJECT_NAME}_generate_virtualenv
       WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     )
