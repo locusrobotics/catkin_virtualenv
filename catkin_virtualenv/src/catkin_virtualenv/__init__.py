@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 
 def configure_logging():
     logging.basicConfig(
-        level=logging.INFO,
+        level=logging.WARN,
         format='[%(levelname)s] [%(name)s]: %(message)s'
     )
     return logging.getLogger()
