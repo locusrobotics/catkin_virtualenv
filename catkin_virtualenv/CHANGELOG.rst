@@ -144,6 +144,9 @@ Changelog for package catkin_virtualenv
   * Drop kinetic
 * Contributors: Alec Tiefenthal, Arne Hitzmann, Gary Servin, Iori Yanokura, Jorge López Fueyo, Kalpesh Lad, Paul Bovbel, Shingo Kitagawa, Yuki Furuta
 
+Forthcoming
+-----------
+
 0.18.0 (2026-03-03)
 -------------------
 * Fix wheel pkg to a lower version (#120)

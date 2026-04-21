@@ -48,6 +48,9 @@ Changelog for package test_catkin_virtualenv
 * Update changelogs
 * Contributors: Gary Servin, Paul Bovbel
 
+Forthcoming
+-----------
+
 0.18.0 (2026-03-03)
 -------------------
 
