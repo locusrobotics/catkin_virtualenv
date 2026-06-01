@@ -84,8 +84,11 @@ class Virtualenv:
             virtualenv = ["virtualenv", "--no-setuptools", "--verbose", "--python", python]
             # py2's virtualenv command will try install latest setuptools. setuptools>=45 not compatible with py2,
             # but we do require a reasonably up-to-date version (because of pip==20.1), so v44 at least.
-            if python_version < (3, 12):
+            # For Python 3.x (< 3.12), setuptools is not yet pinned in preinstall but is needed.
+            if python_version < (3, 0):
                 preinstall += ["setuptools>=44,<45"]
+            elif python_version < (3, 12):
+                preinstall += ["setuptools"]
 
         if use_system_packages:
             virtualenv.append("--system-site-packages")
@@ -213,11 +216,15 @@ class Virtualenv:
 
     def _get_python_version(self, python_executable):
         result = run_command(
-            [python_executable, "-c", "import sys; print(sys.version_info.major, sys.version_info.minor)"],
+            [python_executable, "-c",
+             "import sys; sys.stdout.write('%s %s\\n' % (sys.version_info[0], sys.version_info[1]))"],
             capture_output=True,
             check=True,
         )
-        major, minor = result.stdout.decode().strip().split()
+        stdout = result.stdout
+        if isinstance(stdout, bytes):
+            stdout = stdout.decode("utf-8")
+        major, minor = stdout.strip().split()
         return (int(major), int(minor))
 
     def _check_module(self, python_executable, module):
