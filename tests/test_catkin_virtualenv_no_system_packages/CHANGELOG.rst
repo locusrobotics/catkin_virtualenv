@@ -2,8 +2,8 @@
 Changelog for package test_catkin_virtualenv_no_system_packages
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.19.0 (2026-06-18)
+-------------------
 * Use nose-py3 and restore tests around isolated and system package flags (#125)
   * Consume a codenamed lockfile when available, to make building across different distributions more straightforward
   * Fix tests in test_catkin_virtualenv_distro_codename
