@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 -->
 <package format="2">
   <name>test_catkin_virtualenv_distro_codename</name>
-  <version>0.19.0</version>
+  <version>0.19.1</version>
   <description>Test for distro-specific requirements files (e.g., requirements-jammy.txt).</description>
 
   <maintainer email="pbovbel@locusrobotics.com">Paul Bovbel</maintainer>

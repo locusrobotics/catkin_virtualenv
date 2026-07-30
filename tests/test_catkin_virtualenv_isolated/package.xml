@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 -->
 <package format="2">
   <name>test_catkin_virtualenv_isolated</name>
-  <version>0.19.0</version>
+  <version>0.19.1</version>
   <description>Test ISOLATE_REQUIREMENTS: dependency requirements (from test_catkin_virtualenv_distro_codename) should NOT be inherited.</description>
 
   <maintainer email="pbovbel@locusrobotics.com">Paul Bovbel</maintainer>
