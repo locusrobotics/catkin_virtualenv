@@ -2,6 +2,9 @@
 Changelog for package test_catkin_virtualenv_isolated
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.19.0 (2026-06-18)
 -------------------
 * Use nose-py3 and restore tests around isolated and system package flags (#125)
