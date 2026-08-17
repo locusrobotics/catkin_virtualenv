@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 if [ "${ARG_RENAME_PROCESS}" = "TRUE" ]; then
-	exec ${${PROJECT_NAME}_VENV_INSTALL_DIR}/bin/python - "$@" <<- EOF
+	exec ${${PROJECT_NAME}_VENV_INSTALL_DIR}/bin/python /dev/fd/3 "$@" 3<<- EOF
 	import re
 	import sys
 
