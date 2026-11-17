@@ -2,3 +2,4 @@ catkin-pkg
 nose
 rospkg
 setproctitle
+wheel==0.45.1
